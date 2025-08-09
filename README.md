@@ -10,6 +10,10 @@
 
 **D) Text Splitting Technique - Character Text Splitter**
 
+**E) Text Splitting Technique - HTML Header Text Splitter**
+
+**F) Recursive JSON Splitter**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -161,3 +165,71 @@ print(text[0])
 print(text[1])
 
 ### Which to use among - RecursiveCharacterTextSplitter and CharacterTextSplitter - Use RecursiveCharacterTextSplitter whenever you have a choice; It is the most generic one
+
+**E) Text Splitting Technique - HTML Header Text Splitter**
+
+**This will be handy when we work with HTML, URL**
+
+from langchain_text_splitters import HTMLHeaderTextSplitter
+
+1. **Copied HTML Tag from Internet**
+
+**headers_to_split_on=[("h1","Header 1"),("h2","Header 2"),("h3","Header 3")]** - These are the Header Tags that we are using to Split
+
+**In order to use these tags and do the splitting we will use** - html_splitter=HTMLHeaderTextSplitter(headers_to_split_on)
+
+**html_header_splits=html_splitter.split_text(html_string)** - To split the text and save it in an variable
+
+**Based on h1,h2,h3, we were able to get the Tags**
+
+**All the Tags were created based on the headers we gave; Metadata information has also been shared based on Tags which we have splitted into**
+
+**When we are splitting into Texts, we are able to get in the form of Documents**
+
+2. URL Example:
+
+url = "https://plato.stanford.edu/entries/goedel/"
+
+**Same condition here to split** - headers_to_split_on = [("h1", "Header 1"),("h2", "Header 2"),("h3", "Header 3"),("h4", "Header 4"),]
+
+**Similar codes to see the Splits too**
+
+html_splitter = HTMLHeaderTextSplitter(headers_to_split_on)
+html_header_splits = html_splitter.split_text_from_url(url)
+html_header_splits
+
+**F) Recursive JSON Splitter**
+
+We will learn on how to split from JSON data; Let's say we are getting a chunk of JSON data from an API, we will see how do we split that and pass it to LLM Models
+
+**We can also use this with Recursive Text Splitter - If you need a hard cap on the chunk size consider composing this with a Recursive Text splitter on those chunks**
+
+**Text is split on JSON Value; Chunk Size is determined by Number of Characters**
+
+**1. Loading from API**
+
+We will convert the API response into Chunks and see from it
+
+import json; import requests
+
+**json_data=requests.get("https://api.smith.langchain.com/openapi.json").json()**
+
+**It is a nested JSON; JSON has a value, and inside the JSON there will be another values**
+
+from langchain_text_splitters import RecursiveJsonSplitter; json_splitter=RecursiveJsonSplitter(max_chunk_size=300); json_chunks=json_splitter.split_json(json_data)
+
+**Printing top 3 chunks to see the Output - for chunk in json_chunks[:3]: print(chunk)**
+
+**2. Now it will be Key Value Pair; We will see how we can convert it to Documents**
+
+## The splitter can also output documents
+
+docs=json_splitter.create_documents(texts=[json_data])
+
+for doc in docs[:3]: print(doc)
+
+**3. To directly get the String Content:**
+
+texts=json_splitter.split_text(json_data)
+
+print(texts[0]); print(texts[1])
