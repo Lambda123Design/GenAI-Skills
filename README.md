@@ -14,6 +14,8 @@
 
 **F) Recursive JSON Splitter**
 
+**G) Introduction to OpenAI Embedding**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -233,3 +235,9 @@ for doc in docs[:3]: print(doc)
 texts=json_splitter.split_text(json_data)
 
 print(texts[0]); print(texts[1])
+
+**G) Introduction to OpenAI Embedding**
+
+**We will learn embedding (Converting to vectors) using OpenAI, Ollama, HuggingFace; There are not that only these three are there; Lot of other techniques are also there, but if these three are more than enough, with regards to accuracy** [OpenAI - Paid; Ollama and HuggingFace - OpenSource]
+
+**Google Gemini has different embedding techniques; Claudy3 from Anthropic has different embedding technique**
