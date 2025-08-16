@@ -30,6 +30,10 @@
 
 **N) Understanding Retrievers and Chains**
 
+**O) Introduction to Ollama and Setup**
+
+**P) GenAI Application using Ollama**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -476,6 +480,18 @@ docs[0].page_content
 
 There are some FAISS specific methods. One of them is similarity_search_with_score, which allows you to return not only the documents but also the distance score of the query to them. The returned distance score is L2 distance. Therefore, a lower score is better.
 
+**O) Introduction to Ollama and Setup**
+
+**If we don't have credit balances and cost thing, we can use Ollama instead of OpenAI API Keys; We can use Ollama and OpenSource LLM's which we can run locally**
+
+**Steps:**
+
+1. Download Ollama from Website and Install; Once installed we can see the icon in our system
+
+2. **To use and download the model** - Open Command Prompt and type "ollama run model_name"; If not there we can download it
+
+3. Once downloaded, we can run it in our local machine and ask questions like "What is Generative AI" in local machine on Command Prompt; Write "exit" to exit the conversation with the Chatbot
+
 docs_and_score=db.similarity_search_with_score(query)
 
 **Passing Vectors instead of Sentences, or instead of any documents:**
@@ -784,3 +800,55 @@ response['answer']
 **Once we invoke it, it will invoke the entire answer**
 
 ### If we just print "response", it will have "Input", "Context", "Document", "Answer"; It will all be in the prompt template where we have created this Context
+
+**P) GenAI Application using Ollama**
+
+### from langchain_community.llms import Ollama
+
+## Langsmith Tracking
+
+os.environ["LANGCHAIN_API_KEY"]=os.getenv("LANGCHAIN_API_KEY")
+
+os.environ["LANGCHAIN_TRACING_V2"]="true"
+
+os.environ["LANGCHAIN_PROJECT"]=os.getenv("LANGCHAIN_PROJECT")
+
+**Steps:**
+
+1. Installed Stremlit for the frontend
+
+Need to go inside "cd 1.2-ollama" and then run "streamlit run app.py" in command prompt to see the Streamlit Frontend
+
+2. from langchain_core.prompts import ChatPromptTemplate - Used to create our own Chat Prompt Template, which we want these Open Source Models to do, we can define using this
+
+3. from langchain_core.output_parsers import StrOutputParser - Creating an StringOutput Parser
+
+4. Defining our Prompt Template, which we want our AI Assitant to do:
+
+prompt=ChatPromptTemplate.from_messages(
+    [
+        ("system","You are a helpful assistant. Please respond to the question asked"),
+        ("user","Question:{question}")
+    ]
+)
+
+5. Defining the Streamlit Framework:
+
+st.title("Langchain Demo With Gemma Model")
+
+input_text=st.text_input("What question you have in mind?")
+
+6. Defining Ollama Gemma Model:
+
+llm=Ollama(model="gemma:2b")
+
+output_parser=StrOutputParser()
+
+chain=prompt|llm|output_parser
+
+7. If Input is given and pressed on Enter, take that particular chain and Invoke the chain by giving the question parameter; Later we wrote that response into our system
+
+if input_text:
+    st.write(chain.invoke({"question":input_text}))
+
+###8. We are tracking it also in LangSmith
