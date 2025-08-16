@@ -16,6 +16,12 @@
 
 **G) Introduction to OpenAI Embedding**
 
+**H) Ollama Embeddings**
+
+**I) HuggingFace Embeddings**
+
+**J) VectorStore - FAISS**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -241,3 +247,246 @@ print(texts[0]); print(texts[1])
 **We will learn embedding (Converting to vectors) using OpenAI, Ollama, HuggingFace; There are not that only these three are there; Lot of other techniques are also there, but if these three are more than enough, with regards to accuracy** [OpenAI - Paid; Ollama and HuggingFace - OpenSource]
 
 **Google Gemini has different embedding techniques; Claudy3 from Anthropic has different embedding technique**
+
+**G) Introduction to OpenAI Embedding:**
+
+**Embeddings - Converting Text to Vectors**
+
+from dotenv import load_dotenv - Call the environment variable in the coding environment
+
+We also require langchain-openai - Installed both in requirements.txt
+
+**We are working with Langchain-OpenAI**
+
+load_dotenv() - To load all the environment variables
+
+os.environ["OPENAI_API_KEY"]=os.getenv("OPENAI_API_KEY") - Loading the envrionment variables
+
+**We can check in OpenAI Website (Platform.openai.com) to check which and all models are there and choose the model for embeddings**
+
+**Loaded this model from OpnAI**
+
+from langchain_openai import OpenAIEmbeddings
+
+**Testing the OpenAI Embedding to convert Text to Vectors**
+
+text="This is a tutorial on OPENAI embedding"
+
+query_result=embeddings.embed_query(text)
+
+embeddings=OpenAIEmbeddings(model="text-embedding-3-large")
+
+**len(query_result) --> 3072; That is what mentioned in the Documentation too; It takes the sentence and converts it to 3072 Dimensions**
+
+**We can also set our own dimensions using this --> embeddings_1024=OpenAIEmbeddings(model="text-embedding-3-large",dimensions=1024)**
+
+text="This is a tutorial on OPENAI embedding"
+
+query_result=embeddings_1024.embed_query(text)
+
+len(query_result) - The length of this will be 1024
+
+### Vector Embeddings and Storing in VectorStoreDB called ChromaDB
+
+### Loading Data, Splitting it, Converting it to Vectors and Storing in Vector Store DB (ChromaDB)
+
+**(i) Loading the Data**
+
+from langchain_community.document_loaders import TextLoader; loader=TextLoader('speech.txt'); docs=loader.load(); docs
+
+**(ii) Splitting Data into Chunks:**
+
+from langchain_text_splitters import RecursiveCharacterTextSplitter; text_splitter=RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=50); final_documents=text_splitter.split_documents(docs); final_documents
+
+**(iii) Vector Embedding and Storing in VectorStoreDB:**
+
+from langchain_community.vectorstores import Chroma
+
+db=Chroma.from_documents(final_documents,embeddings_1024)
+
+**(iv) Retrieve the Information from VectorStoreDB using Similarity Search**
+
+query="It will be all the easier for us to conduct ourselves as belligerents"
+
+retrieved_results=db.similarity_search(query)
+
+print(retrieved_results)
+
+**The text was able to search in the VectorStoreDB and we were able to get the output results**
+
+**H) Ollama Embeddings**
+
+**1. Download Ollama into Local from Ollama Website and Github**
+
+**2. To use Models in Local**
+
+**Once installation is done, open Command Prompt, "ollama run model_name(ex: gemma:2b)"**
+
+**If already installed, we can go ahead and chat with it**
+
+**3. Need langchain-community library**
+
+**4.Coding Part:**
+
+from langchain_community.embeddings import OllamaEmbeddings
+
+embeddings=(
+    OllamaEmbeddings(model="gemma:2b")  
+)    (By Default it uses Llama2, if we didn't specify any model)
+
+
+r1=embeddings.embed_documents(
+    [
+       "Alpha is the first letter of Greek alphabet",
+       "Beta is the second letter of Greek alphabet", 
+    ]
+)
+
+len(r1[0]) --> 2048, Gemma model creates vector of 2048 Dimensions
+
+**embed_documents - List of texts to embed**
+
+embeddings.embed_query("What is the second letter of Greek alphabet ")
+
+**The above uses embed_query to embed only one sentence**
+
+**If we compare vectors of above 2 codes, both will have similar vector values, as they are similar; First we said about Beta and later we asked what is the second letter of Greek Alphabet**
+
+**We can also Pull Models from the Ollama Website**
+
+### We can check for Other Embedding models from "https://ollama.com/blog/embedding-models"
+
+**Trying with Other Model:**
+
+embeddings = OllamaEmbeddings(model="mxbai-embed-large")
+
+text = "This is a test document."
+
+query_result = embeddings.embed_query(text)
+
+**len(query_result) - It uses 1024 vector dimensions**
+
+**I) HuggingFace Embeddings**
+
+**Langchain and HuggingFace have integrated; We can call any LLM Models**
+
+**We need to create our API Key; Go to Settings --> Access Tokens; Create our Access Tokens**
+
+**from dotenv import load_dotenv - To call that Token; Load all the Environment Variables**
+
+**Use HF_TOKEN="Your_HuggingFace_Token**
+
+os.environ['HF_TOKEN']=os.getenv("HF_TOKEN")
+
+**1. Need to install SentenceTransformers from HuggingFace - That Library is available for Embedding Techniques (Library we need is Torch)**
+
+Hugging Face sentence-transformers is a Python framework for state-of-the-art sentence, text and image embeddings. One of the embedding models is used in the HuggingFaceEmbeddings class. We have also added an alias for SentenceTransformerEmbeddings for users who are more familiar with directly using that package.
+
+**2. Also need to install langchain_huggingface to call embeddings and LLM Models (Langchain and Huggingface have integrated together)**
+
+**3. Coding Part**
+
+from langchain_huggingface import HuggingFaceEmbeddings
+
+embeddings=HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+**Embedding Text:**
+
+text="this is atest documents"
+
+**len(query_result) - 384 Dimensions**
+
+**We can also embed documents, where we give multiple texts**
+
+doc_result = embeddings.embed_documents([text, "This is not a test document."])
+
+doc_result[0]
+
+query_result=embeddings.embed_query(text)
+
+**J) VectorStore - FAISS**
+
+**FAISS - Facebook AI Similarity Search**
+
+**First we will learn about FAISS, ChromaDB; Later we will use AstraDB in end-to-end projects**
+
+**AstraDB specifically uses CassandraDB**
+
+Facebook AI Similarity Search (Faiss) is a library for efficient similarity search and clustering of dense vectors. It contains algorithms that search in sets of vectors of any size, up to ones that possibly do not fit in RAM. It also contains supporting code for evaluation and parameter tuning.
+
+**We need to get installed with faiss-cpu in VS Code**
+
+**1. Coding Part:**
+
+from langchain_community.document_loaders import TextLoader
+
+from langchain_community.vectorstores import FAISS
+
+from langchain_community.embeddings import OllamaEmbeddings
+
+from langchain_text_splitters import CharacterTextSplitter
+
+loader=TextLoader("speech.txt")
+
+documents=loader.load()
+
+text_splitter=CharacterTextSplitter(chunk_size=1000,chunk_overlap=30)
+
+docs=text_splitter.split_documents(documents)
+
+**Storing the Vectors in the VectorStoreDB (FAISS)**
+
+embeddings=OllamaEmbeddings()
+
+db=FAISS.from_documents(docs,embeddings)
+
+**Querying from Database**
+
+**Querying** - query="How does the speaker describe the desired outcome of the war?"
+
+**Doing Similarity Search** - docs=db.similarity_search(query)
+
+**Getting only the first result** - docs[0].page_content
+
+## Retrievers Example:
+
+We can also convert the vectorstore into a Retriever class. This allows us to easily use it in other LangChain methods, which largely work with retrievers
+
+Retriever is like a Interface, whenever we put a query it gets connected to the VectorStoreDB; Only when we convert this to Retriever; It lacks an interface which will able to retrieve the details from Vector Store and provide the response
+
+**Reason is: Whenever we work with different LLM Models, we can't directly use VectorStoreDB, we need to use it as a Retriever and use it with LLM Models**
+
+**Converting into Retriever**
+
+retriever=db.as_retriever()
+
+docs=retriever.invoke(query)
+
+docs[0].page_content
+
+### FAISS also uses Similarity Search, which uses L2 distance, Manhattan Distance
+
+There are some FAISS specific methods. One of them is similarity_search_with_score, which allows you to return not only the documents but also the distance score of the query to them. The returned distance score is L2 distance. Therefore, a lower score is better.
+
+docs_and_score=db.similarity_search_with_score(query)
+
+**Passing Vectors instead of Sentences, or instead of any documents:**
+
+embedding_vector=embeddings.embed_query(query)
+
+docs_score=db.similarity_search_by_vector(embedding_vector)
+
+docs_score - Here score is respect to with embedding vectors
+
+**Saving VectorStoreDB to Local:**
+
+db.save_local("faiss_index")
+
+**To load the Saved VectoreDB**
+
+new_db=FAISS.load_local("faiss_index",embeddings,allow_dangerous_deserialization=True)
+
+**We use allow_dangerous_deserialization, saying that we trust this particular file**
+
+**Loading from saved VectoreStoreDB** - docs=new_db.similarity_search(query); docs
+
