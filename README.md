@@ -34,6 +34,8 @@
 
 **P) GenAI Application using Ollama**
 
+**Q) Tracking GenAI Application using LangSmith**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -852,3 +854,15 @@ if input_text:
     st.write(chain.invoke({"question":input_text}))
 
 ###8. We are tracking it also in LangSmith
+
+**Q) Tracking GenAI Application using LangSmith**
+
+**Monitored through LangSmith**
+
+Once we ask a question, Output has many key value pairs like, output: messages: context "Context given to model (You are a assistant to answer questions asked)", type, etc..
+
+We can see Ollama, which uses Gemma model and see the human question asked and the response
+
+We can see Latency, how much time taken, tokens, etc.. in LangSmith
+
+**No cost involved because we are using a Complete Open Source Model from Ollama**
