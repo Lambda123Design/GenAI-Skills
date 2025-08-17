@@ -36,6 +36,12 @@
 
 **Q) Tracking GenAI Application using LangSmith**
 
+**R) Building Gen AI App using LCEL - Getting Started with Open Source Models using Groq API**
+
+**S) Building Gen AI App using LCEL - Building LLM, Prompt and StrOuput Chains with LCEL**
+
+**T) Building Gen AI App using LCEL - Deploy LangServe Runnable and Chain as API**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -866,3 +872,157 @@ We can see Ollama, which uses Gemma model and see the human question asked and t
 We can see Latency, how much time taken, tokens, etc.. in LangSmith
 
 **No cost involved because we are using a Complete Open Source Model from Ollama**
+
+**R) Building Gen AI App using LCEL - Getting Started with Open Source Models using Groq API**
+
+#### Groq is the Platform in which we will use the OpenSource Models
+
+#### Groq is the AI Infrastructure Company that delivers fast AI Inference; We need inference the models that has been developed by Tech Giants; We need to really deploy these models somewhere
+
+#### If we are using our inferencing or deploying, there will be a lot of charges
+
+#### Groq LPUi Inference, LPU standing for Language Processing Unit is a hardware and software platform that delivers exceptional compute speed, quality, energy efficiency (Refer Documentations for Further)
+
+Langchain Expression Language (LCEL) - Used to chain Components together
+
+In this quickstart we'll show you how to build a simple LLM application with LangChain. This application will translate text from English into another language. This is a relatively simple LLM application - it's just a single LLM call plus some prompting. Still, this is a great way to get started with LangChain - a lot of features can be built with just some prompting and an LLM call!
+
+We will learn about:
+
+- Using language models
+
+- Using PromptTemplates and OutputParsers
+
+- Using LangChain Expression Language (LCEL) to chain components together
+
+- Debugging and tracing your application using LangSmith
+
+- Deploying your application with LangServe
+
+**OpenAI is cost to use any models (GPT4 or anything)**
+
+**Steps:**
+
+1. Install Langchain
+
+2. Go to Groq.com and sign in
+
+**Groq has deployed several models from Top Giants in their cloud and to access them we need API Keys; They also use LPU Inferencing**
+
+3. Click on GroqCloud and go to "API Keys"
+
+4. Copy the API Key and paste it on .env file in VS Code
+
+5. Code for:
+
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv() **Loads all the environment variables**
+
+## Coding to Load both Open AI and Groq
+
+import openai
+
+openai.api_key=os.getenv("OPENAI_API_KEY")
+
+groq_api_key=os.getenv("GROQ_API_KEY")
+
+#### 6. Installing Langchain_Groq (!pip install langchain_groq) - This is responsible for interacting with any LLM Models deployed in Groq Platform
+groq_api_key
+
+#### 7. Using Groq Models
+
+from langchain_groq import ChatGroq
+
+model=ChatGroq(model="Gemma2-9b-It",groq_api_key=groq_api_key)
+
+#### Langchain creates integration with every LLM Platform over there
+
+**S) Building Gen AI App using LCEL - Building LLM, Prompt and StrOuput Chains with LCEL**
+
+**Steps to do:**
+
+1. Installing langchain_core
+
+2. from langchain_core.messages import HumanMessage,SystemMessage
+
+Whenevr we chat with LLM, we need to say to that, which is provided by Human Being and which is basically an instruction; SystemMessage is an instruction on how the LLM Model should work
+
+3. Creating a Message
+
+messages=[
+    SystemMessage(content="Translate the following from English to French"),
+    HumanMessage(content="Hello How are you?")
+]
+
+4. Invoking the specific message:
+
+result=model.invoke(messages) 
+
+5. Using the Output Parser:
+
+**Along with the output we will also see, tokens used, completion time, prompt time, total time, etc...; We get it as AI Message, Means output from LLM Model**
+
+#### We got ouput inside a "Content" in the AI Message; We want to get only the output message, so we will use "Output Parser"
+
+from langchain_core.output_parsers import StrOutputParser
+
+parser=StrOutputParser()
+
+parser.invoke(result)
+
+#### We have two components: Model.Invoke and StringOutput Parser
+
+#### Using LCEL we can chain the components
+
+chain=model|parser
+
+chain.invoke(messages)
+
+#### 6. Prompt Templates
+
+**Whenever we invoke with messages, it goes to model and next we get String Output Parser**
+
+#### We have one more efficient technique called "Prompt Templates"; Instead of givig list of messages, take a combination of user input and some application logic, where we will be able to give some instruction
+
+#### The application logic will take raw user inputs and transforms into list of messages that can be passed to large models
+
+from langchain_core.prompts import ChatPromptTemplate
+
+generic_template="Trnaslate the following into {language}:"
+
+prompt=ChatPromptTemplate.from_messages(
+    [("system",generic_template),("user","{text}")]
+)
+
+result=prompt.invoke({"language":"French","text":"Hello"})
+
+result.to_messages() **Converting to Messages**
+
+## Chaining together components with LCEL
+
+chain=prompt|model|parser
+
+chain.invoke({"language":"French","text":"Hello"})
+
+**T) Building Gen AI App using LCEL - Deploy LangServe Runnable and Chain as API**
+
+**LangServe brought by LangChain and is integrated with Fast API**
+
+**Steps:**
+
+1. Install FastAPI, uvicorn, langserve, sse_starlette
+
+2. We loaded our model, created our Prompt Template, Created chain and output parser
+
+3. Run .py file from Command Prompt
+
+#### 4. Go to the website and type "/docs" after the link
+
+#### 5. Use the "POST/chain/invoke" to do the predictions
+
+#### 6. We can also go to website "/chian/output_schema"
+
+#### 7. We also do with the help of Postman. Copy "127.0.0.1:8000/chain/batch" in Postman "POST" request; We will get the same output in Postman too
