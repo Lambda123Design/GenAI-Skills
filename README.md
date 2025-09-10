@@ -42,6 +42,10 @@
 
 **T) Building Gen AI App using LCEL - Deploy LangServe Runnable and Chain as API**
 
+**VII) Building Chatbots With Conversation History Using Langchain**
+
+**A) Building Chatbot With Message History Using Langchain**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -1026,3 +1030,7 @@ chain.invoke({"language":"French","text":"Hello"})
 #### 6. We can also go to website "/chian/output_schema"
 
 #### 7. We also do with the help of Postman. Copy "127.0.0.1:8000/chain/batch" in Postman "POST" request; We will get the same output in Postman too
+
+# **VII) Building Chatbots With Conversation History Using Langchain**
+
+**A) Building Chatbot With Message History Using Langchain**
