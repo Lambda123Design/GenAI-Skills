@@ -46,6 +46,12 @@
 
 **A) Building Chatbot With Message History Using Langchain**
 
+**B) Working With Prompt Termplate And Message Chat History Using Langchain**
+
+**C) Managing the Chat Conversation History Using Langchain**
+
+**D) Working With VectorStore And Retriever**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -1034,3 +1040,316 @@ chain.invoke({"language":"French","text":"Hello"})
 # **VII) Building Chatbots With Conversation History Using Langchain**
 
 **A) Building Chatbot With Message History Using Langchain**
+
+So we are going to continue the discussion with respect to Lang Chain. And now I'm going to show you how we can go ahead and build a chat bot. Already in our previous video we have seen that how to build a simple LM application with LCL. And we have discussed about Lang Chain expression, uh, language where when we were able to, you know, uh, may, uh, combine the chains together, all the chain components and we were able to do the prediction. Right. So let's go ahead and let's start working with chat bots.
+
+Now in this video we will go over an example of how to design and implement an LLM powered chat bot. This chat bot will be able to have a conversation and remember previous interaction. Note that this chatbot that we build will only use the language model to have a conversation. Okay, there are several other related concepts that you may be looking for, like conversational RAG, like how to enable a chat bot experience over an external source of data. We will probably discuss this in the upcoming videos. Then we will also be discussing about agents. We will be developing multiple projects. Okay, but in this video we will try to focus on LLM powered chatbots.
+
+So first of all, as usual again over here I am going to use the open source uh models from Grok API instead of using OpenAI. Okay. So first of all what I will say I will go ahead and say "import os". Uh, along with this, I will go ahead and write "from dotenv import load_dotenv". And then we have this "load_dotenv()". Here we are just, uh, loading all the environment variables. All the environment variables okay. And then after this, uh, what do we exactly do? We basically get our "GROK_API_KEY", and you know, that we have in our environment variable which we had updated last time. So this is my grok API key. So I will just go ahead and call it right. And in order to call it I will just go ahead and write "os.getenv('GROK_API_KEY')". Perfect.
+
+So if I go ahead and print my grok API key, this is the output. Uh, please do not use this. Anyhow, uh, after I upload all these videos, uh, in the course, uh, all keys will be deleted. Okay, so now I have my grok API key. Now the next thing is that we will go ahead and see how to call our LLM model. So that already we have seen over here. So here we will be importing "from langchain_grok import ChatGrok". And here we are going to use ChatGrok with model "gamma-2-9b". This is the most newest model that we are going to use over here. Let me just go ahead and execute this. And here I have actually given the Grok API key. Okay. So this is how you specifically load a model okay.
+
+Um, now after loading a model, what I am actually going to do is that we are going to, first of all, start with basic things. Okay. So let me just go ahead and write "from langchain.core.messages import HumanMessage". Whenever I have a human message that basically whenever I'm using this particular class, uh, it indicates that a user is giving a message itself. Right. So let me just go ahead and write "model.invoke(HumanMessage(content='Hey hi my name is Chris and I am a chief AI engineer'))". So here you'll be able to see as soon as I give the message over here, this we are invoking with respect to this particular model, that basically means this information is going to my model "gamma-2" over here. And I'm getting the response "Hello Chris. It's nice to meet you as a chief engineer. What kind of projects are you working on these days? I'm always eager to learn about the exciting work being done in the field of AI." And these are my all the metadata info, like how much is the input tokens, what is the output tokens, and what is the total number of tokens.
+
+So here, just a simple conversation by using a human message class, I've actually done it right. Still, I have not initialized anything from the system message itself. I have not told, uh, like, what kind of behavior the LM model should probably go ahead with right now. Let me do one thing. And, you know this, right? Whenever we get this AI message, that basically means we are getting the response from our model. Now let me go ahead and write "from langchain.core.messages import AIMessage". Now again here I'll go ahead and write "model.invoke([HumanMessage(content='Hi, my name is so and so and I'm a chief engineer'), AIMessage(content='Hello! In the field of AI...')])". Right. So this is the AI message that I've actually got a response. So now here I'm actually going to create a sequence of messages from this particular text. I got the AI, I'm just hard coding. Okay. I got this particular message from this particular model. And now I will go ahead and just trace again a human message. And now I will go and ask, "Hey, hey, hey, what's my name and what do I do?" Okay, so this is the question that I'm going to ask over here.
+
+Now, this is amazing. Okay, let's see the output. What I'm actually going to do because I'm, I'm first of all feeding this particular information with respect to the human message "Hey, my name is Krish and I am a chief AI engineer", and from this AI message I got this entire value. So I am probably putting it up. And I'm asking it whether it is able to remember my name. It is whether it is able to remember the information that I have actually given since I'm passing it in the form of list of messages here. Right. I think it should be able to remember it.
+
+Okay. So now once I go ahead and execute it, so here you can say "You said your name is Krish and you are a chief AI engineer, right? Is there anything else you would like me to remember about you?" Okay, so all this information is basically coming. That basically means, uh, one important thing is that whatever conversation I'm giving inside this list of messages with the human message, AI message, human message, it is also able to remember the previous context. Okay. Now that is where we are going to discuss about message history. And this message history will probably help you to understand all the context that it will help the LM to remember all the context that we are probably discussing about. This is just an idea that whether the LM model is able to remember things or not. But at the end of the day, whenever we develop real world application, there will be different, different sessions that will be happening. Right? Let's say I'm using ChatGPT. Someone is using ChatGPT, some other people are using some other LLM models and they are chatting. Right. How that particular models are able to remember their context, that is with respect to session. So in order to understand that how these sessions are managed, we will be discussing about a very important property which is called as message history. Okay. Now let's discuss about this message history. And this is a very important component altogether in the LangChain itself. Right. Which will actually help you to work with the LM model.
+
+Okay. Now, what we really need to use or understand how message history works. So here I'm going to put a message saying that we can use message history class to wrap our model and make it stateful. We have to make it stateful so that it remembers all the context with respect to any kind of person who are actually interacting with that model. This will keep track of our inputs and output of the model and store them in some data store. Further interaction will then load these messages and pass them into the chain as part of the input. Okay, so let's see how this can be actually done. So first of all for this we require another library which is called as "langchain_community". So please make sure that you install this. And once you install this I have already done this particular installation so that it does not take much time. You have to go ahead and update in the "requirements.txt". Okay. So first of all go ahead and update this in the "requirements.txt" and make sure that whatever installation that you have done, you are doing it in your virtual environment. Okay. Perfect.
+
+So from here, uh, what I will do is that I, uh, "LangChain_Community" is basically used because any integration related to message history will be available in this "langchain_community". Okay. So, uh, let me go ahead and import some very important libraries, let's say "from langchain_community.chat_message_histories import ChatMessageHistory". Okay. Inside this chat message history we will be importing "BaseChatMessageHistory". And then finally I will go ahead and import "from langchain.core.runnables import RunnableWithMessageHistory". Now this is something really important. Okay. Here you'll be able to see that we can import the relevant class over here, set up our chain which wraps the model and add in the message history. That is what we really need to do, right? Every message that we are probably putting up, it needs to be added in the message history itself, how it is done. I'll just talk about it sometime.
+
+Okay. But the thing that you really need to understand is that whenever different, different users are chatting with the LM model, how we are going to make sure that one session is completely different from the other session. So for that reason, what we will do is that we will create one amazing function, okay. And this particular function will be definition "get_session_history". Now what this function is going to do, let me talk about it okay. Here this function will be creating a session ID, okay. This session ID and this session ID will be a string, okay. Right, I've written a session ID and this will be a string. Right. The return type of this particular function will be "BaseChatMessageHistory". So whatever chat history is basically getting created right that is imported from this particular library. So what I'm actually going to do is that this "get_session_history" with respect to a session ID will be created. Right. And this session ID will be used to distinguish one chat session with the other. Okay. So here, uh, the return type is "BaseChatMessageHistory". I will say "if session_id not in store", so let me just go ahead and create one variable called as "store" which will be a dictionary over here. So here I will just go ahead and write "store = {}". Okay. Let me talk more about it. And the explanation will be very good. And I will show you the practical example. I will go ahead and write "store[session_id] = ChatMessageHistory()". Okay. So now see this everything, please try to understand it right. First of all, for this particular message history, so you can see that we have a class which is called as "ChatMessageHistory". Okay. Now this chat message history, whenever we are creating a session ID right, we are storing the session ID in this particular dictionary. Right. With respect to this particular value, whatever session ID I'm actually creating, I am initializing a "ChatMessageHistory". Right. So that basically means this is an object of a chat message history. And whatever chat is specifically happening automatically, it should be going inside this session ID. Okay.
+
+Next thing is that after this I will just go ahead and return "store[session_id]". Now see you will know there is some confusion with respect to the definition, but let's understand this definition. So what is the definition over here? This is a function which is called as "get_session_history". Whenever I give a session ID, it should be able to check whether the session ID is present in this particular dictionary or not. If it is present, we are going to get the entire chat message history from that and we will return it. Okay. And that is how we are going to distinguish it. Two things: this "get_session_history" will give you a response type of "BaseChatMessageHistory". It is an abstract class for storing the chat message history. If I talk about chat message history, it is an in-memory implementation of chat message history, stores messages in an in-memory list. So it is very much simple. Whenever I give a session ID it should first of all go ahead and check in this particular dictionary whether it is available or not. If it is available, it will go ahead and pick up the entire chat message that we have discussed with respect to, or whatever questions we have asked with respect to the LM model for that session ID, and it is just going to return it. Now, see how it is going to work. Okay. I'll execute this.
+
+I will talk about this "RunnableWithMessageHistory" soon; it will be used as we go ahead. Okay. Now the best thing over here will be that we will be seeing how we will be using this. Okay. So first of all, we will go ahead and create our config. Okay. So I'll write "config = {'session_id': 'chat1'}". Now let's go ahead and execute this. Okay. Let's go ahead and execute. So this basically becomes my config, okay. My session ID is "chat1". Now let me use this particular session ID and let me chat with the LM model. So here you'll be able to see that I will write "response = RunnableWithMessageHistory(model, get_session_history).invoke(HumanMessage(content='Hi, my name is Krish and I am an AI engineer'), config=config)". Now see, I am trying to interact with based on the session ID. Okay, now see this all information is over here. But along with this we can go ahead and give our configuration. The configuration will be given inside this invoke. And here I will go ahead and write "config=config". Now when we are giving the config, that basically means for this session ID we are interacting. Okay. So based on the session ID it will be able to remember all this context.
+
+So if I go ahead and execute this, okay. So here you can see "AIMessage(content='Hi Krish, it's great to meet you. Being a chief engineer is an exciting role.')". All this information is basically coming. Okay. Now if you want to get this particular content, I will also save this in my response variable. Okay. And let me just go ahead and write "response.content". Okay. I can also go ahead and write like this. So this is what is the message that I will be getting. Now let me do one thing, okay. Let me take another response or let me go ahead and again use this with message history. And this time I'm sending a message of human message like "What's my name?" And I'll write "config=config". Now in this case if I see the output here you'll it will say that "Hey, your name is Krish". Okay. White is able to remember it because I have given the same session ID.
+
+So let's say that now if I change the config, will it be able to remember this particular context? Okay. Now here I'm just going to change the config. When I say change the config I'm changing the session ID, right. So I'm changing the session id. Okay. Now if I give the session ID some different session ID. So for giving the session ID I will again use this config over here. The first session id was "chat1". Now this will be my config one. Okay, let me just go ahead and give it. So this will basically be my config one. Okay. Now with respect to this particular config I will again go ahead and use my response and I'll say "RunnableWithMessageHistory.invoke(HumanMessage(content='What's my name?'), config=config1)". Now do you think it will be able to remember or not? Just try to guess, take a guess and make sure that you write down in the comment section the Q&A section that we have.
+
+Okay, so here you'll be able to see that if I go ahead and execute "response.content", the reason it is able to remember because I have given the same session ID. Now let me change this particular session ID, I'll say "chat2". Okay. Now if I go ahead and execute it "RunnableWithMessageHistory.invoke(HumanMessage(content='What's my name?'), config={'session_id':'chat2'})", "Hey, as an AI, I have no memory of past conversation and don't know your name." Now what exactly I've actually done over here, I've just changed the session ID. Now, whatever conversation I have right now, it will entirely be saved in the session ID "chat2". Okay, so that in the later stages, whenever we use this with message history, it will just give the session ID of "chat2" and it will retrieve the information.
+
+Now let me do one thing. Let me quickly go ahead and copy this entire thing. Okay. Let me go ahead and write and say "Hey, my name is John". Okay. Hey, my name is John. Okay. And now I will go ahead and execute with this config. Okay. So if I go ahead and say "Hey John, it's nice to meet you." Now if I go ahead and execute the same code with this particular config, okay. Now you'll be able to see that it will understand "Your name is John, I remember. Is there anything else I can help you with?" Okay, so with the help of this session ID, you'll be able to see how easily we are able to switch with respect to the context of conversation that we are having.
+
+Okay. So I hope you got an idea. I hope you got an idea with respect to this particular message history, why we are specifically using it, but just an easy way to understand if just highlight it over that particular class, let's say over here, "BaseChatMessageHistory" is there. This is nothing, but this is an abstract base class for storing chat message history and chat. "ChatMessageHistory" is basically present over here. This is an in-memory implementation of chat message history. As soon as I give my session ID whenever I call this. So what is "with_message_history"? It is a runnable. It is a chain between model and "get_session_history". Whenever I am going to interact with the model, it is first of all going to, uh, give "get_session_history". That basically means based on the session ID, it is going to pick up your entire chat session. Okay. And based on that it is going to remember the context.
+
+So this was just an idea with respect to implementing, uh, how you can basically work with chat history whenever you're developing a chat bot. Now we will try to implement all this chat history, uh, in our prompt template. And that is what we are going to see in the next video. So here I hope you are able to understand this. This was it from my side. I'll see you all in the next video where I will be discussing about Prompt template. So thank you. I'll see you all in the next video.
+
+**B) Working With Prompt Termplate And Message Chat History Using Langchain**
+
+So we are going to continue the discussion with respect to creating this chat bot.
+
+So already we have seen about the message history and how we can remember the context.
+
+Now let's go ahead and use prompt templates. Prompt templates help to turn raw user information into a format that LLM can work with in case the raw user input is just a message, which we are passing to the LM.
+
+Let's now make that a bit more complicated. First, let's add in the system message and some custom instructions. Till now we were just passing a list of messages, right? Now let's go ahead and work with this particular prompt template.
+
+For working with prompt templates, I will write "from langchain.core.prompts import ChatPromptTemplate" to import the chat prompt template class.
+
+Along with this, I will also use a message placeholder. Previously, we used to give the messages directly, like human message and AI message in a list. But here, we will just go ahead and use a message placeholder.
+
+Now let's quickly go ahead and create my prompt. I will write:
+
+"chat_prompt_template = ChatPromptTemplate.from_messages([{'role': 'system', 'content': 'Hey, you are a helpful assistant. Answer all questions to the best of your ability.'}, {'role': 'input', 'variable_name': 'messages'}])"
+
+Here, we are providing system information first. The system role instructs the model to be a helpful assistant and answer questions to the best of its ability. The input placeholder is called "messages", which will be used to pass human messages dynamically.
+
+Once we have the prompt template, we can create our chain:
+
+"chain = chat_prompt_template"
+
+Whenever we invoke this chain, whatever human message we give needs to be provided as a key-value pair where the key is "messages". Previously, we didn’t use a message placeholder, and messages were passed as a list. Here, we are using a message placeholder, so any human input will go into the "messages" variable.
+
+To invoke the chain, we can write:
+
+"response = chain.invoke({'messages': {'content': 'Hi, my name is Krish'}})"
+
+This will pass the human message through the chain. The chain will then process it, taking the system instructions into account, and return a response.
+
+Now, if we want to add multiple input variables, we can extend this. For example, we can have a language variable:
+
+"chat_prompt_template = ChatPromptTemplate.from_messages([{'role': 'system', 'content': 'You are a helpful assistant. Answer all questions in the language provided.'}, {'role': 'input', 'variable_name': 'messages'}, {'role': 'input', 'variable_name': 'language'}])"
+
+Then, when invoking the chain, we pass both keys:
+
+"response = chain.invoke({'messages': {'content': 'Hi, my name is Krish'}, 'language': 'Hindi'})"
+
+This will allow the assistant to respond in Hindi.
+
+Next, to manage chat history, we can wrap this chain in a message history class. We need to specify the input key used to save chat history. For example:
+
+"with_message_history = RunnableWithMessageHistory(chain=chain, get_session_history=get_session_history, input_key='messages')"
+
+Then, invoking this with both keys looks like:
+
+"response = with_message_history.invoke({'messages': [{'content': 'Hi, I am Krish'}], 'language': 'Hindi'})"
+
+Finally, we can display the response:
+
+"print(response.content)"
+
+This way, the model will understand the human message, the language, and the chat history context.
+
+Managing conversation history is very important because the history can become long, and LLMs have context window limitations. In the next video, we will see how to manage the conversation history efficiently.
+
+This was it for my side. I will see you all in the next video. Thank you. Take care.
+
+**C) Managing the Chat Conversation History Using Langchain**
+
+So we are going to continue the discussion with respect to creating the chatbot. Already in our previous video, we discussed prompt templates and conversation history. Now, we are going to focus on understanding how to manage conversation history.
+
+One important concept when building a chatbot is that if conversation history is left unmanaged, the list of messages will grow unbounded and potentially overflow the context window of the LM. Therefore, it is important to add a step that limits the number of messages you pass.
+
+To do this, we can import the following:
+
+"from langchain.core.messages import SystemMessage, TrimMessages"
+
+Here, "SystemMessage" helps define system instructions, while "TrimMessages" is a helper to reduce the number of messages being sent to the model. The trimmer allows specifying how many tokens to keep, whether to always retain system messages, and whether to allow partial messages.
+
+For example, we can initialize the trimmer like this:
+
+"trimmer = TrimMessages(max_tokens=70, strategy='last', token_counter=my_model_token_counter, include_system=True, partial=False)"
+
+Here, "max_tokens" limits the number of tokens, "strategy='last'" ensures the last messages are prioritized, "token_counter" is a function or model for counting tokens, "include_system=True" retains system instructions, and "partial=False" ensures only complete messages are included.
+
+Next, let's define a set of messages:
+
+"messages = [
+SystemMessage(content='You are a good assistant.'),
+{'role': 'human', 'content': 'Hi, I am Bob.'},
+{'role': 'ai', 'content': 'Hi!'},
+{'role': 'human', 'content': 'I like vanilla ice cream.'},
+{'role': 'ai', 'content': 'Nice!'},
+{'role': 'human', 'content': 'What is 2 plus 2?'},
+{'role': 'ai', 'content': 'Four.'},
+{'role': 'human', 'content': 'Thanks.'}
+]"
+
+Now, if we apply the trimmer:
+
+"trimmed_messages = trimmer.invoke(messages)"
+
+By setting "max_tokens=45", older messages like "Hi, I am Bob" may be trimmed off, keeping only the most recent conversation within the token limit. This helps the LM model focus on relevant context while respecting its context window.
+
+We can also integrate this trimmer in a chain. First, import the required libraries:
+
+"from operator import itemgetter"
+"from langchain.core.runnables import RunnablePassthrough"
+
+We can then create a chain with the trimmer applied to the messages:
+
+"chain = RunnablePassthrough().assign(messages=itemgetter('messages')).map(trimmer).concat(prompt).run(model)"
+
+To invoke this chain with new human input, we pass messages as a key-value pair and other variables like language:
+
+"response = chain.invoke({
+'messages': [{'role': 'human', 'content': 'What ice cream do I like?'}],
+'language': 'English'
+})"
+
+"print(response.content)"
+
+You may notice that older context like "I like vanilla ice cream" can be trimmed due to the token limit, which is why the model may respond without knowing your favorite ice cream. However, simpler questions like "What is 2 plus 2?" will still be answered if the context is within the retained tokens.
+
+Finally, we can wrap this entire setup in a message history class:
+
+"with_message_history = RunnableWithMessageHistory(chain=chain, get_session_history=get_session_history, input_key='messages', session_id='chat5')"
+
+Now, when invoking this, the model keeps track of conversation history in a managed way. For example:
+
+"response = with_message_history.invoke({
+'messages': [{'role': 'human', 'content': 'What is my name?'}],
+'language': 'English'
+})"
+
+"print(response.content)"
+
+This setup ensures conversation history is managed, the trimmer limits context size, and messages are passed in key-value pairs to the LM.
+
+Overall, we covered managing messages, applying trimmers, integrating with chains, and using message history classes. These are critical components when building a functional chatbot that can handle long-term interactions efficiently.
+
+This was it from my side. I hope you liked this video. See you in the next video. Thank you.
+
+**D) Working With VectorStore And Retriever**
+
+So we are going to continue the discussion with respect to Lang Chain.
+
+Already, we had, in our previous module, discussed about building chatbots with chat message history.
+
+Now in this video, we are going to discuss about vector stores and retrievers.
+
+In this video tutorial, we will familiarize you with the LangChain vector store and retriever abstraction. These abstractions are designed to support retrieval of data from vector databases and other sources for integration with LLM workflows. They are important for applications that fetch data to be reasoned over as part of model inference.
+
+If you remember, previously we have discussed vector stores and retrieval, but here we really want to add more features and even play with chat message history.
+
+First of all, we will quickly go ahead and install the important libraries like pip install langchain, along with pip install langchain[chroma]. I hope we have done all this installation beforehand in our same virtual environment.
+
+Along with this, you should also have done the installation of pip install langchain/grok. Make sure you write all these in your requirements.txt.
+
+Now, the next thing that we are going to do is take an example given in the LangChain documentation page of how to create a document. You need to understand what exactly this document is.
+
+Let's define some information about the document:
+
+# Page content and metadata
+from langchain.docstore.document import Document
+
+documents = [
+    Document(page_content="This is the content of document 1", metadata={"source": "doc1"}),
+    Document(page_content="This is the content of document 2", metadata={"source": "doc2"}),
+    Document(page_content="This is the content of document 3", metadata={"source": "doc3"})
+]
+
+
+LangChain implements a document abstraction which represents a unit of text and associated metadata. It has two attributes: page_content, a string representing the content, and metadata, a dictionary containing arbitrary metadata. The metadata can capture information about the source of the document, its relationship to other documents, and other details.
+
+An individual document object often represents a chunk of a larger document. For example, a PDF with eight pages can be represented as eight documents, one per page.
+
+Now let's go ahead and work with Vector Store.
+
+The main purpose of a Vector Store is to convert text into embeddings, or word vectors, and store these vectors in a database. In this example, we will use Chroma:
+
+from langchain.vectorstores import Chroma
+
+
+We will use open-source libraries and models for embeddings. Make sure your Hugging Face token is set in your environment:
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+hf_token = os.getenv("HDF_TOKEN")
+os.environ["HDF_TOKEN"] = hf_token
+
+
+Now, let's import the LM model from Grok and initialize it:
+
+from langchain.grok import Grok
+
+lm_model = Grok(
+    api_key=os.getenv("GROK_API_KEY"),
+    model="llama-3-8b-8192"
+)
+
+
+To use Chroma, we need embeddings. We can use Hugging Face embeddings:
+
+from langchain.embeddings import HuggingFaceEmbeddings
+
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
+
+Now we can convert documents into vectors and store them in Chroma:
+
+vector_store = Chroma.from_documents(documents, embedding=embeddings)
+
+
+This converts each document into a vector using the embedding model and stores it in Chroma DB. We can now perform similarity searches:
+
+results = vector_store.similarity_search("Cat")
+
+
+You can also get similarity scores:
+
+results_with_scores = vector_store.similarity_search_with_score("Cat")
+
+
+Now let's discuss retrievers.
+
+Vector stores cannot be directly integrated into LangChain chains using LCL because they are not subclasses of Runnable. However, retrievers are Runnable and can be incorporated into LCL chains.
+
+You can create a simple retriever using RunnableLambda:
+
+from langchain.core.runnables import RunnableLambda
+
+retriever = RunnableLambda(vector_store.similarity_search).bind(k=1)
+retriever.batch(["cat", "dog"])
+
+
+This executes a similarity search for each input in the batch.
+
+Another method is to use the vector store's built-in retriever:
+
+retriever = vector_store.as_retriever(search_type="similarity", search_kwargs={"k": 1})
+retriever.batch(["cat", "dog"])
+
+
+This converts the vector store into a retriever interface that can be queried easily.
+
+Finally, we can integrate the retriever with a chain:
+
+from langchain.prompts import ChatPromptTemplate
+from langchain.core.runnables import RunnablePassthrough
+
+prompt = ChatPromptTemplate.from_messages([
+    ("human", "{question}")
+])
+
+rag_chain = SomeRAGChain(
+    question=RunnablePassthrough(),
+    context=retriever,
+    prompt=prompt,
+    llm=lm_model
+)
+
+response = rag_chain.invoke({"question": "Tell me about dogs"})
+print(response.content)
+
+
+This is a basic RAG (Retrieval-Augmented Generation) implementation:
+
+chat_prompt_template defines the prompt.
+
+runnable_pass_through passes the question input.
+
+retriever supplies the context from the vector store.
+
+The LLM generates a response based on this context.
+
+With this setup, you can retrieve relevant information from your documents and use it to answer questions in a chatbot workflow.
+
+This covers the basics of vector stores, retrievers, and RAG integration with LangChain.
