@@ -56,6 +56,24 @@
 
 **A) Building Conversational Q&A Chatbot With Message History**
 
+**IX)  End To End Q&A Chatbot GEN AI App With**
+
+**A) Introduction To The Q&A Chatbot**
+
+**B) Creating Virtual Environment**
+
+**C) Creating Prompt Template And Integrating Open AI API**
+
+**D) Creating Streamlit Web App and Integrating Response With OpenAI API**
+
+**E) Q&A Chatbot With Ollama And Open Source Models**
+
+**X) RAG Document Q&A With GROQ API And LLama3**
+
+**A) Introduction To Groq Cloud And LPU Inference Engine**
+
+**B) RAG Document Q&A With GROQ API And LLama3**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -1407,3 +1425,591 @@ So first of all, what I will do, I will go ahead and import "from langchain.core
 Now along with this, what I will do, since this is a list, right? I'm going to go ahead and append this with every conversation that I have. So here I'm going to write "chat_history.extend([HumanMessage(content=question), AIMessage(content=response_1['answer'])])". Okay. So once it gets appended or extended, expanded basically means it will just get added at the last. Okay. Now similarly, once I execute this, I will go ahead and write my second question. The question two will be that "question_2 = 'Tell me more about it.'" Okay, I'll just go ahead and write it. So this will be my second question that I am going to go ahead and write. Now I will go ahead and write "response_2 = RAG_chain.invoke(input=question_2, chat_history=chat_history)". And here the same thing I'm going to pass right, with respect to this history, I'll get my "response_2". So this will basically be my "response_2". And now I will go ahead and print "response_2['answer']". Okay. Now I think it should be able to understand the context and it should be able to give the answer. Let's see. So self-reflection mechanism: self-reflection is a mechanism that allows autonomous agents to improve iteratively by refining past action decisions and correcting previous mistakes. He initially asked "What is self reflection?" Then I told "Tell me more about it" and this is what we are basically printing.
 
 Okay, if I go ahead and see with respect to the chat history, you'll also be able to see that first one is this particular message that we got, right? Errors are inevitable. Okay. And second time, when I asked "Tell me more about it", it was able to understand the context and it was able to give us the answer. So, I hope you're able to understand this amazing thing. Okay. Now there are some more things that you can actually do with whenever you are working with LLMs, right? That is adding chat history with respect to session IDs and all that we have already discussed. So let me quickly copy and paste some of the code over here so that you will be able to understand. So if I go ahead and write this, if you remember, this base chat history in our runnable with message history and chat history, right? We used it. So here you can create this particular session. And based on the session ID you will be able to retrieve all the chat history. The output key will be the answer. The input key is nothing but input, right? So here if I go ahead and execute this, here is nothing but it is your entire conversational chain. In short, right. Now I can go ahead and invoke anything based on my session ID. So here I will go ahead and write "conversation_RAG_chain.invoke(input=question, config=config)". This config is going to make sure that it will store all the information with respect to the session ID, and then we can also get the answer, right? So here you can see our task decomposition is the same thing. And here you can probably see the same answer. Okay. Now similarly if I go ahead and use the same session, like I'll go ahead and ask "What are the common ways of doing it?" So I'm actually talking about task decomposition. The reason is why I have actually used the same session ID. You can go ahead and see the answer. Now it will be able to understand that yes, we are fine talking about task decomposition. So here you can say that according to context, most common ways of doing task decomposition includes NN1, something, newline characters, using a large language model. Everything is basically displayed. Let me see one more thing. Did I print? Okay, yes, I printed the right response. So yes, this was all about the conversational Q&A chatbot with memory, right? With chat history. And I hope you are able to understand this particular question. This is how we basically create a history-aware retriever. And you can actually use all these things. Right. So yeah, this was it for my side. I hope you like this particular video and yeah, I will see you all in the next video. Have a great day. Thank you all. Take care. Bye bye.
+
+# **IX)  End To End Q&A Chatbot GEN AI App With**
+
+# **A) Introduction To The Q&A Chatbot**
+
+So finally, I’m excited to implement the first end-to-end Gen AI application, which is nothing but a Q&A chatbot.
+
+I’ll start by giving you a brief architecture of what all things we are specifically going to do in this particular project. Then, from the next video, we’ll begin implementing it step by step.
+
+In this project, some of the tools, APIs, and LLM models that we are going to use include OpenAI’s LLM models. Among them, we will try models like GPT-4, which is multimodal, and GPT-4 Turbo. The entire chatbot will be created as a Streamlit web app, so that you’ll have multiple options to select the model and continue with the interaction.
+
+Apart from OpenAI models, we will also make use of open-source models like LLaMA and Mistral. For example, LLaMA 3 or LLaMA 2 models can be integrated. This way, our chatbot will not just be limited to OpenAI, but will also be able to handle open-source alternatives.
+
+Now, let’s talk about the architecture. First, we are going to create the Streamlit web app. This app will act as the front end for user interaction. Inside the app, we’ll provide options where the user can input queries and select which model to use. The app will then call the OpenAI API (or other model APIs) in the background.
+
+So the flow is simple:
+
+The user enters a query into the Streamlit web app.
+
+The app interacts with the chosen LLM model, such as GPT-4, GPT-4 Turbo, or LLaMA.
+
+The model generates a response.
+
+The response is displayed back to the user in the web app.
+
+But we’re not stopping there. Along with this interaction, we will also log everything into the LangSmith platform. LangSmith will help us with monitoring, debugging, and cost tracking. This means every query, response, and metadata like tokens used will be visible for analysis.
+
+So the flow becomes: user query → Streamlit app → LLM (via OpenAI API or open-source API) → response → LangSmith logs.
+
+Now, let me outline the steps we are going to follow:
+
+Create the project structure and initialize it properly.
+
+Set up environment variables (like API keys). For example, we’ll use a .env file and load it into the app:
+
+"from dotenv import load_dotenv
+load_dotenv()"
+
+Add a requirements file (requirements.txt) where we’ll list libraries like streamlit, openai, langchain, and others.
+
+Build the Streamlit web app with an interface that allows selecting models, setting temperature, and adjusting max tokens.
+
+Integrate OpenAI API and LangChain for LLM interaction:
+
+"import openai
+response = openai.ChatCompletion.create(
+model='gpt-4-turbo',
+messages=[{'role': 'user', 'content': 'Hello! Explain Generative AI'}]
+)"
+
+Connect LangSmith tracing so that all conversations and costs are logged for monitoring.
+
+Finally, we’ll also focus on deployment of this Streamlit app. That way, anyone can use it directly from a browser without worrying about setup.
+
+To give you a clearer idea, imagine the UI. On the left-hand side, you’ll have an option to input your OpenAI API key. Below that, you’ll have a dropdown to select models like GPT-4 Turbo, GPT-4, or others. You’ll also have sliders to set temperature and maximum tokens.
+
+In the main chat area, you can ask questions like:
+
+"Hi!"
+"Please explain what is Generative AI."
+
+And as soon as you press enter, the chatbot will display the model’s response.
+
+At the same time, LangSmith tracing will capture details like latency, cost, and response quality for debugging and monitoring.
+
+So this is the end-to-end project plan: from project setup, environment variables, Streamlit app, OpenAI API integration, LangSmith logging, to deployment. Once this is complete, we’ll gradually move on to more advanced projects like RAG applications and RAG with SQL.
+
+That’s the overview. Let’s go ahead and start implementing this step by step in the next session. Thank you.
+
+# **B) Creating Virtual Environment**
+
+I am excited to implement the first end-to-end Gen AI application, which is a Q&A chatbot. I will give you a brief architecture of what we are going to do in this project, and then from the next video we will start implementing it.
+
+Some of the tools, APIs, and LLM models that we are going to use include OpenAI LLM models. We will use models such as GPT-4, which is a multimodal model, and GPT-4 Turbo. We will create this entirely in a Streamlit web app so that you will have multiple options to select the model and continue.
+
+The second model we will probably use is LLaMA. With LLaMA, we are going to leverage open-source models available such as LLaMA 2 and LLaMA 3. Along with that, we will also use other open-source models like Mistral. All these open-source models will also be integrated to create this Q&A chatbot.
+
+In our project, we will first create the Streamlit web app. This web app will interact with the OpenAI API. With the help of this API, we will interact with various LLM models such as GPT-4, GPT-4 Turbo, and others. Once we interact with these models, we will receive responses for the queries.
+
+We will not stop there. After integrating with the LLM models, we will take one step further and log all interactions in the LangSmith platform. LangSmith will be used for monitoring, debugging, and tracking costs. It will allow us to see details of all the queries, responses, and resource usage.
+
+Here is the flow: the user provides a query, the Streamlit app sends it to the OpenAI API (or open-source models like LLaMA or Mistral), and then we get the response back. All the interactions will also be logged and monitored in LangSmith.
+
+This looks like a simple project, but as we go ahead, we will build more complex projects on top of it, such as RAG applications and RAG with SQL. Many more projects will follow. Right now, we will start with this basic project.
+
+The steps we will cover include:
+
+Creating the project setup.
+
+Setting up environment variables.
+
+Defining requirements in requirements.txt.
+
+Creating the Streamlit web app.
+
+Calling the OpenAI API and integrating LangChain.
+
+Deployment of the project.
+
+These steps reflect how such projects are done in the industry, and I will cover all of them in this project.
+
+To give you an idea of the final outcome: on the left-hand side of the app, you can input your OpenAI API key, select different models such as GPT-4 Turbo or GPT-4, set the temperature value, and define the maximum tokens for the output.
+
+For example, if I ask a question like “What is Generative AI?”, I will be able to get the response displayed in the interface. Alongside, we will also have LangSmith tracing enabled to monitor and debug the process. We will deep dive into these tracings later.
+
+This is the complete overview of what we are going to develop. Let’s go ahead and implement this end-to-end. Thank you.
+
+# **C) Creating Prompt Template And Integrating Open AI API**
+
+So guys the requirement.txt has now been installed.
+
+In this video we are going to develop our Streamlit web app and then we will develop our entire application. Let me quickly close all these things and start.
+
+The first step is to import some of the libraries.
+import streamlit as st
+Here you can also see my conda environment is there.
+import openai
+From langchain_openai import ChatOpenAI. Since we are working with OpenAI in the first project, in the upcoming project we will discuss with Ollama.
+
+If you want to work with OpenAI along with LangChain integration, you should start working in LangChain. Do not work independently with different libraries, because LangChain is a framework created in such a way that it can interact with OpenAI APIs, it can interact with open-source LLM models, and it can interact with HuggingFace. All these will be included.
+
+So I am going to quickly import ChatOpenAI. Along with this I will also write:
+from langchain_core.output_parsers import StrOutputParser
+Then:
+from langchain_core.prompts import ChatPromptTemplate
+
+All these libraries will be the basic requirements.
+
+Next, import:
+import os
+from dotenv import load_dotenv
+
+This is to load all the environment variables. We will initialize this using load_dotenv().
+
+Just to check everything is working fine, inside this project folder I will run:
+streamlit run app.py
+
+This works absolutely fine. Nothing is displayed yet, but till here everything looks good. Then press Ctrl + C to stop.
+
+The next step is to implement LangSmith tracking.
+
+Inside this tracking setup, I will write:
+
+os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+
+
+For LangSmith tracking we need to set this value. Another value we need to set is LANGCHAIN_TRACING = "true". Finally, we set the project name:
+
+os.environ["LANGCHAIN_PROJECT"] = "Q&A chatbot with OpenAI"
+
+
+Till here, everything looks good.
+
+Now, since we are using Streamlit, we will first define our prompt template. Define it as:
+
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "You are a helpful assistant. Please respond to the user queries."),
+    ("user", "{question}")
+])
+
+
+The system prompt means the information given to the LLM about how it should behave. The user prompt is the placeholder for the question. This is a simple Q&A chatbot — the user gives a question, and the system gives the answer.
+
+Next, create a function called generate_response.
+
+Inside this function, whatever user query comes in, it will interact with the OpenAI model and return the response.
+
+The parameters will be:
+
+question: the user’s query.
+
+api_key: the API key passed during runtime for validation (not kept in environment variable).
+
+engine: the LLM model to interact with.
+
+temperature: controls creativity.
+
+max_tokens: maximum number of tokens.
+
+About temperature:
+
+Value between 0 and 1.
+
+0 means less creative, same output for the same question each time.
+
+1 means more creative, varied answers each time.
+
+Inside the function, first set the API key:
+
+openai.api_key = api_key
+
+
+Then use the LLM model:
+
+llm = ChatOpenAI(model=engine, temperature=temperature, max_tokens=max_tokens)
+
+
+Next, create the chain. The chain combines the prompt template, the LLM, and the output parser. Define:
+
+output_parser = StrOutputParser()
+chain = prompt | llm | output_parser
+
+
+Now invoke the chain:
+
+answer = chain.invoke({"question": question})
+
+
+Finally, return the answer.
+
+This function is what interacts with the OpenAI LLM models.
+
+In the next video we will create the full Streamlit app and call this function.
+
+That’s it for now. Thank you.
+
+# **D) Creating Streamlit Web App and Integrating Response With OpenAI API**
+
+We are going to continue our discussion with respect to this end-to-end project. In the previous video we created the function called generate_response.
+
+Now we are going to create the entire web app using Streamlit.
+
+First, we will give the app a title. Using Streamlit’s title function:
+Q and A Chatbot with OpenAI.
+
+As mentioned earlier, I need to pass my OpenAI API key during runtime. For that, we will use a sidebar in Streamlit. In the sidebar, you can enter your OpenAI API key.
+
+st.sidebar.title("Settings")
+api_key = st.sidebar.text_input("Enter your OpenAI API Key", type="password")
+
+
+This means no one will see the password directly.
+
+Next, create a dropdown to select various OpenAI models. This will also be inside the sidebar.
+
+llm = st.sidebar.selectbox(
+    "Select an OpenAI model",
+    ["gpt-4", "gpt-4-turbo", "gpt-3.5"]
+)
+
+
+These are the three models we’ll keep in the dropdown.
+
+There are also two parameters to pass in generate_response: temperature and max tokens. We can set these values with sliders in the sidebar.
+
+temperature = st.sidebar.slider("Temperature", 0.0, 1.0, 0.7)
+max_tokens = st.sidebar.slider("Max Tokens", 50, 300, 150)
+
+
+Now define the main interface for user input.
+
+st.write("Ask any question:")
+user_input = st.text_input("Enter your question")
+
+
+If the user provides input, we generate a response:
+
+if user_input:
+    response = generate_response(user_input, api_key, llm, temperature, max_tokens)
+    st.write(response)
+else:
+    st.write("Please provide a query.")
+
+
+This ensures the response will be displayed on the page when a query is entered. If no input is given, it prompts the user to provide a query.
+
+Let’s quickly revise.
+
+First, we set up LangSmith tracking.
+
+Then we developed the chat prompt template.
+
+We created the generate_response function.
+
+We added user input fields, API key entry, model selection, sliders for temperature and tokens.
+
+Finally, we displayed the response.
+
+Now let’s run the entire application. Clear the terminal and run:
+
+streamlit run main.py
+
+
+This starts the app. Enter your OpenAI API key, set some values, and ask a question.
+
+For example: What is machine learning?
+Press enter, and the response is displayed. It may take some time depending on the API.
+
+You can also see if it is getting tracked in LangSmith. Open LangSmith, sign in, and check the project.
+
+Here you can see:
+
+Chat prompt template
+
+ChatOpenAI
+
+String output parser
+
+The query: “What is machine learning?”
+
+The runnable sequence with the output
+
+The chain shows: first the chat prompt template, then ChatOpenAI interaction, and finally the string output parser with the full response.
+
+Everything looks fine and is working.
+
+In the next video, we will modify this application to work with the Llama models.
+
+Thank you.
+
+# **E) Q&A Chatbot With Ollama And Open Source Models**
+
+We are going to continue the discussion with respect to our LangChain series.
+
+In this video, we are going to create an end-to-end Q&A chatbot using open source models. Specifically, we will be using Llama.
+
+In the previous video, we created this end-to-end chatbot with the help of OpenAI. The best thing was that we made it loosely coupled so we could use any kind of models we want.
+
+Similarly, we are now going to do it with Llama. In the case of Llama, you require a different set of libraries. Instead of using ChatOpenAI, you will use another library called Llama.
+
+First, create app.py. Import from langchain_core.prompts the ChatPromptTemplate. Then from langchain_core.outputs, import StringOutputParser.
+
+Since we want to use Llama, we import from langchain_community.llms the Ollama class. We also import Streamlit as st and import os.
+
+Next, open main.py for the initial setup. Previously, we wrote “with OpenAI,” but now we will write “with Ollama.” These are the initial things required.
+
+Now create the prompt template. Using ChatPromptTemplate.from_messages, define the messages: one system message and one user message. For example, system: “You are a helpful assistant. Please respond to the user queries.” Then the user message is the actual question.
+
+We also define the generate_response function. Unlike OpenAI, here we don’t require any API key because this is open source. Instead of ChatOpenAI, define your Llama model.
+
+To check available models, open the command prompt and run:
+
+ollama run llama2
+
+
+This installs and runs the model. Similarly, try ollama run gemma:2 or other models. If not available, it downloads them.
+
+On the Ollama website, you can see models like Gemma 2, Llama 3, Phi-3, Mistral, Solar, and others. These are open source models. For example, run:
+
+ollama run phi3
+
+
+It will download and install Phi-3. Any model you want to use must be installed locally first.
+
+Once installed, you can run:
+
+ollama run mistral
+
+
+Test it by typing “hi” and see the response.
+
+So we will use one of the models, for example mistral. Note that previous versions may be removed (e.g., Llama 2 replaced by Llama 3).
+
+In the code, set:
+
+model = "mistral"
+
+
+or whichever model you want, like "llama3".
+
+Now create the chain: prompt → Llama model → output parser. Invoke it with the input text.
+
+Remember, with Llama we are only using open source models. We also don’t need API keys.
+
+Unlike OpenAI, parameters like temperature and max tokens may not always apply. You can keep them in the code, but some open source models may ignore them.
+
+Simplify the app by removing extra conditions. The workflow is the same as with OpenAI:
+
+User input → pass to model → generate response → display in Streamlit.
+
+Now run the app:
+
+streamlit run app.py
+
+
+Select the model (for example, mistral), enter input, and see the response. For example:
+
+Input: “Hi” → Output: “How can I assist you today?”
+
+Input: “Please talk about generative AI” → Output: full response from the model.
+
+The response is fast.
+
+Check LangSmith to see the tracking. Sign in, and you will see the project logs. The run shows:
+
+Chat prompt template
+
+Llama model call
+
+Output parser
+
+Response with token usage and time taken
+
+Cost is zero since this is local and open source.
+
+So we designed the prompt template, used the open source Llama model, and displayed the response. Everything works as expected.
+
+Later, when more models like Gemma 2 or Llama 3 are downloaded, you can add them as options in the app so the user can select which model to use.
+
+This is how you create an end-to-end Q&A chatbot using Ollama with LangChain and Streamlit.
+
+# **X) RAG Document Q&A With GROQ API And LLama3**
+
+# **A) Introduction To Groq Cloud And LPU Inference Engine**
+
+We are going to continue with a new end-to-end project: a Gen AI project. We will specifically use the Grok AI inferencing engine.
+
+Grok is a platform that provides open source LLM models like Gamma, Llama 3, and Mistral. You can use these models to create an end-to-end generative AI application.
+
+First, understand why Grok. Grok is a fast AI inferencing engine that uses a Language Processing Unit (LPU). In the generative AI field, companies providing amazing inferencing speed in milliseconds will lead. The LPU is a hardware and software platform that delivers exceptional compute speed, quality, and energy efficiency for AI applications like large language models.
+
+LPUs are faster than GPUs because they overcome bottlenecks in compute density and memory bandwidth. You can read more about Grok on their website.
+
+In this video, we will create an API in Grok Cloud and use LM models to start our project. First, go to Grok Cloud and create an API key. There is also a playground where you can test Llama 3 models. For example, typing “hi” will return a response quickly.
+
+To create an API key, click “Create API Key,” give it a project name, and click submit. Copy the API key; it starts with GSK_. Paste this key into your project .env file. Use the environment variable:
+
+GROK_API_KEY
+
+
+We will use this key to access the LM models available as open source.
+
+Next, we need to install required libraries. In requirements.txt, include LangChain and the Grok library. For example, like we have langchain and huggingface-langchain, add langchain-grok. Then install everything:
+
+pip install -r requirements.txt
+
+
+Once installed, we are ready to start coding.
+
+Import the necessary libraries. We will use Streamlit for the web app:
+
+import streamlit as st
+from langchain_grok import ChatGrok
+from langchain.embeddings import OllamaEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains.combine_documents import CreateStuffDocumentChain
+from langchain.prompts import ChatPromptTemplate
+from langchain.chains import CreateRetrievalChain
+from langchain.vectorstores import VectorStore
+from langchain.document_loaders import PyPDFDirectoryLoader
+
+
+ChatGrok is used to interact with Grok models. For embeddings, you can use Ollama embeddings to avoid paid APIs. RecursiveCharacterTextSplitter is used to split documents for RAG applications. CreateStuffDocumentChain is critical for Q&A applications interacting with external data. ChatPromptTemplate is used to define the prompt structure. CreateRetrievalChain combines the retrieval and response generation.
+
+The vector store and PDF loader allow us to handle external documents. These are the basic imports required for a RAG document Q&A application.
+
+Next, we will load the environment variable for the Grok API key and start building the end-to-end application.
+
+In the next video, we will continue with:
+
+Loading documents
+
+Creating embeddings
+
+Building the RAG chain
+
+Using Grok API to answer queries
+
+This concludes the setup and library imports for now.
+
+Thank you.
+
+# **B) RAG Document Q&A With GROQ API And LLama3**
+
+We continue with the Gen AI project.
+
+We have a folder named research_paper containing two PDFs: Attention is All You Need and Overview of Large Language Models. This folder will serve as an external data source for a document Q&A application. We will ask questions and retrieve answers from these research papers.
+
+We will use ChatGrok for interacting with LM models. Instead of using OpenAI, we will use open-source models, so anyone can execute this project.
+
+First, load environment variables:
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+GROK_API_KEY = os.getenv("GROK_API_KEY")
+
+
+This loads the Grok API key. Grok provides free API access for a limited number of hits. You can create an account and generate your key.
+
+Next, create the LM model with ChatGrok:
+
+from langchain_grok import ChatGrok
+
+llm = ChatGrok(
+    api_key=GROK_API_KEY,
+    model_name="Llama-3"  # or Gamma-7B-IT
+)
+
+
+Define the chat prompt template:
+
+from langchain.prompts import ChatPromptTemplate
+
+prompt_template = ChatPromptTemplate.from_template("""
+Hey, answer the questions based on the provided context only.
+Please provide the most accurate response.
+Context: {context}
+Question: {question}
+""")
+
+
+The context placeholder will be filled with document content during retrieval.
+
+Next, create vector embeddings for the research papers. This involves reading PDFs, splitting the text, and storing embeddings in a vector store. We also use Streamlit session state to maintain memory across the app:
+
+from langchain.embeddings import OllamaEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import VectorStore
+from langchain.document_loaders import PyPDFDirectoryLoader
+import streamlit as st
+
+def create_vector_embedding():
+    if "vectors" not in st.session_state:
+        st.session_state["embeddings"] = OllamaEmbeddings()
+        st.session_state["loader"] = PyPDFDirectoryLoader("research_paper")
+        st.session_state["documents"] = st.session_state["loader"].load()
+        st.session_state["text_splitter"] = RecursiveCharacterTextSplitter(
+            chunk_size=1000,
+            chunk_overlap=200
+        )
+        st.session_state["final_documents"] = st.session_state["text_splitter"].split_documents(
+            st.session_state["documents"][:50]  # limit for speed
+        )
+        st.session_state["vectors"] = VectorStore.from_documents(
+            st.session_state["final_documents"],
+            st.session_state["embeddings"]
+        )
+
+st.button("Document Embedding", on_click=create_vector_embedding)
+
+
+This reads PDFs, splits text into chunks, converts them into vectors, and stores them in a vector database.
+
+Now, we can use the Grok API to query the vector database:
+
+from langchain.chains.combine_documents import CreateStuffDocumentChain
+from langchain.chains import CreateRetrievalChain
+import time
+
+user_prompt = st.text_input("Enter your query:")
+
+if user_prompt and "vectors" in st.session_state:
+    start_time = time.process_time()
+    document_chain = CreateStuffDocumentChain(
+        llm=llm,
+        prompt=prompt_template
+    )
+    retriever = st.session_state["vectors"].as_retriever()
+    retrieval_chain = CreateRetrievalChain(
+        retriever=retriever,
+        combine_docs_chain=document_chain
+    )
+    answer = retrieval_chain.invoke({"input": user_prompt})
+    response_time = time.process_time() - start_time
+    st.write(f"Response time: {response_time} seconds")
+    st.write("Answer:", answer)
+    with st.expander("Document similarity search"):
+        for i, doc in enumerate(st.session_state["final_documents"]):
+            st.write(doc.page_content)
+
+
+This implementation:
+
+Loads PDFs and splits them into chunks.
+
+Converts chunks to vector embeddings.
+
+Stores vectors in a vector database.
+
+Uses Grok API with an open-source LM to answer queries.
+
+Provides document similarity context along with answers.
+
+For faster execution, OpenAI embeddings can be used instead of local embeddings, as local processing may take a long time.
+
+Once executed, you can ask questions like:
+
+“What is Transformers?”
+
+“What is a Large Language Model?”
+
+“What is Attention Is All You Need?”
+
+The app retrieves answers from the research papers along with relevant context. You can adjust chunk size and overlap to control the detail level.
+
+This demonstrates a complete RAG-based document Q&A project using Grok AI and open-source LLM models.
