@@ -74,6 +74,78 @@
 
 **B) RAG Document Q&A With GROQ API And LLama3**
 
+**XI) Conversational Q&A Chatbot- Chat With Pdf Along With Chat History**
+
+**A) Demo of the Conversational Q&A Chatbot**
+
+**B) End To End Conversational Q&A Chatbot Implementation**
+
+**XII) Search Engine With Langchain Tools And Agents**
+
+**A) Introduction To Tools And Agents**
+
+**B) Creating Tools Using Langchain**
+
+**C) Executing Tools And LLM with Agent Executors**
+
+**D) End To End Search Engine GEN AI App using Tools And Agent With Open Source LLM**
+
+**XIII) Gen AI Project-Chat With SQL DB With Langchain SQL Toolkit and Agentype**
+
+**A) Demo of the Project**
+
+**B) Preparing the Data For SQlite3 Database**
+
+**C) Preparing The Data For My SQL Database**
+
+**D) Creating the Streamlit Web app and Configuring the Databases**
+
+**E) Integrating Web App With Langchain SQL Toolkit And Agenttype**
+
+**XIV) Text Summarization With Langchain**
+
+**A) Introduction To text summarization With Langchain**
+
+**B) Stuff Chain And Map Reduce Text Summarization Indepth Intuition**
+
+**C) Stuff And Map Reduce Summarization Impelmentation**
+
+**D) Refine Chain Summarization Intuition And Implementation**
+
+**XV) Gen AI Projects- Youtube Video And Website Url Content Summarization**
+
+**A) End To End Project Demo**
+
+**B) Implementing Youtube Video And Website Url Content Summarization GEN AI App**
+
+**XVI) Text To Math Problem Solver Using Google Gemma 2**
+
+**A) Demo of the End to End Project**
+
+**B) End To End Text to Math Problem Solver Using Google Gemma2 Model Implementation**
+
+**XVII) Huggingface And Langchain Integration**
+
+**A) Introduction To Huggingface And Langchain Integration**
+
+**B) Langchain And Huggingface Integration Practical Implementation**
+
+**C) End to End Gen AI Project With Langchain And Huggingface**
+
+**XVIII) Pdf Query RAG With Langchain And AstraDB**
+
+**A) End To End Project With PDf Query RAG With Langchain And AstraDB**
+
+**XIX) MultiLanguage Code Assistant Using CodeLama**
+
+**A) End To End MultiLanguage Code Assistant Implementation**
+
+**XX) Deployment Of Gen AI Apps In Streamlit and Huggingspace**
+
+**A) Deployment OF Gen AI APP In Streamlit Cloud**
+
+**B)  Deployment Of Gen AI App In Huggingface spaces**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -2013,3 +2085,1509 @@ Once executed, you can ask questions like:
 The app retrieves answers from the research papers along with relevant context. You can adjust chunk size and overlap to control the detail level.
 
 This demonstrates a complete RAG-based document Q&A project using Grok AI and open-source LLM models.
+
+# **XI) Conversational Q&A Chatbot- Chat With Pdf Along With Chat History**
+
+# **A) Demo of the Conversational Q&A Chatbot**
+
+In this video and the upcoming series, we will develop an end-to-end Gen AI project: a conversational Q&A chatbot that can chat with a PDF.
+
+We will also maintain conversation history, so the chatbot can refer back to previous interactions. This is a complete end-to-end project.
+
+First, a demo:
+
+After entering the Grok API key, a default session is created. In a real web application, you would track session IDs so each user has a unique session.
+
+Next, drag and drop a PDF file, for example attention.pdf. The text from this PDF will be converted into vectors and stored in a vector database.
+
+Now we can ask questions:
+
+Question: “Tell me about Transformers.”
+Response: The transformer generalizes well to English constituency parsing, achieving an F1 score of 91.3, trained on a semi-supervised set.
+
+Question: “Attention is All You Need.”
+Response: The attention mechanism is used in transformer architecture to weigh the importance of different input elements when computing the output.
+
+Question: “Which topic were we discussing about?”
+Response: Refers to the transformer model and its architecture from previous context.
+
+Question: “Provide a detailed summary of Attention Is All You Need.”
+Response: Limited due to the PDF being only two pages.
+
+Question: “Tell me more about transformer and its architecture.”
+Response: Detailed description of transformer neural network architecture, including the self-attention mechanism.
+
+Question: “What is self-attention mechanism?”
+Response: A self-attention mechanism is a key component of transformer architecture, used to process all information in the input sequence.
+
+All chat history is considered. For example, asking “What is the previous message?” retrieves the previous topic.
+
+The chatbot can summarize the conversation history:
+
+Question: “Provide me a detailed summary of the conversation we had.”
+
+Response: Based on chat history: initially asked about transformer model architecture, self-attention mechanism, and parallelization for processing sequences. It summarizes the conversation accurately, including follow-up questions.
+
+This demonstrates:
+
+Maintaining conversation history using session IDs.
+
+Conversing with PDFs.
+
+Providing detailed answers using context from the vector database.
+
+Generating summaries of the chat history.
+
+In the next video, we will implement the full end-to-end solution. This builds upon the conversational bot concepts discussed in previous modules.
+
+**B) End To End Conversational Q&A Chatbot Implementation**
+
+We are continuing with our end-to-end Gen AI project, which is a conversational Q&A system with PDFs, including chat history. We will implement this step by step. First, we start by importing all necessary libraries. We have already discussed chat history in the previous module, which was about conversational Q&A chatbots.
+
+We begin by importing Streamlit as "import streamlit as st". We will also import some important libraries for creating history-aware retrievers and retriever chains: "from langchain.chains import create_history_aware_retriever, create_stuff_document_chain". The "create_history_aware_retriever" is used to create a retriever with chat history functionalities, and "create_stuff_document_chain" is used to combine documents and send them as context.
+
+We also import our vector store database using Chroma: "from langchain.vectorstores import Chroma". The chat message history module is imported as "from langchain_community.chat_message_history import BaseChatMessageHistory". All these libraries are included in "requirements.txt".
+
+We import the chat prompt template and message placeholder using: "from langchain.prompts.chat import ChatPromptTemplate, MessagesPlaceholder". The message placeholder helps define the session key where all conversation history is stored.
+
+For the language model, we use ChatGrok: "from chatgrok import ChatGrok". We also import HuggingFace embeddings: "from langchain.embeddings import HuggingFaceEmbeddings". We load environment variables with "import os" and "from dotenv import load_dotenv; load_dotenv()". The HuggingFace token is loaded from the environment: "hf_token = os.getenv('HF_TOKEN')".
+
+We initialize our embeddings using HuggingFace: "embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')". To load PDFs, we use the recursive character text splitter and PyPDF loader: "from langchain.text_splitter import RecursiveCharacterTextSplitter; from langchain.document_loaders import PyPDFLoader". For managing chat history in the conversational bot, we import: "from langchain.schema.runnable import RunnableWithChatHistory".
+
+Next, we set up the Streamlit app: "st.title('Conversational RAG with PDF Uploads and Chat History')" and "st.write('Upload PDFs and chat with the content')". We prompt the user for the Grok API key using: "api_key = st.text_input('Enter your Grok API key', type='password')". We check if the API key is provided: "if api_key: chat = ChatGrok(api_key=api_key, model_name='gamma-2')".
+
+We create a session ID input with: "session_id = st.text_input('Session ID', value='default_session')". To manage session state, we initialize a store: "if 'store' not in st.session_state: st.session_state['store'] = {}". This will hold key-value pairs for messages and chat history.
+
+We then handle file uploads with: "uploaded_files = st.file_uploader('Choose a PDF file', type='pdf', accept_multiple_files=False)". For each uploaded file, we save it locally: "temp_pdf = f'temp.pdf'; with open(temp_pdf, 'wb') as f: f.write(uploaded_file.getvalue())". We load documents using PyPDFLoader: "loader = PyPDFLoader(temp_pdf); docs = loader.load(); documents.extend(docs)".
+
+Next, we split and create embeddings for the documents: "text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=500); splits = text_splitter.split_documents(documents)". We store these embeddings in Chroma: "vectordb = Chroma.from_documents(splits, embeddings)". The retriever is created: "retriever = vectordb.as_retriever()".
+
+We define a system prompt for contextualizing questions: "contextualize_qa_system_prompt = '''Given a chat history and the latest user question which might reference context in the chat history, reformulate it to a standalone question.'''". We create a ChatPromptTemplate using: "contextualize_qa_prompt = ChatPromptTemplate.from_messages([('system', contextualize_qa_system_prompt), MessagesPlaceholder(variable_name='chat_history'), ('human', '{input}')])".
+
+We then create a history-aware retriever: "history_aware_retriever = create_history_aware_retriever(retriever=retriever, qa_prompt=contextualize_qa_prompt, chat_history=chat_history_placeholder)". We define a QA system prompt: "qa_system_prompt = '''You are an assistant for question answering. Use the retrieved context to answer. Keep it concise, max 3 sentences. If unknown, say you don't know.'''". We create the QA prompt template: "qa_prompt = ChatPromptTemplate.from_messages([('system', qa_system_prompt), MessagesPlaceholder(variable_name='chat_history'), ('human', '{input}')])".
+
+The QA chain is created using: "qa_chain = create_stuff_document_chain(llm=chat, prompt=qa_prompt)". The retrieval chain is wrapped with history-aware retriever: "rag_chain = create_retrieval_chain(retriever=history_aware_retriever, qa_chain=qa_chain)".
+
+We create a session history function: "def get_session_history(session_id): if session_id not in st.session_state['store']: st.session_state['store'][session_id] = BaseChatMessageHistory(); return st.session_state['store'][session_id]".
+
+The conversational RAG chain is initialized: "conversational_rag_chain = RunnableWithChatHistory(rag_chain, get_session_history, input_key='input', history_key='chat_history', output_key='answer')".
+
+Finally, we handle user input: "user_input = st.text_input('Ask your question'); if user_input: session_history = get_session_history(session_id); answer = conversational_rag_chain.invoke({'input': user_input, 'session_id': session_id}); st.write('Answer:', answer)".
+
+If the API key is not provided, we show a warning: "else: st.warning('Please enter the Grok API key')".
+
+To run the app, navigate to the project folder and execute: "streamlit run app.py". The HuggingFace embeddings may take some time to initialize the first time. Once loaded, you can ask questions like "What is Transformers?" or "Provide a detailed summary of Transformers and Attention Is All You Need". The chat history and answers will be displayed along with the session.
+
+This implementation allows uploading any PDF, using chat history, generating concise answers, and summarizing conversations.
+
+# **XII) Search Engine With Langchain Tools And Agents**
+
+# **A) Introduction To Tools And Agents**
+
+So we are going to continue the discussion on creating end-to-end generative AI projects with the help of LangChain. In this video, and in the upcoming series of videos, we are going to develop an end-to-end search engine AI app with the help of tools and agents. Now, these words that you will be seeing — tools and agents — are very important. You may be thinking that this may be a simple search engine project, where you just ask a query to the LLM models and get a response. It is nothing like that. The main intention of doing this specific project is to integrate tools and agents because, with the help of tools and agents, your generative AI application becomes more powerful in solving complex problems.
+
+Now, what exactly are we going to do in this project? Let’s say a user asks a query. First, we need to understand what exactly tools are and what exactly agents are. Tools are interfaces that an agent chain or LM can use to interact with the world. They combine a few things like the name of the tool, description of what the tool is, and how to use it. For example, one tool could be an OpenAI LLM model, like GPT-4. This model is trained up to December 2023. So, whatever question you ask with respect to the data available until December 2023, you can get a response easily.
+
+But now, in this world, we also require current information. There are a lot of changes happening right now — for example, current news, current weather, updated documentation, or recently published research papers. If the generative AI app only uses the LM model, it cannot fetch this latest information. That’s where tools come in. These tools allow the LM to interact with external sources and retrieve current content. For example, tools like RCF (for research papers) or Wikipedia allow you to query the latest content directly. You can also create your own custom tools, like a document Q&A tool that allows you to query your uploaded documents.
+
+So, whenever we create this search engine, it will not be dependent only on the LM model. Instead, if the user asks for information not available in the LM model, the LM can interact with these tools and fetch the answer. This allows your search engine AI app to provide up-to-date and accurate responses.
+
+Now, to make all this work, we also need another component called agents. Agents are responsible for orchestrating the tools. The core idea of an agent is to use a language model to choose a sequence of actions to take. For example, an agent can decide: first, check the LM model, then query RCF for research papers, and finally check Wikipedia for additional information. Agents manage the workflow and ensure the LM interacts with the tools efficiently.
+
+LangChain provides multiple built-in tools like Wikipedia, Yahoo Finance, YouTube, Weather API, and more. Some of these are free, while others require an API key. Similarly, LangChain allows you to create different types of agents that can orchestrate these tools in a sequence of actions to solve complex queries.
+
+In this project series, we will first explore tools, how to create and use custom tools with LangChain, and then discuss agents. Finally, we will combine all of these to build an end-to-end search engine AI app that can answer complex questions using both LLM and external tools in a seamless workflow.
+
+So, this was it for this video. I hope you understood the concepts of tools and agents, how they work, and why they are essential for building advanced generative AI applications. In the next video, we will dive into the practical implementation of tools, agents, and how to integrate them into a working search engine app.
+
+**B) Creating Tools Using Langchain**
+
+So we are going to continue the discussion with respect to tools and agents in the search engine. First of all, I will show you some important functionalities where I will create my own custom tools, and then I will also use the inbuilt tools that are available in the engine.
+
+Some of the inbuilt tools available in the engine are Wikipedia and RCF, which we have already discussed. You can also see other tools like Google Finance, Google Places, Google Search, and more. For example, if we want to use Wikipedia, we need to first install the Wikipedia library and then implement it.
+
+Let me show you with code. First, I will select the kernel and set it up for research purposes. This tool will interact with the RCF website to fetch information. We need to ensure that the libraries are installed, so I will install both RCF and Wikipedia. In the terminal, I run pip install -r requirements.txt. After installation, we can start creating tools.
+
+First, I will create a Wikipedia tool and an RCF tool. We import the required modules:
+
+from langchain_community.tools import RCFQueryRun, WikipediaQueryRun
+from langchain_community.utilities import WikipediaAPIWrapper, ArxivAPIWrapper
+
+
+We create the API wrapper for Wikipedia:
+
+wiki = WikipediaAPIWrapper(top_k_results=1, doc_content_chars_max=250)
+WikipediaQueryRun = wiki
+print(wiki.name)
+
+
+This gives us the Wikipedia tool. Similarly, for RCF:
+
+rcf_wrapper = ArxivAPIWrapper(top_k_results=1, doc_content_chars_max=250)
+RCF = RCFQueryRun(api_wrapper=rcf_wrapper)
+print(RCF.name)
+
+
+To combine both tools, we create a list:
+
+tools = [wiki, RCF]
+
+
+Now, to run these tools, we need an LM model along with a chain or agent to orchestrate them.
+
+Next, we can create our own custom tools. For example, we can create a RAG (retrieval-augmented generation) tool using a web-based loader, text splitter, and embeddings. We import the necessary modules:
+
+from langchain_community.document_loaders import WebBaseLoader
+from langchain.vectorstores import FAISS
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+
+We load a specific webpage, split the document, create a vector store, and a retriever:
+
+loader = WebBaseLoader(url="YOUR_PAGE_URL")
+docs = loader.load()
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+split_docs = text_splitter.split_documents(docs)
+
+vector_db = FAISS.from_documents(split_docs, OpenAIEmbeddings())
+retriever = vector_db.as_retriever()
+
+
+We can convert this retriever into a tool:
+
+from langchain.tools.retriever import create_retriever_tool
+retriever_tool = create_retriever_tool(
+    retriever=retriever,
+    name="LangSmithSearch",
+    description="Search any information about LangSmith"
+)
+print(retriever_tool.name)
+
+
+This becomes our custom retrieval tool. Now we have both inbuilt and custom tools ready. We can combine them in a list and pass them to agents or LM models to run queries.
+
+In the next video, we will see how to execute all these tools together with agents and LM models to build a fully functional search engine.
+
+**C) Executing Tools And LLM with Agent Executors**
+
+So we are going to continue the discussion with respect to tools and agents. In the previous video, we have seen how to create tools and even custom tools. Now it’s time to combine these tools with our LM model and execute them using something called an agent executor. This is where we will learn about agents.
+
+First, let’s set up an LM model. I will be using the Grok API for this. Make sure your .env file has your OpenAI API key. We can load it in Python like this:
+
+import os
+openai_api_key = os.getenv("OPENAI_API_KEY")
+
+
+Since we are using Chat Grok API, we will import it:
+
+from langchain_grok import ChatGrok
+
+
+I’ll be using Llama 3 as the LM model. The OpenAI API key is required here because we are using OpenAI embeddings for the documents. Once the environment variable is set, we can initialize the LM model.
+
+Next, we create a prompt template. LangChain provides a hub where prebuilt prompts are available. For example:
+
+from langchain import hub
+prompt = hub.pull("OpenAI_function_agent")
+print(prompt.messages)
+
+
+This prompt contains system message templates, chat history placeholders, and human message templates. Although there are multiple ways to create prompts, using ChatPromptTemplate is generally the best practice.
+
+Now, we combine the prompt with the LM and the tools we have created using an agent. We import and create the agent like this:
+
+from langchain.agents import create_openai_tools_agent
+
+agent = create_openai_tools_agent(
+    llm=llm_model,
+    tools=tools,
+    prompt=prompt
+)
+
+
+This creates the agent chain combining the LM, tools, and prompt.
+
+To execute the agent, we use an AgentExecutor:
+
+from langchain.agents import AgentExecutor
+
+agent_executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    verbose=True
+)
+
+
+Setting verbose=True lets us see the interaction details. Now we can invoke the agent executor with an input query:
+
+agent_executor.invoke("Tell me about LangSmith")
+
+
+You will see that the executor automatically interacts with the correct tool to fetch information. For example, asking about LangSmith opens the LangSmith search tool, while asking about “machine learning” pulls from Wikipedia. The executor also maintains chat history so that subsequent queries are aware of previous context.
+
+We can try another example, such as asking about a research paper in RCF:
+
+agent_executor.invoke("What is the research paper 'Attention is All You Need' about?")
+
+
+The agent will route the query to the correct tool and return the results.
+
+This demonstrates how agents intelligently combine LM models with multiple tools to create a functional search engine. In the next video, we will combine everything to implement a full end-to-end search engine project.
+
+Make sure to review the documentation to understand all options for AgentExecutor, how to create and combine tools, and how to handle multiple tools efficiently.
+
+**D) End To End Search Engine GEN AI App using Tools And Agent With Open Source LLM**
+
+We are now going to continue the discussion on building an end-to-end AI search engine application with the help of LangChain tools and agents. In the previous session, we learned how to create custom tools, execute them using agents, and even explored some inbuilt tools supported by LangChain. Now, let’s move ahead and start working on the actual project setup.
+
+Inside my project folder, I’ve created a file named "app.py", which will serve as the main driver of this search engine. To begin with, the very first step is to import the required libraries. We start by importing Streamlit using "import streamlit as st". Alongside this, we also need several other important imports. For instance, we will use "from langchain_grok import ChatGrok" to access Grok models. Additionally, we will rely on "from langchain_community.utils import RCFWrapper, WikipediaWrapper" to make use of ready-made wrappers. These wrappers allow us to interact with APIs like Arxiv and Wikipedia with minimal effort.
+
+Apart from this, we will also add some tools from "langchain_community.tools". Specifically, we will import "ArxivQueryRun" and "WikipediaQueryRun" for fetching results from Arxiv papers and Wikipedia articles. To extend our application with web search capabilities, we will also use "DuckDuckGoSearchRun" which will enable internet-wide searches directly from our app. With these imports, our search engine is now capable of handling multiple types of queries.
+
+Once these imports are done, we need to bring in the agents framework by using "from langchain import agents". Agents play a critical role here as they act as the reasoning layer that decides which tool to call depending on the user’s query. Along with agents, we also bring in callbacks to make things interactive. For this, we import "from langchain.callbacks import StreamlitCallbackHandler". This callback handler ensures that the intermediate thoughts and actions of the agent are displayed live within the Streamlit app, giving a transparent view of how the model reasons through a query.
+
+Next, we also import "import os" and "from dotenv import load_dotenv". These help us manage environment variables, especially if we need API keys. However, in our design, we will also provide an option for the user to directly enter their API key in the sidebar of the Streamlit app. For that, we can add "st.sidebar.text_input('Enter your Grok API key')" which allows the user to provide credentials without loading them from .env.
+
+Now that the setup is ready, let’s initialize the tools. For example, we can create an Arxiv tool by calling "arxiv = ArxivQueryRun()", a Wikipedia tool using "wikipedia = WikipediaQueryRun()", and a search tool with "search = DuckDuckGoSearchRun()". These are all wrapped under meaningful variable names to ensure that our agent understands which tool is which.
+
+With the tools in place, we move to the UI part of the application. Using Streamlit, we first define a title with "st.title('Langchain Chat with Search')". This sets the interface heading. As a reminder, in this example, we are using "StreamlitCallbackHandler" to display the thoughts and actions of the agent within the app. This helps us visualize how the agent decides when to call Arxiv, Wikipedia, or DuckDuckGo based on the query provided by the user.
+
+Finally, once the imports, wrappers, and tools are ready, we will proceed to initialize the agent by combining the tools with the LLM and then wrapping them with "agents.initialize_agent()". The agent will then be capable of receiving a user query, reasoning which tool to use, executing the tool, and returning a final answer—all while showing the intermediate reasoning steps inside Streamlit.
+
+# **XIII) Gen AI Project-Chat With SQL DB With Langchain SQL Toolkit and Agentype**
+
+**A) Demo of the Project**
+
+Hello guys! In this series, we are going to continue our LangChain journey, and in the upcoming videos, we will develop an amazing end-to-end project: Chat with SQL DB. The idea is to build an application that can directly interact with a SQL database, generate queries automatically, and return results conversationally.
+
+First, let me give you a quick demo of what we will achieve. We will start by connecting to a simple SQLite3 database, say "student.db", which I’ve already created locally. Using LangChain and agents, we’ll allow natural language questions to be converted into SQL queries and executed on this database. For authentication with open-source models such as Llama-3, Gemma-2, or others supported by Grok, we will use the "grok API key".
+
+When you run the application, you will first paste your Grok API key. For example, using "st.sidebar.text_input('Enter your Grok API key')" in Streamlit will let you provide it directly. Once the app starts, you’ll see a prompt like “How can I help you?”. At this point, you can ask something like "display all the records in the student table". As soon as you press Enter, the agent automatically analyzes the available tables, constructs the proper query, and retrieves the data. Behind the scenes, the agent will figure out that the right query is "SELECT * FROM student;" and return the results, such as Krish, John, Mukesh, Jacobs, and others.
+
+This happens because LangChain agents inspect the database metadata first. For example, they call functions like "SQLDatabaseToolkit.get_table_names()" internally, identify available tables, then proceed to generate the correct query. All of this reasoning and query creation is performed automatically by the LangChain agent.
+
+Now, the best part is that this doesn’t stop at SQLite. You can also connect to your own SQL database like MySQL. In that case, you need to provide the connection details. For example: "mysql_host = 'localhost'", "mysql_user = 'root'", "mysql_password = '12345'", and "mysql_database = 'student'". With these, you can set up a connection string like "mysql+mysqlconnector://root:12345@localhost/student". Once you press Enter, the app will be connected to your MySQL database instead of SQLite.
+
+From here, you can ask the same kinds of questions. For example, "display all the records in the student table" or "display the record where the student name is Krish". The agent will generate queries like "SELECT * FROM student WHERE name = 'Krish';" and return the results directly. What’s happening internally is that the agent uses the SQL DB list tables tool to get the schema (e.g., ['student', 'student_info', 'search_info']), checks which table contains the relevant column, and then employs the SQL DB query checker tool to validate the generated query before executing it.
+
+This ensures that the final query is syntactically correct and runs without issues. Once validated, the query is executed, and the output is shown in the Streamlit interface. You will see the action, the action input, and finally the output—all in a clean and interactive way.
+
+The most powerful aspect of this project is that we will be using the "SQLDatabaseToolkit" provided by LangChain. This toolkit comes with predefined tools and functionalities to handle SQL database queries. When combined with agents, we essentially get an SQL Agent Toolkit, which enables natural language to SQL translation seamlessly. Setting this up involves importing the toolkit with "from langchain.agents.agent_toolkits import SQLDatabaseToolkit", passing your database connection, and then initializing your agent with "initialize_agent()".
+
+So to summarize: in this project, the agent will first list tables ("SQL DB list tables"), inspect schemas, validate queries with "SQL DB query checker", generate the final SQL command (like "SELECT * FROM student;"), and then return the results. All of this happens automatically when you type a natural language question.
+
+This makes for a fantastic hands-on project: a conversational interface to any SQL database, powered by LangChain agents and toolkits. In the upcoming videos, we will go step by step—setting up the connection, configuring the toolkit, and wiring everything with Streamlit to make it interactive. I hope you’re excited, and I’ll see you in the next part where we actually start coding this project.
+
+**B) Preparing the Data For SQlite3 Database**
+
+Hello guys! Let’s continue with this project and implement it step by step. In this session, we will start by creating our data in an SQLite3 database and also learn how to run queries on it. The prerequisite for this is having basic SQL knowledge and being able to set up SQL tools like MySQL Workbench on your system. Even if you don’t have MySQL installed, you can follow along with SQLite3, which comes built-in with Python.
+
+First, let’s create a file named "sqlite.py". Inside this file, we will write all the code required to create a database and a table in SQLite3. To begin, we need to import the SQLite3 module using "import sqlite3". Since SQLite3 is built into Python 3.x, you don’t need any additional installations. Next, we create a connection to the database by writing "connection = sqlite3.connect('student.db')" and then create a cursor object with "cursor = connection.cursor()". This cursor will be used to execute SQL commands like creating tables and inserting data.
+
+Now, we will define the table structure. We create a student table with columns for name, class, section, and marks. The SQL command for this is: "table_info = 'CREATE TABLE student (name VARCHAR(25), class VARCHAR(25), section VARCHAR(25), marks INTEGER)'". We then execute it using "cursor.execute(table_info)". This will create the table inside the database.
+
+After creating the table, we insert some initial records. For example, we can use commands like "cursor.execute('INSERT INTO student VALUES (\"Krush\", \"Data Science\", \"A\", 90)')" and similarly add records for John, Mukesh, and Jacobs. Each cursor.execute() statement inserts a row into the table. Once all rows are added, we can retrieve and display them using "cursor.execute('SELECT * FROM student')" and iterating through the results: "for row in cursor.fetchall(): print(row)".
+
+To make sure all changes are saved, we commit them with "connection.commit()" and always close the connection using "connection.close()". This ensures the database is properly updated and prevents any locks or corruption.
+
+Once the code is ready, we can run it from the terminal. Navigate to the folder containing "sqlite.py" and run "python sqlite.py". If everything is correct, you will see all the inserted records printed, confirming that the student.db database has been created successfully with the proper table and data. Common errors like "cursor has no attribute" can occur if the cursor is not properly initialized. Always make sure you use "cursor = connection.cursor()".
+
+At this point, we now have a fully prepared SQLite database with a table called "student" and multiple records. In the next step, we can connect this database to our LangChain agent for querying and performing interactive operations. Similarly, you can also replicate this process for a standalone SQL server installed locally, such as MySQL or SQL Server, by adjusting the connection parameters.
+
+This approach ensures that you have a structured dataset ready for your AI-powered SQL chat application. Remember, having some familiarity with SQL databases is essential, as it helps you understand table creation, query execution, and handling results efficiently.
+
+**C) Preparing The Data For My SQL Database**
+
+Hello guys! Let’s continue our discussion on this project. In this video, I’ll give you an idea of how to install MySQL Workbench so that you can work with MySQL databases for our AI-powered SQL chat project.
+
+First, go to Google and search for "MySQL Database Workbench". You should see a button called "Download MySQL Workbench". Once you click on it, select your operating system—Windows, Linux, Fedora, Mac OS, etc. For example, if you are using Windows, just click on the Windows option. After that, you might see a login prompt, but you can skip it by selecting "No thanks, just start my download". The download will start automatically.
+
+Once the installer is downloaded, double-click it and follow the installation steps. Keep clicking "Next" and make sure to check all the available checkboxes during installation. After completing the installation, MySQL Workbench will be ready to use. For additional help, you can also check out the YouTube playlist I have created on complete MySQL tutorials. The link will be shared in the video description so you can follow along.
+
+After the installation, open MySQL Workbench and establish a SQL connection to your database. Once connected, you can start executing queries in your database. For example, to prepare your student table, first you might want to drop it if it already exists using "DROP TABLE student;". Then, you can create the table with a command like: "CREATE TABLE student (name VARCHAR(25), class VARCHAR(25), section VARCHAR(25), marks INTEGER);" and execute it. This ensures your table is ready to store data.
+
+To view the records in your table, simply run "SELECT * FROM student;". This will display all existing records in the table. The SQL commands in MySQL Workbench are similar to what we used in SQLite earlier, so the workflow is consistent. Once the table is created and the data is verified, we are ready to move on to the next step of our project, which is building the AI SQL chat interface using LangChain agents.
+
+Remember, working with MySQL requires some knowledge of SQL, so it’s helpful to go through tutorials or my YouTube playlist to understand how to write and execute queries. Once your student table is set up and verified in MySQL, we can proceed to integrate it with our project in the next video.
+
+That’s it for this setup session—once your database and table are ready, we are all set to start building the project. See you in the next video!
+
+**D) Creating the Streamlit Web app and Configuring the Databases**
+
+Hello guys! Now finally we will start the development of our application. First, we will create our Streamlit application file, "app.py". In this file, we will begin by importing some basic libraries required for the project. First, import Streamlit using "import streamlit as st". Streamlit will be used for the entire front-end of our application.
+
+Next, we will import "Pathlib" using "from pathlib import Path" to help us manage absolute file paths in our project. In LangChain, we have an agent system that will allow us to create a SQL agent, which will run queries on our database. The SQL agent is created using "from langchain.agents import create_sql_agent". This function allows us to create a SQL agent from an LM and toolkit or a database, and it will be central to how our application interacts with SQL.
+
+We also need the SQL Database Toolkit from LangChain, which simplifies interacting with SQL databases. For connecting to SQL databases like SQLite or MySQL, we will use "from sqlalchemy import create_engine" from SQLAlchemy. SQLite itself will be imported using "import sqlite3". Since we are using Grok for our open-source language model, we will also import "from langchain_grok import ChatGrok" to interact with the LM.
+
+Next, we set up the Streamlit page configuration using "st.set_page_config(page_title='LangChain Chat with SQL DB', page_icon='🪶')" and add some warning messages about potential prompt injection vulnerabilities. For safety, it is recommended to use a database role with limited permissions.
+
+We then define two global variables for our database options: "local_db" for the SQLite database and "use_mysql" for MySQL. On the sidebar, we create a radio button using "st.sidebar.radio('Choose the DB you want to chat', options=radio_opt)" to let the user select between "Interact with student.db" and "Connect to your MySQL database".
+
+If the user selects MySQL, we require additional inputs for "MySQL host", "MySQL user", "MySQL password", and "MySQL database". This can be implemented using:
+
+mysql_host = st.sidebar.text_input("Provide MySQL hostname")
+mysql_user = st.sidebar.text_input("Provide MySQL user")
+mysql_password = st.sidebar.text_input("Provide MySQL password", type="password")
+mysql_db = st.sidebar.text_input("Provide MySQL database")
+
+
+For Grok API access, we ask the user for their key using:
+
+api_key = st.sidebar.text_input("Grok API Key", type="password")
+
+
+We then check that both the DB URI and API key are provided. If not, we display messages using:
+
+if not db_uri:
+    st.info("Please enter the database information and URI")
+if not api_key:
+    st.info("Please add the Grok API key")
+
+
+Next, we initialize the LM model with Grok using:
+
+llm = ChatGrok(api_key=api_key, model_name="llama-3-8b-192", streaming=True)
+
+
+Now we define a function "configure_db" to set up the database connection. This function is decorated with "@st.cache_resource(ttl=7200)" to cache the connection for two hours. It accepts parameters like db_uri, mysql_host, mysql_user, mysql_password, and mysql_db.
+
+If the SQLite option is selected, we determine the absolute path using:
+
+db_file_path = Path(__file__).parent / "student.db"
+db_file_path = db_file_path.resolve()
+
+
+We then create a connection using:
+
+creator = lambda: sqlite3.connect(db_file_path, uri=True)
+db = SQLDatabase(engine=create_engine("sqlite://", creator=creator))
+
+
+If the MySQL option is selected, we first check that all necessary parameters are provided, then create the connection using SQLAlchemy and MySQL connector:
+
+if not mysql_host or not mysql_user or not mysql_password or not mysql_db:
+    st.error("Please provide all MySQL connection parameters")
+else:
+    db_uri = f"mysql+mysqlconnector://{mysql_user}:{mysql_password}@{mysql_host}/{mysql_db}"
+    db = SQLDatabase(create_engine(db_uri))
+
+
+Finally, we call this "configure_db" function based on the user's selection. For MySQL:
+
+db = configure_db(db_uri, mysql_host=mysql_host, mysql_user=mysql_user, mysql_password=mysql_password, mysql_db=mysql_db)
+
+
+And for SQLite:
+
+db = configure_db(db_uri)
+
+
+At this point, the database connection is fully configured. In the next video, we will create the SQL toolkit that allows the LM model to generate queries and interact with the database automatically. This toolkit will convert natural language prompts like "Display all records in the student table" into SQL queries, fetch results, and return them via the Streamlit interface.
+
+So far, we have completed the database connection setup for both SQLite and MySQL, along with integrating the LM model. The next step is to create the toolkit and agents that will handle queries.
+
+**E) Integrating Web App With Langchain SQL Toolkit And Agenttype**
+
+Hello guys! We will continue with our end-to-end project. So far, we have configured the LLM and the database connection, whether it is SQLite or MySQL. Now it’s time to run the application and test if everything is working.
+
+To run the Streamlit app, use the command:
+
+"streamlit run app.py"
+
+
+When the page loads, you will see both options for database selection. Selecting either option will display the required input fields, including the Grok API key. Once you provide the API key, the configuration is complete.
+
+The next step is to create a text input box for user queries so that we can interact with the database. For this, we need to work with a SQL Toolkit provided by LangChain.
+
+First, we create the SQL database toolkit using our configured database object "db":
+
+"toolkit = SQLDatabaseToolkit(db=db)"
+
+
+Next, we create a SQL agent using "create_sql_agent" and pass in the LLM model, the toolkit, verbosity settings, and agent type. We use "zero-shot-react-description" as the agent type:
+
+"agent = create_sql_agent(llm=llm, toolkit=toolkit, verbose=True, agent_type='zero-shot-react-description')"
+
+
+We then set up the Streamlit session state to maintain chat history. If the messages key does not exist, we initialize it with a default assistant message:
+
+"if 'messages' not in st.session_state:"
+"    st.session_state['messages'] = [{'role': 'assistant', 'content': 'Hello! How can I help you?'}]"
+
+
+A clear history button is also provided:
+
+"if st.sidebar.button('Clear message history'):"
+"    st.session_state['messages'] = []"
+
+
+Next, we display all previous messages in the chat interface:
+
+"for message in st.session_state['messages']:"
+"    st.chat_message(message['role']).write(message['content'])"
+
+
+To take user input, we use a chat input box:
+
+"user_query = st.chat_input('Ask anything from the database')"
+
+
+Once the user submits a query, we append it to the session state and display it on the interface:
+
+"st.session_state['messages'].append({'role': 'user', 'content': user_query})"
+"st.chat_message('user').write(user_query)"
+
+
+We then create a Streamlit callback handler to show the chain of thought while processing queries:
+
+"streamlit_callback = StreamlitCallbackHandler(container=st.container())"
+
+
+Finally, we run the agent to get the response, and append it to the session state as an assistant message:
+
+"response = agent.run(user_query, callbacks=[streamlit_callback])"
+"st.session_state['messages'].append({'role': 'assistant', 'content': response})"
+"st.chat_message('assistant').write(response)"
+
+
+Now we can run the app again using:
+
+"streamlit run app.py"
+
+
+We first test with the SQLite database (student.db) by providing the Grok API key. Messages can be cleared using the Clear message history button. For example, queries like:
+
+"Show me all records from the student table"
+
+
+or
+
+"Display all records from the student table whose marks are greater than 45"
+
+
+will automatically generate SQL queries and fetch the results. The chain-of-thought reasoning of the model is visible thanks to the Streamlit callback handler.
+
+Next, we can connect to the MySQL database. The required inputs are:
+
+"MySQL host: localhost"
+"MySQL user: root"
+"MySQL password: 12345"
+"MySQL database: student"
+"Grok API key: <your API key>"
+
+
+If you see an error like "No module named mysql", install the required libraries by updating "requirements.txt" and running:
+
+"pip install -r requirements.txt"
+
+
+This should include "SQLAlchemy" and "mysql-connector-python" for MySQL support.
+
+Once connected, queries like:
+
+"Display all records from student table"
+
+
+or more complex queries like:
+
+"Display all records whose marks are greater than 35 and less than 60"
+
+
+will work automatically. The SQL Toolkit from LangChain converts these natural language queries into SQL commands and returns the results.
+
+This setup allows you to run both simple and complex queries, including nested queries, directly from a Streamlit interface with real-time LLM support.
+
+# **XIV) Text Summarization With Langchain**
+
+**A) Introduction To text summarization With Langchain**
+
+We are continuing our discussion on LangChain, and in this video (and the upcoming series), we will focus on text summarization.
+
+Text summarization in LangChain allows you to summarize content from any data source, including structured files (like CSVs, Excel) and unstructured content (like PDFs, website text, YouTube transcripts, tweets, or Wikipedia pages).
+
+There are three main summarization techniques in LangChain:
+
+Stuff – Concatenates all documents into a single prompt for summarization.
+
+MapReduce – Splits the document into batches, summarizes each batch, and then combines the summaries.
+
+Refine – Iteratively updates a rolling summary by processing documents in sequence.
+
+In this video, we focus on basic implementation using Stuff, MapReduce, and Refine. Later, we’ll build an end-to-end project to summarize both structured and unstructured content.
+
+Step 1: Setting Up Environment
+
+Import necessary libraries and load environment variables:
+
+"import os"
+"from dotenv import load_dotenv"
+"load_dotenv()"
+
+
+We will use Grok API to connect to open-source LLM models, eliminating the need to use OpenAI.
+
+Step 2: Understanding LangChain Schema
+
+LangChain provides a schema to structure messages:
+
+"from langchain.schema import AIMessage, HumanMessage, SystemMessage"
+
+
+"AIMessage" – Response from the LLM.
+
+"HumanMessage" – User queries.
+
+"SystemMessage" – Instructions for the model on how to behave.
+
+For summarization, we provide a system message to instruct the model and a human message for the specific content to summarize.
+
+Step 3: Summarizing a Speech
+
+We take a long speech (for example, by Prime Minister Narendra Modi) and summarize it:
+
+"chat_messages = ["
+"    SystemMessage(content='You are an expert in summarizing speeches'),"
+"    HumanMessage(content=f'Please provide a short and concise summary of the following speech: {speech}')"
+"]"
+
+
+"speech" is the variable containing the original text.
+
+The LLM will process this chat message list and provide a summary:
+
+"summary = llm(chat_messages).content"
+
+
+"AIMessage" contains the full response.
+
+You can check token usage:
+
+"num_tokens = llm.get_num_tokens(chat_messages)"
+
+
+For example, 895 input tokens were summarized to 108 output tokens.
+
+Step 4: Using LM Chain with Prompt Templates
+
+When text is large, or you want custom formatting, use LM Chain with Prompt Templates:
+
+"from langchain.chains import LLMChain"
+"from langchain.prompts import PromptTemplate"
+
+
+Create a generic prompt template:
+
+"generic_template = '''"
+"Write a summary of the following speech: {speech}"
+"Translate the precise summary to {language}"
+"'''"
+
+
+Define input variables:
+
+"prompt = PromptTemplate(input_variables=['speech', 'language'], template=generic_template)"
+
+
+Format the prompt with values:
+
+"formatted_prompt = prompt.format(speech=speech, language='French')"
+
+
+This generates a fully formatted prompt including translation instructions.
+
+Token count increases slightly because of extra instructions.
+
+Step 5: Running LM Chain
+
+Combine the LLM and the prompt template into an LM Chain:
+
+"lm_chain = LLMChain(llm=llm, prompt=prompt)"
+
+
+Run the chain to get the summary:
+
+"summary = lm_chain.run(speech=speech, language='French')"
+
+
+You can change language='Hindi' or any other language.
+
+This method is effective for moderately sized documents.
+
+Step 6: Handling Large Documents
+
+If the document is huge (like PDFs with 25+ pages), token limits may exceed LLM capacities.
+
+In such cases, use Stuff, MapReduce, or Refine document chains:
+
+Stuff Document Chain – Concatenate all documents and summarize in one prompt.
+
+MapReduce Document Chain – Split document, summarize each part, then summarize the combined summaries.
+
+Refine Document Chain – Update a rolling summary iteratively for each document.
+
+Each technique is useful for different document sizes and summarization needs.
+
+We will demonstrate these techniques with 5–6 page PDFs in the next video.
+
+Summary
+
+Text summarization in LangChain can handle structured and unstructured content.
+
+You can use chat message lists or LM Chain with prompt templates.
+
+Token limits matter: for large documents, switch to Stuff, MapReduce, or Refine chains.
+
+System messages guide the LLM, human messages provide content, and AI messages hold responses.
+
+This sets up a foundation for building an end-to-end summarization project with LangChain.
+
+**B) Stuff Chain And Map Reduce Text Summarization Indepth Intuition**
+
+We are going to continue the discussion with respect to text summarization. In this video, we are going to see the most important text summarization techniques that we can use with LangChain. The first one is called the stuff document chain text summarization, and we will discuss one by one what exactly it is. First of all, we will go ahead with text summarization using the stuff document chain. The second technique is called MapReduce summarization. The most important thing about MapReduce is that it is specifically useful for larger files. For example, if I have a PDF file with 100 pages, I cannot directly use the stuff document chain.
+
+In the MapReduce summarization technique, there are two important types: one using a single prompt template and the second using multiple prompt templates. We will discuss this with examples. The third technique you will see is called refine chain summarization. We will first understand what the stuff document chain is, what its limitations are, why we use MapReduce, and when we should use refine chain summarization.
+
+Stuff document chain summarization is the most basic type of summarization technique. Let's say we have a PDF as our external data source; it could be a PDF, a text file, a website, or a web URL. First, we read the entire content, then use a prompt template, for example, "prompt_template = 'Please summarize the following document: {text}'". We pass this along with the prompt template to the LLM model, which generates the output summary.
+
+In the stuff document chain, if the PDF contains multiple documents—for instance, ten documents—these documents are combined into a single text string and sent to the prompt template. The placeholder in the prompt template, for example "{text}", is replaced by this combined text. This works fine for small documents, but for very large documents or websites with thousands of documents, the combined text may exceed the context size of the LLM. For instance, GPT-3.5 has a context limit of 4096 tokens. If the document is too large, sending all content at once will not work properly.
+
+To address this limitation, we use the MapReduce summarization technique. In MapReduce, the document is first divided into smaller chunks, for example, "chunks = [doc1_chunk, doc2_chunk, doc3_chunk, ...]". Each chunk is passed to a prompt template along with the LLM model to get individual summaries, for example, "summaries = [llm(prompt_template.format(text=chunk)) for chunk in chunks]". After getting all individual summaries, we combine them and pass them to another prompt template to generate the final summary: "final_summary = llm(final_prompt_template.format(text=' '.join(summaries)))".
+
+MapReduce can be implemented using a single prompt template, which is applied to all chunks, or multiple prompt templates, where different prompts are used for intermediate and final summaries, such as extracting titles or motivational quotes from the combined summaries. The term MapReduce comes from its workflow: we first map by summarizing each chunk individually, and then reduce by combining all intermediate summaries into a final summary.
+
+The process can be visualized as follows: if the document fits in the LLM context window, we use the stuff document chain—combine all documents, pass them to the prompt, and get the final summary. If the document is too large, we split it into chunks, summarize each chunk, combine the summaries, pass them to a final prompt, and get the final summary.
+
+For implementation, if the document fits in the LLM context, we can use: "combined_text = ' '.join(all_documents)" and "summary = llm(prompt_template.format(text=combined_text))". For large documents using MapReduce: "chunks = [doc1_chunk, doc2_chunk, doc3_chunk, ...]", "summaries = [llm(prompt_template.format(text=chunk)) for chunk in chunks]", and "final_summary = llm(final_prompt_template.format(text=' '.join(summaries)))".
+
+In summary, if the document fits in the context window, we use the stuff document chain. If it is too large, we divide it into chunks, summarize each chunk, and combine the results using MapReduce. In the next video, we will see the practical implementation of these techniques.
+
+**C) Stuff And Map Reduce Summarization Impelmentation**
+
+So we are going to continue the discussion with respect to text summarization. Already in our previous video, we have seen the theoretical intuition behind stuff document chain and map reduce text summarization techniques. In this video, I will show you the practical implementation and how you can specifically implement it.
+
+First, we will go with the stuff document chain text summarization technique. Here I have written a code using "from langchain.document_loaders import PyPDFLoader" where we will be loading a specific PDF. This PDF that I’ve taken is called "FPGA_speech.pdf". Inside this particular PDF, there is an amazing speech given by our former president, Dr. APJ Abdul Kalam, a famous personality. We will read this PDF and summarize the entire text inside it.
+
+After executing the PDF loader, you will see many documents are created because each page or section is considered a separate document. We can inspect them using "documents". Once the documents are ready, we move on to summarization using the stuff document chain. First, we need to create a prompt template. For that, we can write something like "prompt_template = '''Write a concise and short summary of the following speech: {text}'''" and define our input variable as "text". Then we can create the prompt object using "from langchain.prompts import PromptTemplate" with "prompt = PromptTemplate(template=prompt_template, input_variables=['text'])".
+
+Next, we implement the stuff document chain using LangChain. We import "from langchain.chains import load_summarize_chain" and create a chain like "chain = load_summarize_chain(llm=llm, chain_type='stuff', prompt=prompt, verbose=True)". The key idea with the stuff chain is that all documents are combined, passed to the prompt template, then forwarded to the LLM model, and finally we get the summarized output. To get the summary, we execute "output_summary = chain.run(documents)". The result is a concise summary of Dr. Kalam’s speech.
+
+Now, for larger documents, we use the MapReduce summarization technique. First, we split the document into chunks using "from langchain.text_splitter import RecursiveCharacterTextSplitter" and create a text splitter like "text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=100)". Then we split the documents with "final_documents = text_splitter.split_documents(documents)". These chunks are individually summarized using a prompt template for each chunk, for example "chunk_prompt = '''Please summarize the following speech: {text}'''" and "chunk_template = PromptTemplate(template=chunk_prompt, input_variables=['text'])".
+
+Once we have all the chunk summaries, we create a final prompt template for combining them, like "final_prompt = '''Provide the final summary of the entire speech with important points. Add a motivational title. Start with an introduction and present summary in numbered points: {text}'''" and "final_template = PromptTemplate(template=final_prompt, input_variables=['text'])". Then we create the MapReduce summarize chain using "map_reduce_chain = load_summarize_chain(llm=llm, chain_type='map_reduce', map_prompt=chunk_template, combine_prompt=final_template, verbose=True)". Finally, we execute "output_summary = map_reduce_chain.run(final_documents)" to get the final summarized output of the entire speech, including the motivational title and numbered points.
+
+This way, the stuff document chain works best for small documents that fit in the LLM context window, while MapReduce is ideal for larger documents. In MapReduce, each chunk is summarized individually and then combined with another prompt template to get the final output.
+
+In our next video, we will discuss the refine chain summarization technique and highlight the differences between stuff, MapReduce, and refine summarization. This concludes the practical implementation of stuff and MapReduce summarization techniques using LangChain.
+
+**D) Refine Chain Summarization Intuition And Implementation**
+
+So we are going to continue our discussion with respect to text summarization. We have already seen stuff document chain summarization and MapReduce chain summarization. In this video, we are going to explore refine chain summarization. Refine chain is a slight modification compared to MapReduce. Let’s say we have an entire document that we have divided into smaller chunks: chunk one, chunk two, and so on.
+
+Whenever we use refine chain summarization, we take the first chunk, pass it to a prompt template along with the LLM model, and get the summarization output for that chunk. Then, when we move to the second chunk, we do not just pass it alone to the prompt and LLM. Instead, we also take the previous summarization result as a reference along with this second chunk. Refine essentially updates a rolling summary by iterating over the document sequentially. Each new chunk is summarized in context of the previous summaries.
+
+For example, chunk one produces summary one. Chunk two is then combined with summary one and passed through the prompt template and LLM to generate summary two. This process continues iteratively for all subsequent chunks. Each chunk’s summary is refined with respect to all previous summaries, rolling over the results to create a more cohesive final summary. After processing all chunks, we get the final refined summary. This approach differentiates refine from MapReduce and stuff chain, as it focuses on incrementally improving the summary rather than processing each chunk independently or combining everything at once.
+
+The practical implementation of refine chain is simple using LangChain. We use "from langchain.chains import load_summarize_chain" and create a chain with "chain = load_summarize_chain(llm=lm, chain_type='refine', verbose=True)". To get the final refined summary, we run "output_summary = chain.run(final_documents)" and then print it using "print(output_summary)". Here, each chunk is processed sequentially, and the summary is refined progressively by including the previous summary in the context.
+
+At the end, refine summarization ensures that the summary evolves iteratively, improving with every chunk processed. The first chunk’s summary is combined with the second chunk, passed to the LLM, and this continues until all chunks are processed, giving a much more polished and coherent summary.
+
+In this series of videos, we have covered all three types of summarization techniques: stuff document chain, MapReduce, and refine chain. We have also understood their theoretical intuition and practical applications. In the next video, we will develop an end-to-end project implementation for both structured and unstructured content using these summarization techniques.
+
+**XV) Gen AI Projects- Youtube Video And Website Url Content Summarization**
+
+**A) End To End Project Demo**
+
+So finally we are going to create our end-to-end Gen AI project using LangChain, where we will summarize text from YouTube videos or any external website. In this video, I am going to show you a demo of what this entire Gen AI app actually does. I will go ahead and enter all the required values that you see on your screen.
+
+On the left-hand side, we will use the Grok API key to access our open-source models. Here, you have the option to enter any URL. This URL can be a YouTube URL or a website URL. Once you enter the URL and click on summarize, the app will extract content from the URL and summarize it for you.
+
+For example, I have a video on my YouTube channel titled “AI versus ML versus DL versus Generative AI.” I copy and paste the video URL into the app and click summarize. If the Grok API key is missing, the app prompts you to provide it. After adding the API key from my env file, I click summarize again. The app then fetches the transcript of the video and summarizes it. The model I am using is the Gamma model from Google, which is fully open source. I also tested other models like LLaMA 3 and Mistral, but the Gamma model provided the best results.
+
+The summary generated explains the concepts of generative AI, which is a subset of deep learning focused on generating content. This functionality works for YouTube videos. Similarly, we can summarize content from websites. For example, I can enter a URL like docs.blacksmith.com, click summarize, and the app will fetch and summarize the content of that webpage.
+
+I can even try other websites, like LangChain’s documentation. By copying the introduction section of LangChain.com, pasting it into the app, and clicking summarize, the app provides a concise summary of the lecture and framework content. It handles multiple sources efficiently and delivers a clear summary every time.
+
+This demo gives an overview of the Gen AI app’s capabilities. In the next video, we will start coding step by step to implement each part of this project, making sure everything works as expected.
+
+**B) Implementing Youtube Video And Website Url Content Summarization GEN AI App**
+
+So finally, I’m excited to implement this amazing end-to-end project related to text summarization. I’ll start by creating an app.py file inside our project folder, which is where we’ll write the entire code. The reason for this folder structure is to keep all common libraries and resources in one place, which is useful for building robust, end-to-end projects.
+
+Step 1: Install Required Libraries
+
+We’ll be using a few external libraries:
+
+validators – to validate URLs.
+
+youtube-transcript-api – to extract transcripts from YouTube videos.
+
+Make sure your virtual environment is active and run:
+
+pip install -r requirements.txt
+
+
+This will install all necessary libraries, including validators and youtube-transcript-api.
+
+Step 2: Import Libraries
+
+We start the code by importing all required libraries:
+
+import validators
+import streamlit as st
+from langchain.prompts import PromptTemplate
+from langchain_grok import ChatGrok
+from langchain.chains.summarize import load_summarize_chain
+from langchain_community.document_loaders import YouTubeLoader, UnstructuredURLLoader
+
+Step 3: Streamlit App Setup
+
+We set up the page, title, and subheader. Then, we create sidebar input fields for the Grok API key and the URL to summarize:
+
+st.set_page_config(page_title="GenAI Text Summarizer")
+st.title("GenAI Text Summarizer")
+st.subheader("Summarize YouTube videos or websites")
+
+with st.sidebar:
+    grok_api_key = st.text_input("Grok API Key", "", type="password")
+    url = st.text_input("Enter YouTube or Website URL", "", placeholder="https://")
+
+Step 4: Validate Inputs
+
+We check that both the API key and URL are provided and that the URL is valid:
+
+if not grok_api_key.strip() or not url.strip():
+    st.error("Please provide both API key and URL to proceed.")
+elif not validators.url(url):
+    st.error("Please enter a valid URL (YouTube or Website).")
+else:
+    try:
+        with st.spinner("Processing..."):
+            # Load data based on URL type
+            if "youtube.com" in url:
+                loader = YouTubeLoader.from_youtube_url(url, add_video_info=True)
+            else:
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0 Safari/537.36"
+                }
+                loader = UnstructuredURLLoader(urls=[url], verify_ssl=False, headers=headers)
+            docs = loader.load()
+
+Step 5: Initialize LLM and Prompt Template
+
+We initialize the Grok model and define the prompt template for summarization:
+
+llm = ChatGrok(api_key=grok_api_key, model="gamma")
+prompt_template = "Provide a summary of the following content in 300 words: {text}"
+prompt = PromptTemplate(template=prompt_template, input_variables=["text"])
+
+Step 6: Create Summarization Chain
+
+We define the summarization chain and generate the summary:
+
+chain = load_summarize_chain(llm=llm, chain_type="stuff", prompt=prompt)
+output_summary = chain.run(docs)
+st.success("Summary generated successfully!")
+st.write(output_summary)
+
+Step 7: Exception Handling
+
+We handle any exceptions gracefully:
+    except Exception as e:
+        st.exception(f"Error: {e}")
+
+Step 8: Run the App
+
+Finally, run the Streamlit app in your terminal:
+
+streamlit run app.py
+
+
+Make sure all required dependencies (unstructured, youtube-transcript-api, validators, etc.) are installed in your environment. Test it with both YouTube URLs and website URLs to ensure it works correctly.
+
+This completes the setup for our end-to-end text summarization app using LangChain and Grok API.
+
+The app extracts content from the URL, generates a summary using the LLM, and displays it in Streamlit.
+
+This is a fully functional demo ready for further enhancements.
+
+# **XVI) Text To Math Problem Solver Using Google Gemma 2**
+
+**A) Demo of the End to End Project**
+
+Hello guys. So we are going to continue our discussion with respect to our LangChain series. In this video and the upcoming series of videos, we are going to discuss another amazing new project. The project is called Innovative Math and Data Source Assistant using Google Gamma 2. Google Gamma 2 is an open-source model from Google, which is quite powerful with respect to language modeling, and it gives amazing results. That is the reason we are going to use it for this project.
+
+The main idea behind this project is that whatever question you ask this GPT-like generative AI application, related to any math problem, it should be able to give you the answer. The question can be in the form of text, and the system should automatically understand your query and provide the answer.
+
+Additionally, when studying math, there might be extra information you want to know, such as formulas. For example, the formula for the area of a circle is A = π * r ** 2. This type of information can be pulled from external data sources, so we are integrating Wikipedia to provide relevant context along with the answer.
+
+Let me show you a demo of this project. First, we enter the Grok API key:
+
+grok_api_key = "your_grok_api_key_here"
+
+
+Once entered, the assistant will say, “Hey, I’m a chatterbot who can answer all your math questions.” For example, if we input the following text question:
+
+question = """
+I have five bananas and seven grapes. I ate two bananas and gave away three grapes.
+Then I buy a dozen apples and two packs of blueberries. Each pack of blueberries contains 25 berries.
+How many total pieces of fruit do I have?
+"""
+
+
+The system will interpret the question, perform calculations, and generate a step-by-step answer. When we click Get Answer, it processes the numbers and provides the solution. In this case, the answer is:
+
+answer = 69
+
+
+Breaking down the calculation:
+
+Step-by-step
+bananas_grapes = 5 + 7             # 12
+after_eating_giving = 12 - 2 - 3   # 7
+total_apples = 7 + 12               # 19
+total_blueberries = 2 * 25          # 50
+total_fruit = 19 + 50               # 69
+
+
+As you can see, the system handles the arithmetic automatically. It calculates all intermediate steps to arrive at the final answer. This means that you can input any text-based math problem, and the assistant will solve it and explain the steps clearly.
+
+In the next video, we will build this application completely from scratch. We will first develop the left panel of the Streamlit app, and then build the full interface. We will also see exactly how we use Google Gamma 2 to solve math problems efficiently.
+
+So yes, this was it from my side for this demo and theoretical overview. I will see you all in the next video where we implement everything practically from scratch. Thank you.
+
+**B) End To End Text to Math Problem Solver Using Google Gemma2 Model Implementation**
+
+Hello guys. So let’s go ahead and build our end-to-end generative AI application based on the demo that we have already seen. To start with, we will require the Streamlit library, as we are going to create the whole application using Streamlit. Along with that, we will import ChatGrok, because we are going to use the Google Gamma 2 model.
+
+Additionally, we will use two important chains: LM Chain and LM Math Chain, since we need to perform mathematical calculations within the app. These libraries will be useful for our math-solving functionality. Furthermore, to enable interaction between the agents and access external information, we will also use Wikipedia, PromptTemplate, AgentType, initialize_agent, and Tools from LangChain. If you want to load the API key from an environment file, you could use load_dotenv, but in this case, we will provide the API key directly from the website interface. Finally, for tracking interactions, we will use the StreamlitCallbackHandler.
+
+First, let’s set up our Streamlit app. We create our Streamlit script and configure the page using:
+
+st.set_page_config(
+    page_title="Text to Math Problem Solver and Data Search Assistant",
+    page_icon="🧮"
+)
+st.title("Text to Math Problem Solver using Google Gamma 2")
+st.write("This app helps solve math problems and fetch relevant data from Wikipedia.")
+
+
+Next, we will create a sidebar input for the Grok API key:
+
+grok_api_key = st.sidebar.text_input("Enter your Grok API key", type="password")
+if not grok_api_key:
+    st.info("Please add your Grok API key to continue.")
+    st.stop()
+
+
+Once the API key is provided, we can initialize our language model:
+
+llm = ChatGrok(model="gamma", api_key=grok_api_key)
+
+
+Now we will initialize our tools. First, we create a Wikipedia tool:
+
+wikipedia_tool = WikipediaWrapper()
+wikipedia_search = Tool(
+    name="Wikipedia",
+    func=wikipedia_tool.run,
+    description="Tool for searching the internet and retrieving information to solve math problems."
+)
+
+
+Next, we initialize the math-solving tool using LM Math Chain:
+
+math_chain = LMMathChain(llm=llm)
+calculator_tool = Tool(
+    name="Calculator",
+    func=math_chain.run,
+    description="Tool for solving math expressions. Only provide mathematical expressions."
+)
+
+
+After setting up the tools, we define the prompt template for the agent:
+
+prompt = """
+You are an agent tasked with solving users' mathematical questions.
+Provide detailed step-by-step explanations and display answers point-wise.
+Question: {question}
+"""
+prompt_template = PromptTemplate(input_variables=["question"], template=prompt)
+
+
+We then combine the LM model and the prompt template into an LM chain, which can later be used as a reasoning tool:
+
+reasoning_tool = Tool(
+    name="Reasoning Tool",
+    func=LLMChain(llm=llm, prompt=prompt_template).run,
+    description="Tool for answering logic-based and reasoning questions."
+)
+
+
+With our tools ready, we initialize the agent by combining all tools:
+
+assistant_agent = initialize_agent(
+    tools=[wikipedia_search, calculator_tool, reasoning_tool],
+    llm=llm,
+    agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
+    verbose=False,
+    handle_parsing_errors=True
+)
+
+
+We also set up Streamlit session state to maintain conversation history:
+
+if "messages" not in st.session_state:
+    st.session_state.messages = [{"role": "assistant", "content": "Hi, I'm a math chatbot who can answer all your math questions."}]
+
+for message in st.session_state.messages:
+    st.chat_message(message["role"]).write(message["content"])
+
+
+Next, we create a function to generate responses from the agent:
+
+def generate_response(user_question):
+    response = assistant_agent.invoke({"input": user_question})
+    return response
+
+
+Now we set up the user interface to input a question and start the interaction:
+
+question = st.text_area("Enter your question", "I have five bananas and seven grapes. I ate two bananas and gave away three grapes. Then I buy a dozen apples and two packs of blueberries. Each pack of blueberries contains 25 berries. How many total pieces of fruit do I have?")
+
+if st.button("Find my answer"):
+    if question:
+        with st.spinner("Generating response..."):
+            st.session_state.messages.append({"role": "user", "content": question})
+            st.chat_message("user").write(question)
+            cb = st.container()
+            response = assistant_agent.run(input=question, callbacks=[cb])
+            st.session_state.messages.append({"role": "assistant", "content": response})
+            st.chat_message("assistant").write(response)
+            st.success(response)
+    else:
+        st.warning("Please enter your question.")
+
+
+Finally, after setting up the API key, initializing the LLM, creating tools, chaining the prompt, and building the session state, our app is ready to run. You can launch it using:
+
+streamlit run app.py
+
+
+When the app is running, you can input any text-based math problem, and the agent will generate a step-by-step response. For example, it can calculate the number of fruits, solve logical reasoning with apples, or answer complex arithmetic questions using the reasoning tool.
+
+This completes the Text-to-Math Problem Solver using Google Gamma 2, Wikipedia integration, and LangChain tools. You can extend this project by adding more tools, better prompts, or multi-step problem-solving capabilities.
+
+# **XVII) Huggingface And Langchain Integration**
+
+**A) Introduction To Huggingface And Langchain Integration**
+
+Today, we are going to continue our discussion on LangChain and start exploring Hugging Face. In our previous videos, we have already seen how to use Hugging Face embeddings, but in this module, we will dive deeper into Hugging Face’s integration with LangChain.
+
+On May 14th, 2024, Hugging Face published an article announcing a new partnership with LangChain, making it easier to work with Hugging Face language models directly within the LangChain ecosystem. Before this integration, developers had to use different Hugging Face libraries to call models, which was a bit cumbersome. With the new integration, this process is now simplified, and since our course focuses on the LangChain ecosystem, we will leverage this integration for our projects.
+
+First, you need to create an account on Hugging Face
+ if you don’t already have one. Hugging Face hosts a huge repository of models, not just one or two. You can find open-source models as well as paid models. For example, the Google Gamma 2 9B parameter model is available, along with many other models for NLP, computer vision, and multimodal tasks.
+
+Paid models require setting up API endpoints and may require a credit card, but Hugging Face still provides a wide range of free open-source models that can be used without much hassle. The platform categorizes models by tasks such as text-to-text, image-to-text, multi-modal models, visual question answering, document question answering, and more.
+
+For instance, if you want to perform image-text-to-text tasks, Hugging Face has models that handle both images and text. You can find the model details, requirements, and sample code to call these models either via the transformers library or via Hugging Face endpoints.
+
+However, our main aim is to simplify the calls to Hugging Face language models using LangChain. This allows us to integrate Hugging Face models directly into LangChain workflows without dealing with low-level API calls or multiple libraries.
+
+In addition to multimodal models, Hugging Face provides NLP-specific models, including text classification, question answering, and summarization. For example, you can check the Gamma 2 9B model for text summarization, test the inference API, and observe how large models require special handling due to their size. Smaller models, such as Meta LLaMA 8B, can be tested directly via the Hugging Face inference API.
+
+The Hugging Face documentation provides detailed guidance on installation, model usage, embeddings, and API access. With the integration into LangChain, we now have a Python package that brings the power of Hugging Face models into the LangChain ecosystem, making it easier to implement end-to-end generative AI applications.
+
+In the next video, we will cover practical implementations with Hugging Face, including embeddings and using models for real applications. After that, we will finally build a complete end-to-end project leveraging both LangChain and Hugging Face.
+
+So, I encourage you to explore Hugging Face, check out different models, and read their documentation. This will give you a good foundation before we dive into the hands-on examples in the upcoming sessions.
+
+That’s it from my side for this video. I’ll see you all in the next video. Thank you!
+
+**B) Langchain And Huggingface Integration Practical Implementation**
+
+Today we are going to continue our discussion on Hugging Face and LangChain. As mentioned earlier, Hugging Face and LangChain have now partnered together and created a new package called langchain-huggingface, which simplifies working with Hugging Face models in the LangChain ecosystem.
+
+Step 1: Installation
+
+First, we need to install the required package:
+
+pip install langchain-huggingface
+
+
+In my setup, I have a folder called ninth_folder with an experiment.ipynb file. We are using Python 3.10 in the virtual environment.
+
+You can also install from requirements.txt:
+
+pip install -r requirements.txt
+
+
+Next, we need the Hugging Face Hub, which helps with API calls to Hugging Face models:
+
+pip install huggingface_hub
+
+
+This package will allow us to interact with Hugging Face APIs directly, which is useful for both free and paid models.
+
+Step 2: Setting Up Environment Variables
+
+We will store our Hugging Face API token in a .env file and load it using Python:
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # loads environment variables from .env
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+
+This token is necessary to authenticate API calls for accessing Hugging Face models.
+
+Step 3: Using Hugging Face Models
+
+There are two main ways to access Hugging Face models:
+
+Hugging Face Endpoints (serverless API, recommended for free or Pro users)
+
+Direct model access with repo_id
+
+For this tutorial, we will use Hugging Face Endpoint from langchain-huggingface:
+
+from langchain_huggingface import HuggingFaceEndpoint
+
+repo_id = "mistralai/Mistral-7B-Instruct"
+lm = HuggingFaceEndpoint(
+    repo_id=repo_id,
+    task="text-generation",
+    max_new_tokens=150,
+    temperature=0.7,
+    huggingfacehub_api_token=HF_TOKEN
+)
+
+
+Now you can invoke the model like this:
+
+response = lm.invoke("What is machine learning?")
+print(response)
+
+
+You can also try other questions:
+
+response = lm.invoke("What is generative AI?")
+print(response)
+
+Step 4: Using Other Models
+
+You can access multiple models available on Hugging Face. For example, the Google Gamma 2 model:
+
+repo_id = "google/gamma-2-7b"
+lm = HuggingFaceEndpoint(
+    repo_id=repo_id,
+    task="text-generation",
+    max_new_tokens=150,
+    temperature=0.7,
+    huggingfacehub_api_token=HF_TOKEN
+)
+response = lm.invoke("What is machine learning?")
+print(response)
+
+
+Note: Some large models may not load automatically, and in such cases, you need a dedicated endpoint, which requires a paid Hugging Face account.
+
+Step 5: Creating Prompt Templates and Chains
+
+LangChain allows you to use prompt templates and LM chains for structured question-answering:
+
+from langchain import PromptTemplate, LLMChain
+
+template = """Question: {question}
+Answer: Let's think step by step."""
+prompt = PromptTemplate(template=template, input_variables=["question"])
+
+chain = LLMChain(llm=lm, prompt=prompt)
+response = chain.run("Who won the Cricket World Cup 2011?")
+print(response)
+
+
+Output:
+
+The 2011 Cricket World Cup was held in the Indian subcontinent, and the winner was India who defeated Sri Lanka by six wickets.
+
+Step 6: Hugging Face Embeddings
+
+Hugging Face also provides open-source embeddings, which can be used with LangChain:
+
+from langchain.embeddings import HuggingFaceEmbeddings
+
+embed_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embedding = embed_model.embed_query("This is a sample text")
+print(embedding)
+
+
+These embeddings can be used in retrieval-based applications or RAG pipelines.
+
+Step 7: Hugging Face Endpoints (Paid & Free)
+
+Free users: Limited serverless API requests.
+
+Pro/Enterprise users: Can create dedicated endpoints for large models and higher usage.
+
+Credit card required for paid endpoints.
+
+For most local experiments, free endpoints are sufficient.
+
+In the next video, we will build an end-to-end project using Hugging Face Endpoints and LangChain.
+
+**C) End to End Gen AI Project With Langchain And Huggingface**
+
+Today, we are going to see an end-to-end project using LangChain and Hugging Face integration. In this project, we will replace the previous Grok API and Gamma 2 model with a Hugging Face Endpoint model to perform text summarization.
+
+Step 1: Project Setup
+
+We are using a folder called ninth_huggingface_langchain with a app.py file. Previously, we had a text summarization app that could summarize content from a YouTube URL or any website URL using Grok API.
+
+Now, we will switch to Hugging Face models. First, install the required packages:
+
+LangChain Hugging Face integration: "pip install langchain-huggingface"
+
+Hugging Face Hub: "pip install huggingface_hub"
+
+Also, make sure you have a .env file containing your Hugging Face API token:
+
+HF_TOKEN=<your_huggingface_api_token_here>
+
+
+We will load it in Python like this:
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+Step 2: Update API Key in App
+
+In your app.py, replace the Grok API key with your Hugging Face API token. For example:
+
+Replace this
+grok_api_key = os.getenv("GROK_API_KEY")
+
+With Hugging Face API token
+hf_api_token = os.getenv("HF_TOKEN")
+
+Step 3: Import Hugging Face Endpoint
+
+Next, import the required Hugging Face library from LangChain:
+
+from langchain_huggingface import HuggingFaceEndpoint
+
+
+Now, define the model using the HuggingFaceEndpoint class. For example, using Mistral-7B-Instruct:
+
+repo_id = "mistralai/Mistral-7B-Instruct"
+
+lm = HuggingFaceEndpoint(
+    repo_id=repo_id,
+    task="text-generation",
+    max_new_tokens=150,
+    temperature=0.7,
+    huggingfacehub_api_token=hf_api_token
+)
+
+Step 4: Integrate with Streamlit
+
+Update the Streamlit input to ask for the Hugging Face API token:
+
+import streamlit as st
+
+hf_api_token = st.text_input("Enter your Hugging Face API token")
+
+
+Comment out any previous Grok API code and replace it with the Hugging Face endpoint model:
+
+lm = GrokAPI(model="gamma-7B", api_key=grok_api_key)
+replaced with
+lm = HuggingFaceEndpoint(
+    repo_id=repo_id,
+    task="text-generation",
+    max_new_tokens=150,
+    temperature=0.7,
+    huggingfacehub_api_token=hf_api_token
+)
+
+Step 5: Define Summarization Function
+
+We can create a helper function to summarize content from a URL:
+
+def summarize_content(url):
+    Extract text from URL (YouTube or website)
+    content = extract_text_from_url(url)  # Assume this function exists
+    prompt = f"Summarize the following content:\n\n{content}"
+    summary = lm.invoke(prompt)
+    return summary
+
+Step 6: Run the App
+
+Finally, run the Streamlit app:
+
+streamlit run app.py
+
+
+Now, you can enter your Hugging Face API token and provide a YouTube or website URL. The app will summarize the content using the Hugging Face model.
+
+For example, summarizing the video "AI vs ML vs Generative AI":
+
+url = "https://www.youtube.com/watch?v=<video_id>"
+summary = summarize_content(url)
+print(summary)
+
+
+Similarly, summarizing a webpage:
+
+url = "https://docs.langchain.com/"
+summary = summarize_content(url)
+print(summary)
+
+
+Note: The output may differ slightly from the Google Gamma 2 model since the Hugging Face model may be smaller, but it still provides a concise and useful summary.
+
+Step 7: Explore and Extend
+
+Now that your app works with Hugging Face, you can:
+
+Try other models from Hugging Face Hub
+
+Integrate embeddings using "from langchain.embeddings import HuggingFaceEmbeddings" for vector-based tasks
+
+Build RAG pipelines or Q&A apps with your endpoint
+
+Example embedding usage:
+
+from langchain.embeddings import HuggingFaceEmbeddings
+
+embed_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+embedding = embed_model.embed_query("This is a sample text")
+print(embedding)
+
+This gives you a fully functional end-to-end project using LangChain + Hugging Face, ready to extend for summarization, Q&A, or retrieval tasks.
+
+# **XVIII) Pdf Query RAG With Langchain And AstraDB**
+
+**A) End To End Project With PDf Query RAG With Langchain And AstraDB**
+
+So guys, in this video we are going to create an amazing LLM project, which is a PDF Query Application using LangChain and Cassandra DB. Cassandra DB will be created on a platform called DataStax, which allows you to create Cassandra DB in the cloud and perform vector search. Vector search is essential when working with large documents or building Q&A applications from PDFs.
+
+Before we dive into coding, let’s understand the architecture. Initially, you have a PDF of any size or number of pages. First, we will read the document using LangChain, which has functionalities to handle tasks like this efficiently. After reading the document, we will split the PDF content into text chunks. These chunks are created based on a specific token size. Here’s an example of reading the document and splitting it into chunks:
+
+from PyPDF2 import PdfReader
+
+pdf_reader = PdfReader("budget_speech.pdf")
+raw_text = ""
+for i, page in enumerate(pdf_reader.pages):
+    raw_text += page.extract_text()
+
+
+Next, we will convert these chunks into text embeddings using OpenAI embeddings. Text embeddings convert text into vectors so we can perform tasks like similarity search. OpenAI embeddings are used because they handle this efficiently:
+
+from langchain.embeddings import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings(openai_api_key="YOUR_OPENAI_API_KEY")
+
+
+Once we have embeddings, we need to store them in a database since large PDFs will generate many vectors. For this, we use Cassandra DB (or Astra DB, which is Cassandra hosted on DataStax). Cassandra is a NoSQL database designed for handling massive amounts of data with scalability and high availability. To connect and initialize the database, we use:
+
+import cashew
+
+cashew.init(token="YOUR_ASTRA_TOKEN", db_id="YOUR_ASTRA_DB_ID")
+
+
+Now, we create the LangChain vector store using Cassandra. This will wrap all vectors in a convenient structure and push the data to the database while automatically applying embeddings:
+
+from langchain.vectorstores.cassandra import Cassandra
+from langchain.vectorstores import VectorStoreIndexWrapper
+
+vector_store = Cassandra(
+    embeddings=embeddings,
+    table_name="qa_mini_demo",
+    keyspace="langchain_db"
+)
+
+
+Next, we split the PDF text into chunks using a character text splitter so that the token size does not increase too much. We also set chunk overlap for better context:
+
+from langchain.text_splitter import CharacterTextSplitter
+
+text_splitter = CharacterTextSplitter(
+    separator="\n",
+    chunk_size=800,
+    chunk_overlap=200
+)
+chunks = text_splitter.split_text(raw_text)
+
+
+We then add these chunks to the Cassandra vector store, which applies embeddings as it inserts them:
+
+vector_store.add_texts(chunks[:50])  # Insert top 50 chunks for testing
+
+
+Finally, we can query the PDF. When a human provides a text query, embeddings are generated and a similarity search is performed on the Cassandra DB. Here’s a sample interactive loop:
+
+while True:
+    query = input("Enter your question (or type 'quit' to exit): ")
+    if query.lower() == "quit":
+        break
+    results = vector_store.similarity_search(query, k=4)
+    for result in results:
+        print(result.page_content)
+
+
+For example, asking "How much is the agriculture credit target?" may return:
+"Agriculture credit target will be increased to 20 lakh crore with the focus on animal husbandry, dairy, and fisheries."
+
+Similarly, you can query GDP, budgets, or any other topic in the PDF.
+
+This approach allows you to build scalable Q&A applications for large PDFs using LangChain and Cassandra DB, powered by vector search. DataStax Astra makes this process smooth and provides a free vector search-enabled Cassandra DB for your projects.
+
+**XIX) MultiLanguage Code Assistant Using CodeLama**
+
+**A) End To End MultiLanguage Code Assistant Implementation**
+
+In this video, we are going to create our own code assistant, an end-to-end project using Code Llama. So, what exactly is Code Llama? It is an open-source large language model (LLM) developed by Meta, which allows you to build a personal code assistant capable of generating code from custom prompts. We will go step by step to implement this. I’ll also be using Ulama to access the model locally and in the cloud.
+
+Code Llama is a state-of-the-art LLM specialized for coding tasks. For example, if you provide a prompt like "Python code for Fibonacci series", it will return the complete Python code. As of January 29th, 2024, the latest update includes three main variants: Code Llama 70B Foundation, Python 70B (specialized for Python), and Code Llama 70B Instruct, which is fine-tuned for understanding natural language instructions. Essentially, Code Llama can generate code and natural language explanations from both code and text prompts. It’s free for research and commercial use and is based on Llama 2, fine-tuned for coding. Code Llama supports multiple languages including Python, C++, Java, PHP, TypeScript, C#, and Bash.
+
+To get started, you first download Ulama on Windows. After downloading, click the .exe file to install it. Ulama runs in the background, usually on a localhost IP. In the Ulama models directory, you will find Code Llama. You can run it via the command prompt using "llama run Code Llama". For example, if you provide a prompt like "Provide Python code to perform binary search", Code Llama will return the complete code instantly.
+
+Next, we create our custom GPT-like application called Code Guru using Code Llama. Open VS Code and create a virtual environment. In your requirements.txt, install "langchain" and "gradio". Then, create a model file where we define the behavior of our assistant:
+
+from code_llama import CodeLlama
+
+temperature = 1
+
+system_prompt = """
+You are a code teaching assistant named Code Guru.
+Created by Krish.
+Answer all code-related questions.
+"""
+
+
+Here, we set the temperature to 1 to make the model more creative and define the system prompt describing the assistant’s role.
+
+To run the model using Ulama, navigate to the folder containing your model file and execute:
+
+ulama create -f model_file.py CodeGuru
+
+
+Replace model_file.py with the actual model file name. Once running, you can test your assistant with:
+
+llama run CodeGuru
+
+
+and ask questions like "Who are you?" or "Who created you?". The assistant will respond with: "I'm Code Guru, an AI system designed to help with code queries. Created by Krish."
+
+Now, we integrate this with a Gradio front end. First, import the required libraries:
+
+import requests
+import json
+import gradio as gr
+
+
+We define the URL and headers for the API:
+
+url = "http://localhost:11434/api/generate"
+headers = {"Content-Type": "application/json"}
+
+
+Next, we create a function to generate responses from Code Guru:
+
+history = []
+
+def generate_response(prompt):
+    history.append(prompt)
+    final_prompt = "\n".join(history)
+    data = {
+        "model": "CodeGuru",
+        "prompt": final_prompt,
+        "stream": False
+    }
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    if response.status_code == 200:
+        output = json.loads(response.text)["response"]
+        return output
+    else:
+        return f"Error: {response.text}"
+
+
+This function appends the prompt to a history, sends the request to Code Guru via the API, and returns the generated response.
+
+For the Gradio interface, we use a text box for input and another for output:
+
+interface = gr.Interface(
+    fn=generate_response,
+    inputs=gr.Textbox(lines=4, placeholder="Enter your prompt"),
+    outputs="text"
+)
+
+interface.launch()
+
+
+Once launched, you can open the Gradio UI and ask questions like "Provide Python code to perform binary search" or "Provide Java code". The assistant responds instantly with the correct code. It also keeps a history of previous prompts, allowing a continuous conversation with context. For example, asking "Provide Python code to create Adam optimizer" will return a complete explanation along with the Python implementation. Similarly, asking "Provide Python code for Fibonacci series" will give the expected result.
+
+This setup demonstrates how you can create a multi-language code assistant using Code Llama and Ulama. With this, you have an end-to-end solution that combines a local LLM with a user-friendly Gradio interface, capable of generating accurate code responses across different programming languages.
+
+# **XX) Deployment Of Gen AI Apps In Streamlit and Huggingspace**
+
+**A) Deployment OF Gen AI APP In Streamlit Cloud**
+
+Now we have developed so many different applications. I will just try to show you how you can go ahead and deploy these kinds of applications. From all these examples, you can take up any example that you want. But I will go ahead and take this particular search engine which I had actually developed. I will go into its file. When I go over here, you'll be able to see all these files I have actually arranged in this way. This is my V and V folder and this is my requirement.txt.
+
+To start the work over here, what I am actually going to do is take this requirement.txt and copy it inside this particular folder. This is my search engine right now. Let me just go ahead and deploy this entire application as a Streamlit web app or on Streamlit Cloud. Since this is a Streamlit web app, I will first go ahead and show you the deployment with Streamlit Cloud. I will just go ahead and type "Streamlit Cloud" and hit enter.
+
+Here you'll be able to see that Cloud Streamlit provides a faster way to build and share data apps. But before that, let me go to my GitHub account. Inside this particular GitHub account, I will create a new repository. I will click on "New Repository" and write my repository name as "Search Engine LM". I will add a README file and a license, like the "General Public License", but you can select any license you like. Then I will click "Create repository".
+
+One thing you should understand is the reason why I'm using Streamlit Cloud—it allows you to deploy any number of apps over here. Now, inside this repository, I will open my folder and select all these files. I will drag and drop them into the repository. I don’t even require the Jupyter notebook .ipynb file because I just need "app.py" and "requirement.txt". Once done, I will commit the changes. Now I have my entire project on GitHub.
+
+Next, let's go to Streamlit Cloud. I will sign in here. You can deploy any kind of Streamlit web app this way, whether it is a generative AI application or a machine learning application. Here, you can see some examples that I have already uploaded. Streamlit Cloud is very convenient because you don’t have to pay anything for deployment, and it provides a URL that ends with streamlit.io. I will click "Create app".
+
+It will ask if I already have an app. Here, it has an option to integrate with GitHub. Since I have uploaded the app on GitHub, I will click this option. It will first ask for authentication with GitHub, so please ensure you authenticate with your GitHub account. After authentication, I will search for my repository, "KrishNayak06/SearchEngineLM" in the main branch. My main file is "app.py", so I will select "app.py". Please make sure you have "requirement.txt" in the repository; otherwise, Streamlit won’t know which libraries to install.
+
+Here, you can see the domain for your deployed app. You can also add secret keys, like API keys, as key-value pairs. For example, you can add an OpenAI API key using "st.secrets". In your code, you would access it like this:
+"openai_api_key = st.secrets['OPENAI_API_KEY']"
+This allows you to securely use keys in your app. In my case, I am not using any secret keys in the deployment because I will provide the Hugging Face API token from the frontend.
+
+Once everything is set, I will deploy the app. Streamlit will first install all the dependencies listed in "requirement.txt". After installation, your app will be live. In my app, I copy and paste my API key in the frontend input and test queries like "Tell me about machine learning". The app uses agents to search different sources like Wikipedia and arXiv to provide responses. For example, asking "Attention is All You Need research paper" communicates with arXiv and returns relevant information. Similarly, asking "Tell me about generative AI" fetches content from multiple sources.
+
+This deployment demonstrates how easy it is to get a working application online using Streamlit Cloud. Another platform for deployment is Hugging Face Spaces. Hugging Face provides a server space where you can deploy applications with a URL. You can discover different Spaces, upload your app, and it will be live just like Streamlit.
+
+In the next video, I will show how to deploy your application using Hugging Face Spaces. I hope you found this tutorial on deployment useful. Thank you, take care, and have a great day.
+
+**B)  Deployment Of Gen AI App In Huggingface spaces**
+
+So we are going to continue our deployment series. In our previous video, I have already shown you how to deploy your generative AI application using a Streamlit web app with the help of Streamlit Cloud. The steps were quite easy—we just needed to put all the code in our GitHub repository and connect it with Streamlit Cloud (or Streamlit Lab).
+
+Now, I am going to deploy this entire code solution in Hugging Face Spaces. Spaces allow you to deploy generative AI applications or any machine learning applications. Step by step, I will show you how to do this in an easy way. If you browse Spaces, you'll find many use cases that are already deployed, and you can even check out the code for reference.
+
+There are several steps involved in deploying a solution in Hugging Face Spaces. Here, we will also use something called "GitHub Actions". If you search for "Hugging Face Spaces GitHub Action", you'll see a repository titled "Managing Spaces with GitHub Action". This repository contains the code that we will use. Essentially, we will create a "YAML" file that tells GitHub Actions how to push our code to the Hugging Face Space for deployment.
+
+First, I will create a new folder inside the GitHub repository called ".github". When creating a CI/CD pipeline, you usually need a "YAML" file that contains all the configurations for pushing code to deployment servers. Inside the ".github" folder, I will create a subfolder "workflows", and within this, a file named "main.yaml". This YAML file contains the instructions that tell GitHub Actions to push the repository to Hugging Face Spaces whenever a commit occurs.
+
+The code in the YAML file contains key-value pairs specifying the workflow. It handles syncing to the Hugging Face Hub, pushing from the "main" branch, running the job on "ubuntu-latest", checking out the code, and finally pushing it to the hub using a secret token called "HF_TOKEN". I will show you how to generate this token and where to use it.
+
+Next, let's go to Hugging Face Spaces and create a new space. I will name it "search_engine_LM". I will select a license, such as "Apache 2.0". Although this is a Streamlit app, Hugging Face also supports static templates and Docker-based deployments. The default hardware is free CPU with "2 vCPUs" and "16 GB RAM", which is sufficient for most applications. I will make this space public and click "Create Space".
+
+Once the space is created, you can clone it and start working. Currently, there are no files in this space, so we need to push the files from our GitHub repository to this Hugging Face Space.
+
+To generate the "HF_TOKEN", go to your Hugging Face account, click "Settings", then "Access Tokens", and create a new token. Name it "token1" and select the type "Write" because we need write access to push files into the Hugging Face Space. Copy this token and save it securely.
+
+Next, I will set the Hugging Face username and space information in the YAML workflow file. My username is "Krishna06" and the space name is "search_engine_LM". The workflow pushes the "main" branch of our repository to this space using the "HF_TOKEN" secret.
+
+Inside the Hugging Face Space settings, under "Secrets and Variables" → "Actions", I will create a new repository secret named "HF_TOKEN". This secret allows the YAML workflow to authenticate and push files to the space. Once the secret is added, the CI/CD pipeline is ready.
+
+After committing changes in GitHub, the GitHub Actions workflow starts automatically. The workflow may show errors initially if previous test pushes were made to the same space. To fix this, we can update files and commit them again. For example, I edited a file and committed the changes. GitHub Actions then triggered the push to Hugging Face Spaces.
+
+Sometimes the README file can cause build errors due to special characters. I edited the README file to include a short description, like "This is my search engine" and "Search Engine with LM". After updating, committing, and pushing, the build starts. Hugging Face installs all dependencies from "requirements.txt" and builds the container.
+
+Once the build completes, the application runs on Hugging Face Spaces. You can share the URL to demonstrate your deployed app. In my app, I update my environment variable and Grok API key, then search for queries like "What is machine learning?". The app fetches information from DuckDuckGo search, Wikipedia, or other sources. Similarly, asking "What is generative AI?" provides relevant responses.
+
+In summary, this deployment mechanism demonstrates how to deploy generative AI applications using Hugging Face Spaces, GitHub workflows, and GitHub Actions. The CI/CD pipeline automates pushing updates from your repository to Hugging Face Spaces. This is an easy and scalable method for deploying any AI or machine learning application.
