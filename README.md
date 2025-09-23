@@ -146,6 +146,34 @@
 
 **B)  Deployment Of Gen AI App In Huggingface spaces**
 
+**XXI) Generative AI with AWS (Bonus)**
+
+**A) Life Cycle Of Gen AI Project In AWS Cloud**
+
+**B) Introduction To AWS Bedrock With Implementation**
+
+**C) Document Q&A RAG With Langchain And Bedrock**
+
+**D) End To End Blog Generation Gen AI Using AWS Lambda And Bedrock**
+
+**E) Deployment Of Huggingface OpenSource LLM Models In AWS Sagemakers With Endpoints**
+
+**XXII) Getting Started With Nvidia NIM and Langchain**
+
+**A) Building RAG Document Q&A With Nvidia NIM And Langchain**
+
+**XXIII) Creating Multi AI Agents Using CrewAI For Real World Usecases**
+
+**A) Youtube Videos To Blog Page Using CrewAI Agents**
+
+**XXIV) Hybrid Search RAG With Vector Database And Langchain**
+
+**A) Introduction To Hybrid Search**
+
+**B) Reciprocal Rank Fusion In Hybrid Search**
+
+**C) End To End Hybrid Search RAG With Pinecone db And Langchain**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -3591,3 +3619,502 @@ Sometimes the README file can cause build errors due to special characters. I ed
 Once the build completes, the application runs on Hugging Face Spaces. You can share the URL to demonstrate your deployed app. In my app, I update my environment variable and Grok API key, then search for queries like "What is machine learning?". The app fetches information from DuckDuckGo search, Wikipedia, or other sources. Similarly, asking "What is generative AI?" provides relevant responses.
 
 In summary, this deployment mechanism demonstrates how to deploy generative AI applications using Hugging Face Spaces, GitHub workflows, and GitHub Actions. The CI/CD pipeline automates pushing updates from your repository to Hugging Face Spaces. This is an easy and scalable method for deploying any AI or machine learning application.
+
+# **XXI) Generative AI with AWS (Bonus)**
+
+**A) Life Cycle Of Gen AI Project In AWS Cloud**
+
+So guys, we are going to continue the generative AI on cloud series. And in this video I'm going to probably discuss about the gen AI project lifecycle. Now, since you already know that, we are definitely going to develop a lot of applications specifically in cloud from the basic data ingestion till the deployment. So it is very much necessary that you actually understand a generic workflow of the gen AI project lifecycle.
+
+So let me quickly go ahead and let me go ahead and write some amazing things for you in this particular notebook, and I will be explaining you completely, step by step, how you can probably see or follow a project life cycle. And as we go ahead, there will be a lot many things that will be coming, like LM ops platform. And we will be working specifically with Azure AI studio, AWS SageMaker studio and all. So definitely both the clouds will get covered.
+
+So before I go ahead, please make sure that you keep the like target of all this kind of videos till 1000. That will definitely motivate me. And I've been exploring many more things so that you get the right kind of guidance and knowledge. So let me go ahead and let me start the gen AI project lifecycle.
+
+With respect to this gen AI project life cycle, I would like to make this entire life cycle into 4 to 5 steps. The first step is basically defining the use case. So what kind of use case are you solving? Then this use case can be a RAG application, can be a text summarization application, can be a chatbot. So based on different use cases that actually depends on your requirements, your company requirements. So this is the first step. You really need to define the use case that you're specifically doing.
+
+Now with respect to this particular use case we usually take this entire module into the scope part. So this is basically my scope, right, if I basically use a generic term. Now once you define a use case, let’s say that I am going to probably develop a RAG application. In that, I'm going to definitely use vector databases. I may have a lot of PDF files. I also need to probably convert that into vectors and store it in some kind of vector store DB. So some kind of use case you really need to define and all the requirements that is required in that particular use case.
+
+Coming to the next step, which is super important because this step will be involving two important things, and that is nothing but choosing the right model. When I say choosing the right model, here there are two different things that you can probably split this into. One, whether you are using some kind of foundation models. So here I'm going to write whether you are using a foundation model and solving a use case. This is the one category that I would like to divide this particular module into.
+
+The other category is that whether you want to build your own custom LLM. Custom LLM is nothing but building your LLM from scratch. Now, see, there are two things over here. When I say foundation model, foundation models are already those larger models like OpenAI, Llama 2, Llama 3, Google Gemini Pro. So these are all very huge foundation models. And for most of the generic use cases, you can directly use those kind of foundation models and you can solve the use case itself.
+
+Now with respect to these foundation models, we can also further go ahead and do fine-tuning. Let’s say I have a foundation model which I am specifically using to solve my business use cases. On top of that, if I really want to make this foundation model behave well for my own custom data, then what I can do on top of this foundation model is I can use LoRA techniques and I can probably fine-tune all this kind of models.
+
+So this is one of the steps. The second step that I have written over here is custom LLM. Custom LLM is nothing but building your LLM from scratch. And obviously, there is a lot of benefit if a company is building an LLM model completely from scratch for its specific use cases, but a lot of resources will definitely be required. We have to really take care of model hallucination, many things and all as we go ahead. But yes, I've also seen many, many companies developing their own custom LLM model.
+
+So choosing the right model, or what kind of models you're specifically using to solve this particular use case, becomes the second important module with respect to this gen AI project life cycle. And obviously I've spoken about foundation models both in AWS, in Google, in Microsoft Azure. Currently Microsoft Azure AI Studio specifically has all the access of OpenAI services, obviously because it is investing a huge amount of money over there.
+
+Now once you select the right kind of model, there are three main tasks that you probably do going forward. The first task is nothing but you can specifically use prompt engineering and solve a use case. The second task that you can actually do is fine-tuning. So with the help of fine-tuning, also, you can probably develop your own custom LLM model. And on top of that, you can basically do it.
+
+Let’s say you're completely creating your LLM model from scratch. One more important mechanism that you have is nothing but aligning, or you can probably say training with human feedback. Training with human feedback is one of the very important steps that is actually used while you are training your LLM models. How an LLM model is basically trained. I've already created a video in my playlist with respect to LangChain and all Generative AI playlist, you can probably go head over there. Fine-tuning, how to specifically do fine-tuning and all that, also I've actually shown you.
+
+The reason why I'm showing you this generative AI project life cycle is because tomorrow when I'm probably creating videos, in the upcoming videos related to this series, over there you'll be seeing all these particular steps going ahead.
+
+Now, once you do all the steps, the further step is something called evaluation. Evaluation is basically seeing how your model is performing by performing all these particular steps. There are also different performance metrics which we are probably going to follow. These two steps I would like to combine and say something like this — adapt and align models. So this will be the specific model approach that we specifically use for this purpose.
+
+Now over here, your model will be ready, everything is perfect, or you are able to solve the use cases. Let’s say your performance metrics is increasing and it is saying that now your model is ready. Now it comes to the deployment part. With respect to the deployment part, I would definitely say deployment, and further you also need to do a lot of integration with different applications. So I will probably say application integration.
+
+And here, what we do is we specifically perform two major steps. One, we optimize and deploy models. And this deployment is specifically done for inferencing. Here is where most of your cloud platforms and here is where your LM Ops is used. Different inferencing techniques are there. One technique I've already covered with respect to a platform, which is called Grok. It uses an inferencing technique which is called LP. So it is always a good idea that you should definitely know multiple ways of inferencing.
+
+See, at the end of the day, whatever models you create, unless and until the inferencing is not fast, you definitely cannot use those things. So it is very much necessary that you know the idea of this module extensively, because tomorrow building all these things is very easy. Fine-tuning is very easy, you definitely have a template, a framework, a dataset preparation, and all, and you can perform this particular step.
+
+That is the reason in this series of videos you'll be seeing how much I will be focusing on LM Ops platforms. And I will also show you multiple platforms which can definitely make your inferencing very good. This is the most important thing here. Definitely, we'll be using AWS and Azure. You can also use GCP. And we'll see what all services they have specifically provided for the inferencing purpose again. But initially, our focus will definitely be on AWS.
+
+Then the second step after we do the deployment in the application integration is that we build LLM-powered applications. Because your integration is done, your API is created, now it’s all about how well you can actually build the solutions. You can solve different use cases and all.
+
+So this overall gives a brief idea about the entire AI project life cycle. Since we have already started this journey on cloud, this is necessary to know and you should probably follow all the steps. And whenever I create any videos with respect to AI on AWS, all these steps will be considered in mind and it will be shown to you.
+
+**B) Introduction To AWS Bedrock With Implementation**
+
+Guys, here is an amazing crash course on Amazon Bedrock. Many people were requesting this. So, what exactly is Amazon Bedrock? It is the easiest way to build and scale generative AI applications within your AWS platform. Many companies are using this because there are so many providers of LLMs for different text generation and image generation tasks. There is OpenAI, Anthropic’s Claude, Google, Amazon’s own LLM called Titan, and Meta’s LLaMA 2. The main problem currently is that every API and model has a different setup. Amazon Bedrock provides one AWS platform where all the models are available, and through API calls, you can use any of them. OpenAI isn’t available yet on Bedrock, but almost all other major models are.
+
+The importance of Bedrock is that you don’t have to worry about scalability or deployment. While the cost is slightly more than OpenAI currently, it might reduce in the future. Amazon Bedrock is a fully managed service that makes foundation models from leading AI startups and Amazon available via an API. You can choose from a wide range of models to find the one that suits your use case. With Bedrock’s serverless experience, you can quickly start, privately customize a foundation model with your own data, and integrate it into your application using AWS tools. You don’t need to worry about deployment, scaling, or server management.
+
+Different models supported include AI21 Labs’ Jurassic-2 series, Amazon Titan models, Anthropic Claude models, Meta LLaMA 2, Stability AI’s Stable Diffusion, and Cohere’s Command models. You can perform tasks like chat, text generation, image generation, code generation, content creation, and contract entity extraction. Bedrock also provides hands-on labs and basic learning courses to get started.
+
+For example, you can use Titan Text G1 for meeting transcript action items or advanced Q&A with citations, LLaMA 2 Chat 13B for chain-of-thought reasoning, or Stable Diffusion for image generation. Bedrock provides an interactive playground to test prompts, such as generating an HD image of a beach at sunset.
+
+To get started with Python, first create a new environment:
+
+conda create -p venv python=3.10 -y
+conda activate venv
+pip install -r requirements.txt
+
+
+The requirements include libraries like boto3 and awscli. Then, create an IAM user in AWS, assign necessary permissions, generate an access key, and configure it using the CLI:
+
+aws configure
+AWS Access Key ID: <your_access_key>
+AWS Secret Access Key: <your_secret_key>
+Default region name: us-east-1
+Default output format: json
+
+
+Make sure the model access is granted in the US East-1 region, as some models require requesting access before usage.
+
+For example, using LLaMA 2 for text generation in Python:
+
+import boto3
+import json
+
+prompt_data = "Act as Shakespeare and write a poem on machine learning."
+
+bedrock = boto3.client(service_name="bedrock-runtime")
+payload = {
+    "prompt": prompt_data,
+    "max_gen_length": 100,
+    "temperature": 0.5,
+    "top_p": 0.9
+}
+
+body = json.dumps(payload)
+model_id = "<your_model_id>"
+
+response = bedrock.invoke_model(
+    body=body,
+    modelId=model_id,
+    accept="application/json",
+    contentType="application/json"
+)
+
+response_text = json.loads(response.get("body").read())["generation"]["text"]
+print(response_text)
+
+
+Similarly, for content generation using Claude (Cloudy) model:
+
+prompt_data = "You are an expert social media content generator."
+
+payload = {
+    "prompt": prompt_data,
+    "max_tokens_to_sample": 512,
+    "temperature": 2.8,
+    "top_p": 0.8,
+    "stop_sequences": ["\n"]
+}
+
+body = json.dumps(payload)
+model_id = "<cloudy_model_id>"
+
+response = bedrock.invoke_model(
+    body=body,
+    modelId=model_id,
+    accept="application/json",
+    contentType="application/json"
+)
+
+response_text = json.loads(response.get("body").read())["completions"][0]["data"]["text"]
+print(response_text)
+
+
+For image generation with Stable Diffusion:
+
+prompt_data = "Provide me a 4k HD image of a beach with blue sky, rainy season, cinematic display."
+
+payload = {
+    "text_prompts": [{"text": prompt_data, "weight": 1.0}],
+    "cfg_scale": 7.0,
+    "height": 1024,
+    "width": 1024,
+    "steps": 50,
+    "seed": 123
+}
+
+body = json.dumps(payload)
+model_id = "stability.stable-diffusion-xl-1024-v1-0"
+
+response = bedrock.invoke_model(
+    body=body,
+    modelId=model_id,
+    accept="application/json",
+    contentType="application/json"
+)
+
+image_bytes = base64.b64decode(response["body"]["artifacts"][0]["base64"])
+with open("output/image.png", "wb") as f:
+    f.write(image_bytes)
+
+
+This will generate a high-quality image in your output folder. You can experiment with different prompts, models, and parameters to create text, code, and images for multiple use cases. Amazon Bedrock provides a unified platform to manage models, scale easily, and integrate AI into your applications without worrying about deployment or server management.
+
+**C) Document Q&A RAG With Langchain And Bedrock**
+
+In this particular video, we are going to discuss an end-to-end Language Model (LM) project using AWS Bedrock and LangChain. This video was highly requested by many people, and the project we are going to develop is a document Q&A application. Specifically, the application will harness multiple models provided by AWS Bedrock, such as Cloudy, Llama 2, and optionally Amazon Titan. You can choose whichever models you prefer, and the goal is to implement the entire application from scratch. To illustrate, a quick demo is provided where the system functions as a Q&A tool over multiple PDFs. These PDFs are stored as vector embeddings inside a vector store, and whenever a query is asked, the system leverages the chosen Bedrock model to retrieve an answer from the documents. For example, if you ask “What are Transformers?” and select the Cloudy output, it will call the Cloudy API to fetch the response. Similarly, selecting Llama 2 fetches the answer from the Llama 2 model. This demonstrates how queries are processed against the PDF documents, and the user can get relevant responses in real time.
+
+The system may take some time initially because the code is not fully optimized yet, but after the first run, subsequent queries will perform efficiently. For example, when asking “What is YOLO?” through the Llama 2 output, the response is retrieved directly from the API model without delay. This project builds on previous sessions where we explored the power of Cloudy API and Llama 2, demonstrating how to invoke models and retrieve answers effectively.
+
+The first step in development involves creating a Python file, app.py, where all the code will reside. Before coding, several libraries and tools must be installed. These include PyPDF for PDF handling, LangChain for connecting with LLMs and embeddings, Streamlit for the user interface, and FAISS (or Chroma) for vector embeddings and storage. Additionally, Boto3 and AWS CLI are required to configure AWS credentials and interact with Bedrock. A virtual environment should be created, and all dependencies installed using a requirements.txt file. Full instructions and playlist references are provided for those unfamiliar with these steps.
+
+The project consists of two main steps: data ingestion and LM model integration, with a pre-step of data ingestion. In the data ingestion step, the application reads all PDFs from a specified folder and splits them into manageable chunks using a Recursive Character Text Splitter. This ensures that large documents are processed efficiently. The chunks are then converted into vector embeddings using a model like Amazon Titan, which is called via LangChain. These embeddings are stored in a vector store (FAISS or Chroma), which allows for fast similarity search when queries are made. While Amazon Titan embeddings are used in this project, alternatives like OpenAI or Google Gemini embeddings can also be applied.
+
+Once the vector store is ready, the second step involves querying the LM models. When a question is asked, a similarity search retrieves the most relevant chunks from the vector store. These chunks are then passed to the LLM along with a prompt template, which instructs the model to summarize or answer the query in detail (for example, in 250 words). This process allows the model to generate concise, accurate answers based on the context of the PDF documents.
+
+The app.py file begins with importing essential Python libraries such as json, os, numpy, and AWS-related libraries like Boto3. From LangChain, BedrockEmbeddings is imported for embedding generation, and Bedrock for LM model calls. Additional imports include document loaders from pyPDF and utilities for text splitting and vector store creation. A Bedrock client is created using Boto3, which allows the application to access AWS Bedrock models. The embedding model is initialized using the Titan embedding model, with the model ID configured according to AWS Bedrock’s specifications.
+
+For data ingestion, a function is created to load PDFs from the data folder using PyPDFDirectoryLoader, split the documents using RecursiveCharacterTextSplitter, and return the resulting chunks. Another function handles vector store creation using FAISS, taking the chunks and generating embeddings with the Bedrock embedding model, and saving the resulting index locally for future retrieval.
+
+Next, functions are created to load different LM models like Cloudy or Llama 2. Each function specifies the model ID, Bedrock client, and model arguments (like max tokens, temperature, and max generation length). These functions return the LLM object for further use. The prompt template is defined using LangChain’s PromptTemplate, specifying that the model should provide concise, detailed answers of at least 250 words and should not fabricate answers if unknown.
+
+The response function (get_response_LM) takes three parameters: the LLM model, the vector store, and the user query. It uses RetrievalQA from LangChain to perform similarity search on the vector store, retrieve relevant chunks, and feed them into the LLM along with the prompt template. The result is then returned as the output.
+
+Finally, the application is wrapped in a Streamlit interface. The sidebar contains a button for vector store update, which triggers data ingestion and vector embedding creation. Another button allows selecting the Cloudy output, which loads the vector store locally, retrieves the Cloudy LLM, and fetches answers for the user’s query. Similarly, a button can be created for Llama 2 output, following the same process. The first time vector creation occurs, files are saved in a folder called files_index, containing index.files and index.pickle. Subsequent queries use this local index for faster response.
+
+This complete project demonstrates an end-to-end workflow: ingest PDFs, create vector embeddings, store them in a vector store, integrate AWS Bedrock models via LangChain, and build a user-friendly Q&A application using Streamlit. The scalability of AWS Bedrock allows the use of multiple models, making the system adaptable for various real-world applications. By following this step-by-step approach, one can develop a robust, production-ready document Q&A application from scratch, fully leveraging cloud-based LLMs and embeddings.
+
+**D) End To End Blog Generation Gen AI Using AWS Lambda And Bedrock**
+
+We are continuing our generative AI on AWS Cloud series. In this specific session, we are going to develop an amazing end-to-end generative AI application using various AWS services. I will give you a brief architecture of what we are going to implement, and then step by step, I will show you how you can use the AWS ecosystem to implement an amazing generative AI application.
+
+For this use case, we are going to keep it as blog generation. Our main aim here will be to create an API. We will use Postman to hit this API with a specific body that includes the user’s query, such as what blocks or topics we want to generate. In AWS, we use Amazon API Gateway to create APIs, so this will be the service we use. Once this API is triggered, it will hit our Lambda function.
+
+This Lambda function will interact with Amazon Bedrock. If you don’t know about Amazon Bedrock, it provides access to multiple foundation models such as LLaMA, Amazon Titan, Claude by Anthropic, Command by Cohere, Mistral, and even Stable Diffusion for images. The Lambda function will take the user query, send it to the foundation model, and get back a response. In this case, the response will be our generated blog of 200–300 words. Finally, the Lambda function will save this content in Amazon S3 as a text file or PDF with a timestamp.
+
+To get started, you need an AWS account. Go to Amazon Bedrock and click Get Started. You will see the available foundation models. You can do chat, text, or image generation here. For example, if you want to use LLaMA 2 Chat, you can select it. Each model may require access approval depending on the region. You can manage model access by selecting the models you want and clicking Save Changes. Once access is granted, you can invoke these models.
+
+Next, let’s look at AWS Lambda. Lambda is a serverless compute service that runs code in response to events without managing servers. Instead of using an EC2 instance, which requires setup and maintenance, Lambda allows you to deploy your code directly and scale automatically. Lambda is cost-effective because you pay only for the number of requests and execution time.
+
+You can create a Lambda function from the console. Give it a name, for example, AWS_App_Bedrock, and select Python 3.12 as the runtime. After creating the function, you can add triggers like API Gateway. Inside the Lambda function, you will write the code to invoke Amazon Bedrock models. Although the code editor in AWS Lambda is available, it is better to write the code in VS Code and copy it over for better code suggestions and readability.
+
+In VS Code, first, create a virtual environment with Python 3.12. Install required libraries like boto3 using a requirements.txt file. Boto3 will be used to invoke the foundation models. After setting up your environment, create an app.py file and start coding. Define a function like blog_generate_using_bedrock that takes a blog topic as input and returns the generated blog as a string.
+
+Next, write your prompt for the model. For LLaMA models, use the inst keyword and wrap the user query between Human: and Assistant:. For example, “Write a 200-word blog on the topic <blog_topic>.” Then construct a request body with parameters like prompt, max_gen_length, temperature, and top_p.
+
+Use Boto3 to create a Bedrock runtime client with proper configuration, such as read timeout and max retries. Call invoke_model with the model ID and JSON-encoded body. Read the response using response.get('body').read(), and convert it to JSON. The generated blog content will be available in the generation key of the response. You can print it or save it to S3.
+
+This Lambda function will be triggered whenever the API Gateway endpoint is called. The function will send the user query to Bedrock, receive the generated content, and store it safely in S3. This setup provides a fully serverless, scalable architecture to generate content using AWS’s foundation models.
+
+And finally, I’m going to return the blog_details.
+
+So this function here, you can see it handles the blog generation. I’m also going to write my try-except block. I’ll create an exception as E and just print the errors. Understand one thing: whatever we print in AWS Lambda gets logged in CloudWatch, which is a great advantage because you can always check the logs there. So if there’s an error generating the blog, it will print that error, and I’ll return a blank response.
+
+Here, we have basically done almost everything. This is the blog detail that we are getting, and this function is responsible for generating the blog. Now, I’ll define the lambda_handler. Whenever the API Gateway sends a POST event, it will hit this function first. We have to capture the event along with the context and retrieve whatever query we are sending. In this case, it’s the blog topic.
+
+Inside the handler, I’ll parse the event using json.loads(event['body']). Then I’ll create a variable blog_topic to store the topic from the request body. For example, blog_topic = "machine learning". Next, I’ll call the function generate_blog_using_bedrock(blog_topic) which interacts with the LLaMA 2 model to generate the blog. Once the blog is generated, I’ll save it in S3 as a .txt file using the current timestamp to make each file unique.
+
+I’ll import datetime to create the timestamp and construct the S3 key as blog_output/{current_time}.txt. I’ll specify the bucket name, for example aws_bedrock_course_one. Then I’ll create a function save_blog_details_s3(s3_key, s3_bucket, blog_content) which uses boto3 to put the object into S3. The body of the object will be the generated blog.
+
+Once everything is done, I’ll return a status code 200 and a message "blog generation is completed" for verification. This completes the Lambda function logic.
+
+One important thing is that Lambda uses an older version of boto3 by default, which does not support Amazon Bedrock yet. So we need to create a Lambda layer with an updated boto3 version. To do this, create a folder named python, install boto3 using pip install boto3 -t python/, zip the folder as boto3_layer.zip, and upload it as a custom Lambda layer. Once the layer is created, attach it to your Lambda function to update the packages.
+
+After the Lambda function is ready, create an API Gateway with an HTTP API. Add a POST route, for example /blog_generation, and integrate it with the Lambda function. Deploy the API to a stage, like dev. Then you can call this API via Postman. Make sure the JSON body contains the key blog_topic with the topic value.
+
+Finally, create the S3 bucket if it doesn’t exist yet. For example, aws_bedrock_course_one. When the Lambda is triggered via API Gateway, the generated blog will be saved in this bucket as a text file. You can check logs in CloudWatch to debug any errors, like permissions issues. Make sure the Lambda execution role has permission to invoke Bedrock models and access S3.
+
+Once everything is configured correctly, hitting the API generates a 200-word blog using LLaMA 2 and saves it in S3. You can download the text file to see the blog content. This setup gives a full end-to-end generative AI workflow using AWS services, ready to scale or integrate with more advanced features like vector databases in future projects.
+
+**E) Deployment Of Huggingface OpenSource LLM Models In AWS Sagemakers With Endpoints**
+
+In this video, I'm going to show you how you can actually deploy your Hugging Face model, whether it’s an open-source model or any other language model. Specifically, we will be working with AWS SageMaker. Amazon SageMaker is one of the key services in AWS that allows you to complete the entire lifecycle of a data science or AI project, including MLOps and deployment.
+
+In this video, I will demonstrate how to take any Hugging Face model and deploy it directly in SageMaker. Make sure to watch till the end. One important thing to keep in mind is that some charges may incur while creating endpoints. So, please be cautious, and once your endpoints are no longer needed, make sure to delete them. I’ll provide full guidance as we go along.
+
+First, we start by searching for AWS SageMaker. I will also cover how to work with SageMaker Studio. You can click on “Getting Started.” The AWS SageMaker documentation is excellent. For those new to it, SageMaker provides machine learning capabilities for data scientists and developers to prepare, build, train, and deploy high-quality ML models efficiently.
+
+We will go step by step. First, I go to the domain section to create a domain. There are two options: set up for an organization or for a single user. For this demo, we will choose single-user setup. SageMaker automatically creates an IAM role with full access policy, public internet access, standard encryption, access to SageMaker Studio, SageMaker Canvas, and IAM authentication.
+
+Once you click to create the domain, it takes some time depending on usage. After creation, you’ll see the domain listed as pending and, eventually, it will be ready. You can also add multiple users if required. The launch button allows access to Canvas, TensorBoard, and the full Studio ecosystem.
+
+In Studio, you can access Jupyter Lab. This environment allows you to quickly start deploying, fine-tuning, and evaluating pre-trained models, especially for language models. You can also perform AutoML and model evaluation. For this demo, I will create a Jupyter Lab space named “Test Demo SageMaker” to work with Hugging Face models.
+
+Next, you select the instance type. Different instances have different pricing. For generative AI models, large GPU-based instances are often needed, but for this demo, we will use a smaller system. I selected ml.m5.2xlarge with 8 CPU cores and 32 GB memory. Storage is set to 10 GB. Once you click “Run Space,” the environment will be ready for coding.
+
+Inside the Jupyter Lab, the first step is to install the latest SageMaker SDK using pip install sagemaker. This updates your environment to the latest version. We then import SageMaker and Boto3 and set up the session with sagemaker.session.Session(). SageMaker automatically creates a default S3 bucket for data, models, and logs if it doesn’t already exist.
+
+Role management is crucial. Since SageMaker executes code using AWS services, the IAM role must be properly configured. Using Boto3, you can fetch the execution role and handle exceptions if the IAM user is not set. Once the role is set up, you can create the SageMaker session and print the session region and role ARN to verify everything is working.
+
+After setting up the environment, you can load any Hugging Face model. For this demo, I used DistilBERT uncased distilled squared for question answering. We define the Hugging Face Hub configuration and create the model using sagemaker.huggingface.HuggingFaceModel(). The model parameters include the role, transformer version, PyTorch version, and Python version.
+
+Deployment is done using the deploy() method of the Hugging Face model. You specify the instance type and count. Input data for inference must follow the model’s expected format, including question and context. Using predictor.predict(data), you get the model output. For example, asking “What does Chris like?” returned “data science.”
+
+You can view deployed endpoints in SageMaker Studio under Deployments. Each endpoint can be tested using a JSON body with the input data. Auto-scaling is also supported depending on the workload. This process allows you to use the deployed endpoint anywhere in your code.
+
+For larger models, you can call the Hugging Face deep learning container using the image URI. This is useful when running models in Docker containers. For example, Falcon B models with multiple GPUs require high-end instances with significant memory, CPU, and GPU resources, which incur higher costs. That’s why we used a smaller model for this demo.
+
+The steps, in short, are: update SageMaker, configure the role and region, call the SageMaker image URI, initialize the Hugging Face model, deploy it, and then use structured payloads for inference. The documentation and GitHub examples provide additional guidance.
+
+Overall, this demo shows how to deploy a Hugging Face model in SageMaker safely, keeping costs in mind, while providing a full development ecosystem. You can extend this knowledge to larger models and production-level deployment once familiar with the process.
+
+I hope you found this video helpful. I will provide all code examples and relevant links in the description. Refer to Hugging Face and SageMaker documentation for additional labs and use cases.
+
+# **XXII) Getting Started With Nvidia NIM and Langchain**
+
+**A) Building RAG Document Q&A With Nvidia NIM And Langchain**
+
+In this video, I’m going to show you some of the amazing and powerful features of Nvidia NeMo, which was recently announced by Nvidia.
+
+So, what exactly is Nvidia NeMo? It’s a breakthrough in generative AI development. Essentially, NeMo is a set of inference microservices for deploying AI models. It completely revolutionizes how enterprises can deploy generative AI.
+
+Along with this, Nvidia NeMo offers multiple AI models — it can be a single model or multi-model. Not only that, it provides you with Nvidia AI foundation models, which you can integrate into your applications just through APIs. It’s highly scalable and seamless to use.
+
+In this video, I’ll not just explain this, but also show multiple coding examples, so make sure you watch till the end.
+
+The clear point is — many LLM models will keep coming, but the winner will be the company that provides the best inferencing solution.
+
+Getting Started with Nvidia NeMo
+
+Here is the Nvidia NeMo page. You can instantly run and deploy generative AI models, explore community-built AI models, or access models optimized and accelerated by Nvidia. You can deploy anywhere with Nvidia NeMo.
+
+It’s easy to integrate — just a single API call and you’re ready to go. Also, if you want to try it out, Nvidia gives you 1,000 free credits upon account creation. That’s more than enough to explore and call multiple models.
+
+Exploring the Models
+
+Once you click “Try it Now”, you’ll see all the available models:
+
+LLaMA 3 70B
+
+Nvidia Foundation models
+
+Open-source models
+
+They cover multiple use cases: Reasoning, Visual design, Retrieval, Speech, Biology, Gaming, and more
+
+API Key Setup
+
+Before starting your project, you need an API key. For example, if you want to use LLaMA 3 70B instruct, click on the model, and you’ll see a chat interface.
+
+Click “Get API Key” (green button)
+
+This key will authenticate your Nvidia AI foundation endpoint for testing and evaluation
+
+Make sure to store it securely; you’ll need it for coding.
+
+Setting Up the Environment
+
+Open VS Code and create a conda environment:
+
+conda create -p venv python=3.10
+conda activate venv
+
+
+Create a requirements.txt file with packages you need, for example:
+
+openai
+python-dotenv
+
+
+Install packages:
+
+pip install -r requirements.txt
+
+Using the OpenAI Client with Nvidia NeMo
+
+Import and create a client:
+
+from openai import OpenAI
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+api_key = os.getenv("NVIDIA_API_KEY")
+
+client = OpenAI(
+    api_key=api_key,
+    base_url="https://integrate.api.nvidia.com/v1"
+)
+
+
+Create a chat completion:
+
+completion = client.chat.completions.create(
+    model="llama-3-70b-instruct",
+    messages=[{"role": "user", "content": "Provide me an article on machine learning"}],
+    temperature=0.7,
+    max_tokens=1024,
+    stream=True
+)
+
+for chunk in completion:
+    print(chunk, end="")
+
+
+Notice how fast the inferencing is — this is where Nvidia NeMo shines.
+
+Building an End-to-End RAG Application with LangChain
+
+Next, let’s create a RAG (Retrieval-Augmented Generation) application using LangChain and Nvidia NeMo.
+
+Update requirements.txt to include:
+
+langchain
+nvidia-nemo-endpoints
+langchain-community
+streamlit
+pypdf
+
+
+Install the packages:
+
+pip install -r requirements.txt
+
+Setting Up the Project
+
+Load PDFs from a folder (e.g., US Census PDFs)
+
+Create embeddings using Nvidia embeddings
+
+Split documents into chunks for better retrieval
+
+Example code snippet:
+
+import streamlit as st
+from nvidia import embeddings, chat_nvidia
+from langchain.document_loaders import PyPDFDirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.chains import RetrievalQA
+import os
+
+Load API key
+api_key = os.getenv("NVIDIA_API_KEY")
+
+Initialize model
+llm = chat_nvidia(model="meta-llama-3-70b")
+
+Load PDFs
+loader = PyPDFDirectoryLoader("US_Census")
+documents = loader.load()
+
+Split documents
+splitter = RecursiveCharacterTextSplitter(chunk_size=700, chunk_overlap=50)
+split_docs = splitter.split_documents(documents)
+
+Create embeddings
+embeddings_client = embeddings.NvidiaEmbeddings(api_key=api_key)
+vector_store = embeddings_client.create_vector_store(split_docs)
+
+Streamlit Interface
+
+Add buttons to trigger document embedding
+
+Ask questions using retrieval chains
+
+Display answers with context
+
+st.title("Nvidia NeMo Demo")
+
+if st.button("Document Embedding"):
+    # Create vector DB
+    st.session_state['vector_store'] = vector_store
+    st.success("Vector store DB ready with Nvidia embeddings!")
+
+query = st.text_input("Enter your question from documents:")
+if query:
+    qa_chain = RetrievalQA(llm=llm, retriever=st.session_state['vector_store'].as_retriever())
+    answer = qa_chain.run(query)
+    st.write(answer)
+
+
+Example question:
+
+“What is the difference in the uninsured rate by state in 2022?”
+
+The app fetches the answer from the documents using vector similarity search.
+
+Conclusion
+
+Nvidia NeMo allows fast inferencing and seamless integration with LangChain
+
+Supports multiple AI models and foundation models
+
+Enables end-to-end RAG applications easily
+
+Perfect for enterprises looking to scale generative AI deployments
+
+Definitely explore Nvidia NeMo and all the available models for your specific use cases: reasoning, visual design, retrieval, speech, and more.
+
+That’s it for this video!
+I’ll see you in the next one. Have a great day ahead!
+
+# **XXIII) Creating Multi AI Agents Using CrewAI For Real World Usecases**
+
+**A) Youtube Videos To Blog Page Using CrewAI Agents**
+
+Welcome to this crash course of creating multiple AI agents for real world use cases using Q AI if you haven't heard about this platform.
+
+So Q AI is an agent framework, uh, which will actually help you to create multiple agents for various amazing use cases.
+
+Um, so in this video, I'll be talking about this entire platform. Along with that, I will also show you with an amazing use cases. Uh, I will try to create a complete end to end use case and how I can use this Q AI platform or framework to develop multiple AI agents and where it will basically be required.
+
+See in long chain. Also you have an option to create agents, right? But here the main thing with respect to AI is that here your agent will be able to communicate with each other, right, in an efficient way so that we will be able to make or will be able to implement the task much more in an efficient way.
+
+Okay, so this is the entire web page of the crew. I. And right now many, many people are using it. They are creating multiple agent crews. You can see over here in last seven days all these things are there. You'll also be able to work with the open source tools that is already provided over here. And in this video I'll be also talking about that and showing you with the most practical use case.
+
+Um, so let me just go ahead and let me just start. First of all, we'll understand what kind of use case I will be solving. Okay.
+
+So let's say I have a project over here and everybody knows that I have a YouTube channel. Now in my YouTube channel, there are more than 1900 plus videos. Um, now, what I really want is that, uh, for every video, I need to have a blog page. Let's say I want to probably create a blog platform right now. I want to create a blog platform. Just let's imagine. So what I will do, I will take up every video of mine, probably based on the content. I will go ahead and write my entire blog page itself, write whatever content is required in that blog page.
+
+Now, this task is a really tedious task. Right now, what I'm actually going to do is that I'm going to automate this entire thing with the help of AI framework, where this blog platform will be automatically created from all my YouTube videos. With respect to all the things that I have said in my YouTube videos, that is most important.
+
+Okay, so with the help of Q AI, what we are really going to do is that first of all, let's say that if a user queries any kind of, uh, videos with respect to, I let's say I'm querying about Q AI over here. So what it should happen is that it should go to my YouTube channel, pick that particular video, extract that entire content and based on that particular content, summarize that information, put it into blog page.
+
+Right. Now, obviously, I know that I have created more than 1900 plus videos now if I really want to probably work with multiple people over here. So I need to have a content writer. I need to have a researcher, right, who will probably go and explore every video in my YouTube channel based on the query it is writing, and then it will go and validate that content. And after probably validating the content, I need to have a content writer separately who will specifically write this particular blog page. Also right now here, um, just to understand, for just one video it is fine. But if I have 1900 plus videos, it is going to take a lot of time because validating is also there. I need to probably go and check the content proofing, do multiple things over there, right?
+
+So with the crew AI, we can automate this thing completely in a whisker of time. Uh, and that that is where we will understand how this AI agents. Okay. And here also you can see, right, if I'm involving multiple people, they also need to communicate with each other. Right. Then again there may be some kind of communication gap. You know how they are specifically going to work. So with respect to that you are going to take a lot of time over here right now with the help of Creo AI. So Creo AI, if I talk about they are three main important components. One is the agents, one is the task and one is the tools.
+
+Okay. Now here if I probably consider this specific use cases as I'm saying. First of all, we need to explore my YouTube channel, right? So I need to have a researcher over here who will probably go and query any query in my YouTube video, and it will probably bring that particular YouTube video. Okay. After seeing that particular YouTube video, he needs to listen. He needs to probably hear out what you have about that entire YouTube video itself. So here also we require an expert right, expert who is good at data science, who is good at data analysts because my entire channel is based on data science itself, right? I so here obviously I need an expert person who will probably go ahead and watch each and every video and retrieve the content out of it. Right.
+
+Then after that, I need to pass it to my content writer. Right. So content writer. So here I have a domain expert person, right? It can be a data scientist. It can be an analyst. Right. So these two roles here you can basically consider in Q AI these are nothing but these are agents. Okay. So we are specifically going to take consider this as agents. So agents are none other than the people who are having some kind of experience with respect to the work. Right. It can be a domain expertise like in data science domain. It can be data scientist, data analyst. It can be a content writer. Right. So it can be anyone. Right. So this basically becomes an agent.
+
+So in the Q AI the first component is specifically agents. The second component that we specifically use in Q is task. Right now each and every agent does some kind of task. Let's say the domain expert people will probably go ahead and watch this particular YouTube video, try to translate, uh, take out the entire information that I've told in the YouTube video itself. Right. So, uh, that basically becomes the task for this particular agent, right? Similarly, content writer is the agent. Its task is to write the content. Right. So that can basically be a task. So this is the most important second component. Like what task a agent is specifically doing that also we need to define.
+
+And the third thing over here is about tools okay. Let's say, uh the domain expertise is over here. I do not have a domain expertise. Let's consider. So if that domain expert is one some kind of help, right. Uh, like, uh, let's say once it is searching from the YouTube, uh, video itself. Right. Uh, any of my video, it is probably searching, let's say that it wants to get the transcript of the video. So what may happen is that this person may use some kind of tool to do that. It can be a third party tool. It can be an API. It can be anything as such. In this particular case, uh, let's say I want to get the transcript of the my YouTube video. Then I may use a transcriber. Right. And that transcriber can be a third party tool itself. Right. And that is where a tool comes into existence. Like with what will be the main, uh, what will be the main way of probably let's say that if I have some kind of dependency on some third party tools itself to explore this particular task, right. How can I perform this particular task with the help of this particular tool? So I may also have a separate tool which will be able to provide me the transcription of the entire video. Right. So that is where we can specifically use the tool. Other tool can be okay, I want to probably do a Google search API right. Google search. So this can be another tool. Right. So similarly multiple tools will basically be there which we can actually use. So agent will have some specific task. And this task can be performed by a specific tool. Okay. So this is how it actually works.
+
+Now similarly here you can also see I have created two agents. One is researcher, one is content writer because that is what I actually require. Researcher will explore the videos from this particular videos. It may use some kind of IT tools to transcribe the entire content. Right. Analyze the entire content. Once that thing is done, then that particular researcher will pass it to the content writer because it now has the entire information. This entire info will be basically there after performing this particular task. Then once it provides it to the content writer, the content writer, what will happen based on the research? It will write the blog page, right? And finally, this will basically be my output, right? So here you can also see that interaction is there between the researcher and the content writer. Right. And this this process. Now see, this is one way. So this process is entirely called a sequential process. There are also other processes which is called as hierarchical processes. So here in the sequential process once the researcher completes his work, it is going to give that entire output to the content writer and the content writer further based on the task it is assigned, it will probably go ahead and create the blog page.
+
+So I hope you got an idea about what are the main important components of Creo AI. One is the agent, one is the task and one is the tools. And based on this we can automate this entire use cases. Now let's go ahead and implement it practically. As I said in the agents I'm going to probably create two agents. One is researcher, one is the content writer. Then I'm going to go ahead and define the task for this specific agent. Like explore videos. It can be explore videos. It can be exploring. Another thing it can be probably exploring Google Search API, anything it can be. Now to complete this particular task, we have dependency on some tool which is called as YT tools because, uh, at the end of the day, I require the transcription or of my entire YouTube video. So for that I may require a tool. And this can also be a custom tool, which you can also create by yourself. Right? So once we get this particular tool, we will be able to do this particular task. And after that we will be able to complete the researcher work. Once this researcher work is completed, we will pass this entire work to the content writer, because the content writer needs to write the entire blog page based on the research, right? So this entire process is also called as sequential process because once this is getting completed, the next step is to get to complete this. There are also other processing, other processes like hierarchical process where parallelly also you can actually do this particular task.
+
+Okay. Now let's go ahead and implement this entire project completely from scratch. So guys, I have opened my new project over here in my VS code. I will go to the terminal. The first step is probably to create our conda environment. Okay. And this you really need to do it for every project. So I will go ahead and write <code>conda create -p venv python=3.10</code>. So okay I will be taking 3.10. That is 3.10. Now after doing this installation probably happen once the installation actually happens on a new environment is basically created. So what we are going to basically do is that we are going to create our <code>requirements.txt</code> file. So let me just go ahead and write my <code>requirements.txt</code> file. Okay. Uh now inside this <code>requirements.txt</code> file I will be using some of libraries that I really need to install. One is the CRI. Then one I'm going to write Python. Okay. Right now I don't require this. So let me just go ahead and write <code>creo_ai_tools</code> right. So these are the two important libraries I will be requiring. So let me save it. Now this environment is basically getting created or it has got created. So I will go ahead and activate <code>conda activate venv</code>. Now let me quickly go ahead and let me do one thing guys. Let me hide my face so that you will be able to clearly see this okay. Now let me just quickly go ahead and write <code>pip install -r requirements.txt</code>. And this all both the requirements will get installed okay.
+
+Okay, so once this installation is basically happening, uh, we will continue our task. First of all, as you know we need to create our agents. So <code>agents.py</code> I will go ahead and create it. The next will basically be <code>tools.py</code>. Okay. Uh agent tools and I also require task okay. <code>task.py</code>. So these three components are we really need to create. So first of all I will go ahead and create my agents. Now for creating the agents. First of all, I will go ahead and import from Creo I import agent. Okay. Now, uh, since, uh, you know that, uh, we really need to create some kind of agent over here, right? And for creating an agent. So first of all, what all things I will create. So I will probably create a, uh, senior blog content researcher. Okay. So this will basically be my first researcher, which will be an agent who will be doing my task. Okay. So these are like people who will be handling all my tasks. Okay. Now let me quickly go ahead and create my researcher. So this researcher will be my blog researcher. Okay. And this blog researcher will be of type agent. Okay. Now with respect to agent, uh, there are some important parameters that we really need to use. Okay. First parameter we really need to give is role. What kind of role it is basically doing or what kind of role it needs to do it okay. So here I'm going to basically say that okay, these are nothing, but they have to probably be a blog creator or blog researcher from YouTube videos okay. YouTube videos. So these are some default information that we really need to give. One is the role. The other one is goal. Okay. So here we also need to specify the goal over here. Uh here we can basically write get the relevant, relevant video, uh, get the relevant video, content for the topic, whatever topic I say. Okay. From my channel. Okay. So this will basically be my role for this particular agent.
+
+You need to get the relevant video, content for the topic. This from my channel. Okay. Name. I can basically write over here description so I can. Right. So let me just go ahead and write. So let it be. I don't require this too, but it is getting suggested by the, uh, Amazon whisper that I have specifically used over here, but it's okay. I don't want this. Then I will go ahead and set up my verbose. So verbose will be true, which will be able to see some information out over here. We're also going to set one parameter which is called as memory true. So which will be initialized with some memory. And we will go. Also go ahead and write some backstory about this particular agent okay. So let's go ahead and define some backstory. So uh I will keep a backstory something like this. This person or this agent is an expert. Okay, see? See this? Okay, so I will just go ahead and write. This person is expert in understanding videos in AI, data science, machine learning and gen. I am providing suggestions. Okay. So this will basically be my back story. And then the third thing that I actually require is my tool, whether I'm going to use some tools or not. So here I'm going to basically define my tool. And right now I'll keep the tool empty because I have not created any tool. Okay. And then further I will also say allow delegation. Delegation basically means will I be transferring after whatever work that I do or this agent does to someone else. So we will set this allow delegation to true. Okay. So this is all the default parameters that we really need to write for an agent. Okay. Uh, and based on this you can create anything.
+
+# **XXIV) Hybrid Search RAG With Vector Database And Langchain**
+
+**A) Introduction To Hybrid Search**
+
+**B) Reciprocal Rank Fusion In Hybrid Search**
+
+**C) End To End Hybrid Search RAG With Pinecone db And Langchain**
+
+
