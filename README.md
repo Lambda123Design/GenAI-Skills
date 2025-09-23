@@ -174,6 +174,32 @@
 
 **C) End To End Hybrid Search RAG With Pinecone db And Langchain**
 
+**XXV) Introduction To Graph Databases And Cypher Query Language With Langchain**
+
+**A) Introduction to Graph DB Wwith Langchain**
+
+**B) What is Knowledge Graph**
+
+**C) Creating Your Neo4j AuraDB Database Instance**
+
+**D) RDBMS VS Graph Database**
+
+**E) Neo4j Property Graph Data Model**
+
+**F) Getting Started With Cypher Query Language**
+
+**G) Intermediate To Advance Cypher Query Language**
+
+**XXVI) Practical Implementation With Graphdb With Langchain**
+
+**A) Getting Started-Creating Environment**
+
+**B) Inserting Data In Graph DB With Python And Langchain**
+
+**C) Creating GraphQuery Chain With Langchain**
+
+**D) Prompting Statergies GraphDB With LLM**
+
 ## **Libraries**
 
 1. **langchain_community.document_loaders - To import document loaders**
@@ -4113,8 +4139,523 @@ You need to get the relevant video, content for the topic. This from my channel.
 
 **A) Introduction To Hybrid Search**
 
+Hello guys. So in this video we are going to discuss about something called as hybrid search. Okay. And this kind of search specifically we use in our Rag applications also. Right. So till now if you are following all the modules, the rag that we have specifically created, you know, let's say that if I have documents, let's say if this is my documents, then what we do is that we try to divide these documents into chunk of documents. Let's say this is d1, this is d2, this is d3. Like this we usually divide into multiple chunks of documents. Right. And this is dn.
+
+Now after dividing all these documents into chunks of documents then we specifically convert this into vectors. Right? So here we are basically converting into embedding vectors. Then after we convert all this text to vectors, the next step is that we store all these vectors in some kind of vector database. Right. So let's say one of the vector databases that we have already seen, vector database. We also say it as something called as vector store DB. Right. Now once this entire information is basically stored over here, it will be stored in the form of vectors. Right. We will be having some kind of numbers over here itself. Right.
+
+Now, when a user queries, whenever a user queries right over here, then what happens? Usually in this particular scenario this particular query is also converted into vectors. And then a vector dense search or vector search is basically done. Vector search is basically done in this particular vector database. So once we have this particular vectors we do a vector search from this particular vector database. And here are some of the algorithms like over here one of the algorithms that may take place over here for basically to match the exact vector search, we can actually use cosine similarity. Right. And based on this cosine similarity check, we will be able to get the response.
+
+And once we get this response we can combine this with our prompt template plus LM model and finally we can summarize any information as my final output. Right. So in this scenario you will be able to see that the kind of search that we are doing right, the vector dense search. This search is basically called as semantic search. Semantic search basically means we are trying to find out the similar vectors from this particular vector database, and based on that, when that similarity search is done, we are able to get the response. And this kind of Rag, most of the Rag application uses this kind of search.
+
+And if I talk about vector databases like Face, Chroma, right, they have this entire feature like this. Right. But I really want to talk about one more amazing search mechanism, which is called as hybrid search. Okay, so here I have this hybrid search. Now inside this hybrid search here we are just not focusing on only vector dense search mechanism. Right. Here we specifically combine multiple search techniques. Right. And what kind of techniques we will specifically apply over here? We will be combining multiple search techniques.
+
+Now specifically if I really want to divide all this particular technique, one is the semantic search, the second one is something called as syntactic search. Okay. Now I will talk more about it, what exactly are these kinds of search basically. So one is semantic search, one is syntactic search. Semantic search specifically we say it as a dense vector search. So here we are specifically trying to search elements that are similar right. And obviously when we are using this dense vector search we basically are checking out the similar kind of content.
+
+If I probably say with respect to syntactic search, right, or I can also say this as exact search, I can also say this as keyword search. Right. And if I also want to probably provide some more names like exact search and keyword search, and this usually happens with respect to a sparse. Or I can also say this as sparse vector search. So here you could see in semantic search I have a vector store right, which has all the vectors embedded over here. Right. So here all my text is basically converted into dense vectors. And this dense vector is basically stored in my vector store DB.
+
+In the case of syntactic search, you will be able to see that we will be having sparse matrix. So all this text will basically be converted into sparse matrix. Now if you remember or if you know right what is sparse matrix and how do we get a sparse matrix, if you remember if you know about these techniques like one hot encoding, bag of words or TF-IDF, right, whenever we try to use these techniques, we will be able to convert our text into sparse matrix. Now, when we say sparse matrix, that basically means there will be maximum numbers of zeros and ones, right, wherever a specific word will be available in a sentence that will be one and remaining all will be zeros. Right. So this is basically called as a sparse matrix.
+
+And with the help of this sparse matrix here we are just focusing on a specific keyword like this keyword. Right. Whatever keyword we are actually trying to search. And this sparse matrix also has some very important properties because from this we will be able to probably do the keyword search itself. And this is nothing but it can also be considered as an exact search. So in the case of hybrid search, it is just going to combine both these particular techniques, that is semantic search and syntactic search. Or I can also say this as exact search or keyword search. Right. It is just not going to be dependent on one of the search mechanisms.
+
+And similarly there are different different kinds of databases that are available just to show you as an example, like there is a database like Cassandra. Right. We will be using a library called as "cashier". Right. And with the help of this cashier you will be able to see that we will be able to access the Cassandra database. I will show this as we go ahead. Okay. But right now, just try to understand over here what exactly Hybrid Search is doing. Right? It is combining multiple search methodologies. And if I probably talk about in most of the e-commerce websites and all, hybrid search is definitely implemented in the backend.
+
+Now let's go ahead and see how does a hybrid search work. Okay. So here we will go ahead and write how does hybrid search work? So let's say in the case of hybrid search, what happens? Let's say if I have specific documents, for all these documents when we are storing this, when we are storing this in our vector database, let's say this is my vector database, okay? And this vector database supports both. Right. What does it basically support? It supports vector search, dense vector search. Along with this it also supports keyword search. It has both this particular property.
+
+Now whenever I have this particular document inside this particular database or inside this particular vector store DB, this document will also be converted into a sparse matrix. Right. By using techniques like TF-IDF or bag of words. So this kind of embeddings it will be converted and it will be stored inside this particular vector database. Along with that, for the same documents, we will also try to convert this into vectors, which will be my dense vectors. Dense vectors do not have maximum number of zeros or ones. Okay, that is the difference. And we will try to store these particular vectors inside this particular vector store DB.
+
+And again here you can use different different techniques, or the techniques can be anything as you want, like we have seen. Right. We have used different different embedding techniques. We have used OpenAI embedding techniques, we have used Llama embedding techniques, or if you want Hugging Face embedding techniques. So by all these embedding techniques we can convert our text into dense vectors and we can store this in this particular vector database. Now the idea is very simple. Since we are storing this in both these particular formats, sparse matrix and dense vector matrix, whenever a user puts up any kind of queries, now with respect to this particular query, I will be able to retrieve two different kinds of results.
+
+One result will be something related to my exact match or exact search or keyword search. And with respect to this keyword search, let's say whatever results I am getting, it will be my top K results. Right. This will be based on this particular keyword search or exact search. So here sorry keyword search. I have written it downwards. Right. So here you will be able to see that whenever a user probably queries any information over here from this particular vector database, first of all, for the user query again their query will also be divided into two types. It will be converted into two types, one is the sparse vectors and the other one is something like dense vectors. Right.
+
+So both these vectors it will be converted. Then this part based on the sparse vectors, here we are specifically going to get the keyword search. And here we are going to get the results. Right. Let's say the top K results I will be getting over here. Based on these dense vectors, I am actually going to do the vector search. And again I will be getting another result over here. Right. Let's say this is my result one, top K result one. And this is my top K result two. Okay. Now top K result one and top K result two are specifically there. This is basically done on the vector search which is nothing but it is a semantic search. This is basically a semantic search, similar kind of elements. And this is nothing but this is a keyword search. Right. Based on the sparse vectors that we have actually taken.
+
+Now in hybrid search, what we do is that we combine both of them based on weightage. Okay. And then we finally get the final response. Now the question arises how we are going to probably combine this particular result one and result two to weightage based on this information that we have got. And finally, when we get the response, we can then further combine this with our LM model and summarize this entire data. Okay, that is something separate. But still the question arises how do we combine result one and result two, and how based on weightage we take our final result. Right. Final result.
+
+And that is what we will be seeing in our next video. The technique is very simple and the technique name is something called as reciprocal rank fusion in hybrid search. Okay. In hybrid search. So this technique we will be discussing in our next video which will be the core behind this particular hybrid search. But the idea is very simple. In hybrid search we take a combination of two different things. We try to do the search based on semantic syntactic, which will be the combination of dense vector search and exact search or keyword search. Okay. So both these particular techniques we basically use.
+
+So yes, this was it. In the next video we are going to discuss about the reciprocal rank fusion in hybrid search and how we can basically combine both these particular results based on some kind of weightage. Right. When I say top K result one, top K result two, that I may get five results. Right. Based on the keyword search, I may get five results based on the vector search, something like that. Right. So yes, this was it. I will see you in the next video. Thank you.
+
 **B) Reciprocal Rank Fusion In Hybrid Search**
 
+So guys, now let's go ahead and proceed with the discussion with respect to reciprocal rank fusion and hybrid search. As I said, whenever we try to query or whenever a user queries from this particular vector database, which supports both vector search and keyword search, which is a combination of semantic search and exact search over here. First of all, to get the keyword search, we have to convert this into sparse vectors, and the sparse vectors will be probably searching from this particular vector database, and we get top k results.
+
+Similarly, with the help of dense vectors, we also get a vector search. And here we are going to get a result that is top k results. Okay. Now combining both of them we have to probably consider a response. Right. How to probably get the final response. That is what I'm actually going to discuss now.
+
+Okay. So here, with the help of reciprocal rank fusion and hybrid search, we will be considering two important things. Okay, let's say this is my vector database. Okay. And from this vector database, you know that whenever a user queries. So based on this query, let's say if this is my dense vectors, first we are going to do the vector search, and we are going to get the top k results, right. So when I say top k results, let's say that this is my first document. Right. And this can be my second document. Right. And this can be my third document. Like this I will be getting a lot of documents.
+
+Similarly, over here, based on my sparse matrix search, that is the keyword search, I'm actually going to get my top k documents. So here also I will go ahead and draw this. So let's say here I'm going to get some other sentences. Okay. And the ordering will be different. Right. So here, let's say this is the order that I've actually got. But I got document one, two, three, four, five, let's say the five documents I've actually got. And here also we have got some other documents, so let's say some other documents. But here the numbering is different. Let's say the numbering is like 43251. Okay. The numbering is different.
+
+This is my result one top k documents and this is my result two top k documents. Okay. Now considering this, see here I've got in this ordering, that is 12345 sentence. That is that I got in my top k like document one, document two, document three, document four, document five. Similarly, over here, document four, document three, document two, document five, document one. This is the ranks that we have specifically got. Now how to calculate the final score. Because here this is based on my semantic search. This is based on my keyword search. When I say semantic search, that is basically based on cosine similarity, okay. So we are trying to find out the similar vectors and then we are trying to find out our final score.
+
+So in order to calculate the final score, the formula is very simple. Here we'll write:
+
+summation of 1 / (constant + rank of document)
+
+Now this particular constant, that is C, it depends on various databases. Okay. Now with respect to various databases, this may range between 1 to 60. Okay. And this is a constant case. In various databases they'll set this value to 10, 20. And some of the databases, I've seen the value to 60. Okay. So since this is a constant, we are just not going to focus much on this. Instead, I will just take up this formula. Now summation of i is equal to 1 / rank of t. Okay. Since this is a constant, for calculating every rank of every document, it will probably give you the same answer with respect to that particular constant; same impact it may be creating.
+
+Now how do we compute the rank, right? So for this particular sentence, you'll be seeing 1 / rank of D. So if I go ahead and compute this, this is nothing but 1/1, okay. This is nothing but 1/2 because this is rank two, right. This is rank three, so I'll get 1/3. It is nothing but 0.33. Then here I have 0.25. And this is my fifth document, let's say the rank is five. I'm actually going to get 0.2, okay. Similarly, in this particular case, this is my document four. Right. And if I try to compute this particular rank, it will be again 1/1, 1/2, 1/3, 1/4, 1/5.
+
+So that basically means the document D4 is basically getting a rank of one in this keyword search here. D4 is basically getting 0.25. Okay. Now when we try to combine the final score, okay, this is important. See this. So if I finally go ahead and take up document one, so if this is my document one and if I try to calculate the overall rank, then what we have to do, we have to do the summation. So let's see document one is giving 1 over here and 1/5. So I will just go ahead and write 1 + 0.2. So this will be 1.2, right.
+
+Similarly, if I go ahead and calculate for document two, right. So document two over here gives 0.5, right. So here I'm actually going to get 0.5 + document two over here is 1/3, that is nothing but 0.33, right. So here you can see I'm actually going to get 0.83. So this is my score that I'm actually going to get. And obviously this score is better than this score, so I will be getting document one based on my 50% probability of 50% focus on keyword search and 50% on semantic search. Right. If you change the weightage, then you'll be able to see that some values may also change.
+
+Similarly, you have this document three. Now in the case of document three, you'll be able to see that here I have 0.33. So let's calculate this: 0.33 + document three is nothing but 0.5. Again here I'm going to get the same value, see 0.83. Now both these ranks are same, right. So if I want to retrieve the top k result, obviously this will be shown first. And then based on this two, right, where the focus is more—whether it is on keyword search or semantic search—let's say if I say 70% focus is there on the keyword search, then over here you can see 0.5 value is higher than 0.33. So it is just going to display document three in the second rank.
+
+Right. So this way, the weightage can also be provided in keyword search and semantic search. Okay. And similarly we go ahead and calculate each and every document. So finally you can see that here we can combine result two and result one top k elements. And then we can use this reciprocal rank fusion in hybrid search by assigning ranks. And we will be able to calculate a score which will be finally given as a response. And here we can also assign weightage. And this can be combined with a prompt template. And we can summarize with our LM model. Right.
+
+So this gives an idea about the entire hybrid search. Right now, in this section, in this next section, what we are going to do is that we're going to also see a practical example of how a hybrid search is basically done. But before that, if you know about one more search, right? That is based on graph knowledge search. Okay. Graph knowledge search. So in this graph knowledge search, I hope you may have heard about graph DB. One of the most popular open-source graph DBs is Neo4j.
+
+Okay. Now if we are specifically using graph DB to store the vectors, let's say if this is my database and this database is nothing but my graph DB. In the case of graph DB, I will be having nodes which will be connected with relationships. Right. So this can be my node one, this can be my node two, and it will be connected with relationships. And whenever a user tries to query, there are three types of queries that happen: One is keyword search, which you can also call syntactic search or exact search. Then, along with this, it also supports semantic search. And finally, you will also be able to see that it supports graph knowledge search. Graph knowledge search.
+
+So it supports all these techniques, which is quite amazing. Just imagine, hybrid search supports only these two types. But now, with the help of graph knowledge search, we will still be able to create a very good efficient Rag application, right? With the help of graph DB. And this we will be seeing about graph DB in the upcoming videos, in the upcoming sections. But let's go ahead and see some practical example for hybrid search.
+
 **C) End To End Hybrid Search RAG With Pinecone db And Langchain**
+
+So we are going to continue the discussion with respect to the hybrid search. Here, we are going to implement a complete, amazing project with the help of hybrid search using LangChain. For this, we will be using a vector database called Pinecone. Pinecone provides both keyword search and semantic search capabilities.
+
+First of all, we will set up our account and then, with the help of code, we will try to write everything and create our vector database itself. So, go ahead and sign up—it is completely free. The first 2–3 instances you can create completely for free. I have already signed up, so I will log in. You just need to go to pinecone.io. Once inside, you will see that I have already created a Pinecone hybrid search instance. There is some data available, but as usual, we will not use that; instead, we will create our new index.
+
+Since I want to do everything with the help of code, we will create the instance programmatically. First, you need your API key. Just click on API key, copy it, and make sure it is set as your default. You can also rotate the key if needed. I will copy this key and start coding.
+
+Next, we need to install the required libraries. I have a requirements.txt with many libraries. For LangChain, we need several, and for Pinecone, we need pinecone-client, pinecone-text, and pinecone-notebooks. I have already installed these to save time, so everything is ready.
+
+Now, I will set my API key in a variable called API_KEY. You can also create an environment variable if you want. Since we are using LangChain, we will import the PineconeHybridSearchRetriever from langchain_community.retrievers. This class is responsible for both semantic and keyword search. Keyword search here refers to a combination of sparse matrix and dense vector search. To perform hybrid search, we need this retriever class.
+
+Before using the retriever, we first need to create our index in Pinecone. We will import OS and pinecone, and then define an index name. For example, hybrid_search_langchain_pinecone. Please use lowercase letters to avoid errors. Then we initialize the Pinecone client using our API key.
+
+Next, we check if the index already exists. If not, we create it using PC.create_index(). We need to specify the dimension of the vectors, which I set to 384 because we will use the Hugging Face sentence transformer embedding model (all-MiniLM-L6-v2), which generates 384-dimensional embeddings. For the metric, I use dot product, which works for both sparse and dense embeddings. Finally, we specify the serverless spec and the cloud region (us-east1 for AWS). Once this runs, the index will be created in our Pinecone account.
+
+Now that the index is ready, we can create our embeddings. I import HuggingFaceEmbeddings from LangChain and set model_name to all-MiniLM-L6-v2. The embeddings will be 384-dimensional. Make sure to set your Hugging Face token in your environment variables as HF_TOKEN. This is required for the embeddings to work.
+
+For the sparse matrix, we use Pinecone’s BM25 encoder, which is based on TF-IDF. We initialize the encoder and fit it on a list of sentences. For example, "In 2023 I visited Paris", "In 2022 I visited New York", and "In 2021 I visited New Orleans". After fitting, we can dump the sparse matrix values to a JSON file for storage or later use.
+
+Next, we create the Pinecone hybrid search retriever. This retriever combines both dense embeddings (from Hugging Face) and sparse embeddings (BM25). We pass the embeddings, the sparse encoder, and the Pinecone index. Once executed, the retriever is ready, and it supports both dense vector search and sparse keyword search.
+
+Now we can add text to our index. We insert all our sentences into the Pinecone index. Once inserted, we can verify that the data is correctly stored. You will see all three sentences in 384-dimensional vectors.
+
+Finally, we can perform hybrid search queries. For example, if we ask, "With what city did I visit last?", the retriever will use both dense and sparse embeddings to return the correct results: "In 2023 I visited Paris", "In 2022 I visited New York", and "In 2021 I visited New Orleans". Similarly, if we ask "Which city did I visit first?", it will return "In 2021 I visited New Orleans".
+
+This demonstrates a complete working example of hybrid search using Pinecone and LangChain. It combines both dense embeddings and sparse keyword search, providing accurate and efficient retrieval.
+
+I hope you found this example helpful. I will see you all in the next video. Thank you.
+
+# **XXV) Introduction To Graph Databases And Cypher Query Language With Langchain**
+
+**A) Introduction to Graph DB Wwith Langchain**
+In this video, and in the upcoming series of videos, we are going to discuss graph databases and see how we can create amazing generative AI applications using them. Specifically, we will be using LangChain to implement these applications.
+
+Let me first set up the context. In this series, there are many important concepts that we need to cover. First, we will learn about knowledge graphs, which form the fundamental concept behind graph databases. Understanding knowledge graphs will give us the foundation needed to work effectively with graph databases.
+
+Once we cover knowledge graphs, we will explore different open-source graph databases available in the market. While there are both paid and open-source options, we will focus on Neo4j, one of the most popular open-source graph databases. We will look at how to work with Neo4j, including how to insert data, create nodes, set properties, define relationships, and manage entities.
+
+To interact with Neo4j, we use Cypher queries, similar to how we use SQL queries with MySQL. One session will be dedicated to Cypher queries, where we will spend around 15–20 minutes learning how to write and execute them effectively. This hands-on session will help you become comfortable with graph database operations.
+
+After covering the fundamentals and Cypher queries, we will move on to developing RAG applications (retrieval-augmented generation) and other applications using graph databases, with Neo4j as our backend. This will demonstrate practical use cases of combining AI with graph structures.
+
+Additionally, LangChain has introduced an exciting new module called LangGraph. With LangGraph, you can create multi-AI agents that perform complex tasks. These agents also leverage the concept of knowledge graphs, making it essential to understand the topics we will cover in this series.
+
+Overall, this series will provide a strong foundation for working with graph databases and AI agents. It is going to be both interesting and highly informative.
+
+In the next video, we will start with a detailed explanation of what knowledge graphs are and then proceed to other related topics.
+
+I hope you find this video helpful. I will see you in the next video. Thank you!
+
+**B) What is Knowledge Graph**
+
+In this video, we are going to discuss Knowledge Graphs.
+
+So what exactly is a knowledge graph? You can consider a knowledge graph as a semantic network. Please pay attention to these keywords, as they are very important. A knowledge graph represents a network of real-world entities.
+
+For example, real-world entities could be events, situations, concepts, or even people and places. These entities illustrate the relationships between them, which is the key idea behind a knowledge graph.
+
+Let’s take an example sentence: “Rohit Sharma is the captain of the Indian cricket team.”
+
+In this sentence, we can identify several entities:
+
+Rohit Sharma → a person
+
+Captain → role or position
+
+Indian cricket team → organization
+
+As humans, we can understand this sentence easily. But to make machines understand it efficiently, it’s better to represent the data differently — this is where knowledge graphs come in.
+
+A knowledge graph is made up of three main components:
+
+Nodes – represent objects, people, places, or nouns. In our example, Rohit Sharma and Indian cricket team are nodes.
+
+Edges – define the relationships between nodes.
+
+Labels – describe the type of relationship. In our example, the label connecting Rohit Sharma to the Indian cricket team is “captain”.
+
+Let’s consider another sentence: “Virat Kohli is a player of the Indian cricket team.”
+
+Here, Virat Kohli is another node, and the relationship to the Indian cricket team is labeled “player”.
+
+Now, if we combine these relationships in a graph, we can see that Rohit Sharma and Virat Kohli are indirectly connected through the Indian cricket team. This is the power of a knowledge graph — it can help us derive connections between entities and reveal hidden relationships.
+
+Large-scale knowledge graphs are used in applications like Google Search. For instance, if you search for Virat Kohli, Google also shows related players like Rohit Sharma. This happens because all the entities and their relationships are stored and connected in a knowledge graph.
+
+Let’s see some real examples:
+
+Searching Krishna on Google shows details like YouTube channels, social profiles, and books — all connected through a knowledge graph.
+
+Searching Albert Einstein shows education, research, family connections, and related scientists like Isaac Newton or Stephen Hawking. These suggestions are derived from the knowledge graph connecting all relevant nodes and relationships.
+
+Knowledge graphs don’t just power search engines. They also influence YouTube search, ad recommendations, and many other AI-driven applications.
+
+In the next part of this series, we will discuss Neo4j’s graph database, which allows us to create, store, and query knowledge graphs efficiently.
+
+For example, in Neo4j:
+
+Nodes represent entities
+
+Relationships (edges) connect nodes
+
+Property keys store additional information
+
+Neo4j uses Cypher queries to retrieve and manipulate data. For instance, you can query relationships like “Chief Executive Officer”, and Neo4j will show that Elon Musk is the CEO of Tesla. You can also query best-selling Tesla models or even insert creative content like poems and define relationships between them.
+
+When combined with LangChain, Neo4j allows automatic creation of nodes and relationships, making it easy to build applications with rich, interconnected data.
+
+This concludes our introduction to knowledge graphs. In the upcoming videos, we will dive deeper into Neo4j and Cypher queries, and start building interesting graph-based applications from scratch.
+
+I hope you found this explanation easy to understand. See you in the next video. Thank you!
+
+**C) Creating Your Neo4j AuraDB Database Instance**
+
+So guys, in this section of the video, we are going to start with creating our Neo4j’s graph database account.
+
+Here, we will specifically use Neo4j Aura DB. If you search for “Neo4j Aura DB,” you will find the link to create your own database on the cloud platform. The best thing about Neo4j Aura DB is that you can run a single instance and develop multiple projects through it.
+
+Once you click on the link, you will see the Neo4j Aura DB page. It is described as the world’s leading graph database, fully managed as a cloud service — zero admin, globally available, and always on.
+
+To get started, click on Start Free. You can continue signing up with Google or any email ID. After agreeing to the Terms of Service, you will see three plans: Free, Professional, and Enterprise.
+
+If you are just trying it out for learning or small development projects, the Free plan is perfect. It does not require a credit card and provides access to all graph tools. The free plan is limited to 200,000 nodes and 400,000 relationships, which is sufficient for learning purposes.
+
+Once you select the free plan, a password is automatically generated. Make sure to download and save these details. You will get the instance URI, username, password, instance ID, and instance name, which are important when you start coding, especially with LangChain later.
+
+After this, you can categorize your project as personal or work-related, and specify the use case, like Data Science or Data Engineering. Then, your first instance will be created automatically.
+
+Creating the instance may take a few minutes. Once completed, you can see your instance along with details like the number of nodes and relationships created. The cloud region for your instance is displayed, and you will also see the connection URI.
+
+To access your database, click Open, enter your database username and password, and click Connect. You can save this information so you can quickly open the instance in the future.
+
+At this point, your instance is ready, but you have not created any nodes, relationships, or property keys yet. You can start writing queries in the Neo4j interface to create nodes, relationships, and property keys.
+
+Please follow all these steps carefully and have your account ready. In the next section of the videos, we will discuss how Neo4j is different from MySQL and explore its unique capabilities.
+
+So yes, make sure your account and instance are ready, and I will see you all in the next section.
+
+**D) RDBMS VS Graph Database**
+
+So in this section we are going to discuss about the basic differences between RDBMS versus graph database.
+
+When we talk about RDBMS this is nothing but this is my relational relational DBMs right database management system. Along with this we are going to compare with the graph database. If I probably take some of the example of RDBMS, it is nothing but like MySQL SQL server, right? I hope everybody may have known about this. Right. And you may have also used it.
+
+So in order to compare the differences. So let me go ahead and write RDBMS over here versus our graph database.
+
+So the basic difference is that I really want to talk about and this is important before we start, you know uh creating our entire nodes properties in graph database okay.
+
+So first is related to tables right. So in r d uh RDBMS uh we basically create tables. Right. Similarly in graph database here instead of creating tables, we will be creating something called as graphs.
+
+The second important difference is that inside this table we insert records right. We insert records. And this records will be something called as rows right. In the case of graph database we specifically use something called as properties and its it's values. Right? So here, instead of saying it as zeros we specifically say it as properties.
+
+The third thing over here and again we will be discussing about all these things when we do it in our practical implementation. If I probably talk about tables rows are there. Rows are for rows records right. Whenever we insert a record. But in every row there will be some kind of columns. And with respect to this columns, there will be data also. Right. Some data will definitely be there.
+
+So similarly over here, uh, sorry. Uh, this rows uh, I just need to make some change over here. When we say rows right over here inside this graph database we have something called as nodes. Okay. Nodes. Now this nodes will be like this circular structure. Right? It can be an entity. It can be a name. Something like that.
+
+When we talk about columns and data these are nothing. But it is basically properties and values. Properties and values. So how we represent columns and data in RDBMS. Similarly in graph database we represent it as properties and values.
+
+Then uh coming to the fourth and the important point which is called as constraints. I hope you have heard about this kind of constraints, where you have something like primary key, where you have foreign key where you have candidate key, right? So different types of keys are there. And the reason of making keys is that there will be a dependency of another table in a specific table itself.
+
+Similarly, over here we if we really want to create constraints in graph database, we basically create relationships. Relationships like one of the example I told. Right. So this is my two nodes. And this may be related to this right. Let's say over here I have Tesla. This is a company which is owned by Elon Musk. Right. So I can just go ahead and write owned. Right. So owned is basically a relationship.
+
+And in tables, uh, most of the queries we write a lot of joins, queries itself. Right now instead of writing join queries in graph database we specifically use something called as traversal. Traversal basically means based on the properties based on the nodes, based on the relationship, we travel from one node to the other node to finally get a result right.
+
+So these are some of the basic differences between RDBMS and graph database, right? Instead of using tables, we use graph over here. Instead of inserting records or rows, we create nodes over here. Then we have columns and data. Instead of columns and data we use properties and values. Similarly, with respect to constraint we have this primary key foreign key candidate key in RDBMS. Similarly here we have relationship and instead of join queries we use something called as traversal.
+
+Now let's talk about some of the important advantages. So let's go ahead and talk about advantages of neo4j's okay. Now there's some very good advantages. First, entire this neo four J database works with respect to a graph data model. We will talk more about this graph data model. Uh this graph data model will be responsible in creating this nodes um relationship properties and values and many more things properties and values.
+
+Okay, now coming to the second and very important point, when we use this neo for Jay in the cloud, it provides us real time insights, like as soon as I create a graph, because see, at the end of the day when we use this neo 4G there, you could see in that particular instance nodes were getting maintained in a separate way. Properties were getting maintained in a separate way. The relationships were getting maintained in a separate way right here.
+
+Uh, you'll be able to see that if I go to the third point, you will be able to retrieve the data very much easily just by writing one query. And over here we will be learning about this, which is called as Cypher query. like how we have a sequel query. Similarly, we'll go ahead and uh, write the cipher query. And sometime you don't even have to write the cipher query, right. Just by clicking on any of the relationships. And all automatically will be getting a basic template of all the queries itself. And that is all possible because of this Neo4j's database.
+
+Okay. As I said, uh, let's talk about this Cypher query. So we basically say Cypher query as this Cypher query language. Cypher query language. Right now inside the Cypher query language. Uh, it is you can just say it as it is a declarative. It is a decorated declarative query language. To represent. The graph. Visually. It is used to represent the graph visually.
+
+Okay. And the best thing about Cypher query will be that you'll be able to understand in a very much easy way, because it is human readable. Okay. And one of the very important thing that usually in RDBMS you sometime when there is a nested queries and all, you really have to use lot of joints. But uh, in neo4j's you don't have to use any joints. That is the best thing.
+
+So that makes this entire Cypher query language amazing for doing multi different different purposes for retrieving different, different kind of data itself. Okay. Uh, so we will be talking more about it as we go ahead. And I've also spoken about the advantages of neo for Jay, but if I probably talk about most of the common properties like acid properties, it supposed, uh, it neo four J supports complete acid properties, right?
+
+When we say acid, what does this basically mean? In RDBMS there are four important properties. One is atomicity, consistency, isolation, and durability. Right. So let me just go ahead and write this. It is nothing but atomicity. Okay. Consistency. Isolation. Along with this you also have this durability. So with respect to this acid properties which is one of the core features of RDBMS. Similarly this is also supported in Neo4j's.
+
+Um and um, you'll be able to see that, uh, once you start using this, there is no such kind of fixed schema. Okay. So one of the very good advantages with respect to Neo4j's is that we don't have any fixed schema. It is having a flexible schema okay. It's not like that one of the node will have only three properties. The other node will also have three properties. No, nothing like that. It can have any number of properties. It can depend right based on the data that we have.
+
+So this was just to give you a clear idea about the differences between RDBMS and graph database. Along with this, we also saw what are the advantages of uh specifically using neo for J. Okay, now, uh, in the next video or in the next section, we are going to discuss about the data model in Neo Forge. And that will actually give us a crux, understanding about how a nodes is basically created. What are the important things? What are the important components. When we go ahead and create this kind of nodes? By using Neo Forge database, by using the Cypher query language, I this was it. I will see you all in the next section.
+
+**E) Neo4j Property Graph Data Model**
+
+So in this section of the video we are going to discuss about Neo4j's property Graph data model.
+
+Now this Neo4j's graph database uses something called as property graph model property graph model. And this model is specifically used to store. And manage data. Okay. So we'll get an idea about it as we go ahead as we proceed okay.
+
+Now this is very much important. What exactly is property graph model. Now this model represents three main important thing. One is nodes. Second one is something called as relationships. And the third is nothing. But let me write it in another color so it looks good.
+
+So the first is nothing. But over here I will go ahead and write. It is nothing but nodes. Notes. Second is relationships. Third is something called as properties.
+
+So this property graph model or this model represents the data, the entire data, whatever data you have right over here in this three important in in in specifically this three important things that is nodes relationships and properties. Properties are just like rows and records. So this will specifically be having key value pairs. Okay. It will be having key value pairs.
+
+And one more thing that you really need to understand when we talk about this relationship. This is both uni directional. And bi directional. So whenever we go ahead and create any kind of relationship, you can actually create it in the form of uni directional. And you can also create it in the form of bi directional okay.
+
+And every relationship okay. Every relationship. See if I probably consider this relationship, let's say this is my node one. This is my node two. Right. So let's go ahead and write node one. Node two okay.
+
+Now with respect to this node one and node two, whenever we create any relationship let's say this is having a relationship of this. Let's say node one is the parent. Or I can go ahead and write node one is the parent of node two. Right now in this relationship. This node one is just like your start node. And if I probably consider this node two, it is nothing but it is my two node. Or it can we can also say two or uh end node. Okay.
+
+Since we are basically going to write this right. See this is this is also called a start node. It can also be called as something called as from node okay. This can also be called as two node. So this is really important for you all to understand okay.
+
+But if I probably consider the entire graph DB data model. So if I probably consider graph DB data model. Okay. Here there are three important blocks okay. One is nodes. One is relationship. And the third one is something called as properties.
+
+Okay. As I said, uh, I've given you multiple examples over here. So let's say this is one of my node. This is my another node. This is my third node. Okay.
+
+Here, uh, I will go ahead and take one movie. Right. So let's say Avenger okay. So let's say Avenger and Tony Stark okay. So I will say hey Tony Stark. Tony Stark was an actor in Avenger, right? So this is one kind of relationship. Okay.
+
+Um, like, Tony Stark was an actor in Avenger. They can be another movie where Tony Stark was again an actor. Right here. I guess he was a villain. I'm just putting. Okay. There was a villain relationship with respect to one of the movie. This movie can be any other movie, right? Movie two.
+
+So this way you'll be able to see at any point of time this pink color node. This pink color circle is basically called as node. This is called as relationship. Relationship. Right. This actor is basically a kind of uh, you can just consider that it is a kind of property, but we can define this property in key value pairs also, which I will probably be showing you. Right.
+
+So, uh, this is what is entirely, uh, you know, the understanding of the graph, uh, Neo4j's property graph data model. And again, uh, I said you right. This can be bidirectional. Also it can be a relationship. It can be unidirectional. It can be bidirectional. Okay.
+
+So like this, uh, if we have an entire NLP text data, right. Just imagine an NLP text data then just by using. And this internally uses something called as graph neural network. With the help of this graph neural network we will be able to create this right now from where we will be getting this graph neural network. For this we will be using LangChain.
+
+Okay. Um again, LangChain has a good graph DB functionalities which will be able to take that particular text data. And uh, we will be able to convert this entire into this particular nodes. Okay.
+
+But for that again we right. We need to write Cypher query. But if you just directly want to convert it with the help of model we can use a graph neural network. And I think graph neural network uh functionalities this also you can probably go ahead and train it from completely scratch.
+
+But right now we'll focus more on to the LangChain, uh, which has features to convert this particular data insert into a graph DB database itself.
+
+So yeah. Uh, this was all about graph data model. Now, uh, in the next section of the video, we will go ahead and do some variety of practicals and we'll try to insert some data in our Neo4j's RDB. So yes, this was it. I will see you all in the next video.
+
+**F) Getting Started With Cypher Query Language**
+
+So in this section of the video we are going to probably go ahead and create this nodes, relationships, properties, labels. You know and we'll try to see that how this entire information is basically created with the help of Cypher Query language okay. Very important video altogether because this will actually help you to understand how to write a specific query.
+
+So here, uh, first of all, you as soon as you open your Neo4j's AuraDB, once you go inside this particular instance, you'll be able to see this particular text box. And this is where you write your own query right now, let us go ahead and try some of the queries over here, and we'll see that how we can go ahead and create nodes, relationship property keys and many more things okay.
+
+So let's go ahead. So first of all what I'm actually going to do I'm going to go ahead and use this create keyword. And let's create our first node okay. So I will just go ahead and write node Node one okay.
+
+So once I create this create node one. So it is just going to create my first node. And once I execute this here you will be able to see that hey node one is basically created. Okay.
+
+But I'm not able to see this node one right. If I go ahead and click this it shows hey I've assigned some ID over here. This ID value is zero.
+
+Okay. So I told you that whenever we try to create nodes, nodes are nothing but entities. Name something like that. Right. And obviously over here I did not provide any kind of information over here when I probably created this particular node, because I need to provide some kind of labels. Right.
+
+If I say, hey, I'm going to create a node one, let's say node one is something over here. And if I give a name like Krishna, then this particular node name will be assigned to Krishna. Right.
+
+So let me just go ahead and, in order to return everything, you can see match n that is nothing but nodes return n limit 25.
+
+Okay. So now let me just go ahead and create another node. So I will go ahead and write create node. And you can create multiple nodes also. But here what I'm actually going to do I will just go ahead and create one of the nodes. And along with that I will just go ahead and assign some kind of labels.
+
+Okay. Now when I say I'll be assigning some kind of labels, what does this basically mean? So let's say I will go ahead and write Ellen okay Elon Musk okay. And this is my node that I'm actually creating. And let's say I'll go ahead and write he's the CEO right.
+
+So once I execute this you'll be able to see now I'm able to see one of the nodes which is called as CEO. Okay. My node is Ellen. But over here I have tried to assign some kind of label value which is called as CEO. Okay. Otherwise I could have created another node like famous personality and I could assign one of the label like Ellen. Right. So this way I can now see my nodes over here.
+
+Okay, so if I really want to go ahead and see, like who is the CEO? So if I just go ahead and create over here, here you'll be able to see this particular information. Right. And once I go ahead and click this okay. This shows the node details. This is my CEO. The key ID value is one.
+
+Okay. So till here I hope you got an idea of how to properly create a node. Right. And here you can see as soon as I clicked on CEO it gave me a result where match n colon Co return n limit 25 basically means 25 results is allowed to retrieve. And here I can probably see one of them.
+
+Okay. So I hope you got an idea with respect to creating a simple way of this kind of nodes. Okay, now let me do one thing. Let me just go ahead and create one more type here. I will go ahead and write Ellen okay. Ellen I will create this particular node here. I will go ahead and say he is also a CEO right of Tesla. Along with that he is also an employee. So I'm going to create this now.
+
+See here what exactly the CEO and employee will basically do. CEO one is the label over here okay. And here I'm trying to add some more labels. Right. Like employee also one more label that I really want to create. So if I go ahead and execute this here, you can see that now it has got executed and my one more node has actually got created. It is nothing but employee.
+
+Right. And if I go ahead and click on employee. So this is my second node right. Still CEO and employee. There is no relationship. So we are not able to probably see the entire relationship of this specific node.
+
+Okay. But here, if I write this query match n colon employees return n limit 25. Okay. So this is one of the query with respect to Neo4j's. So all these things we have actually tried okay. And this is amazing because now we have also understood that fine we can create multiple labels okay. Just with respect to one node. So I hope you have very much clear with this basic things Right.
+
+Now similarly, I can create different different nodes with a lot of different information. Okay. Let's say I go ahead and write create Ellen okay. And inside this I go ahead and write okay fine. He is the CEO okay.
+
+Now with respect to the CEO, I can go ahead and write some more information. Now I know that this is my label, okay. But being a CEO, this person has some kind of name. Elon has name. Right. So I will go ahead and write my name called as Elon Musk.
+
+So this is nothing but this is called as properties okay. So here I'm trying to create a node with this label name and this property. So I'll say hey Elon Musk over here. I'll say okay let's go ahead and write this year of birth, let's say I will go ahead and write in 1979. Okay, I hope so. Uh, he was born in 1979 or some other date, but you can go ahead and validate it.
+
+Okay. And then let's say the place of birth I have heard is from South Africa. Okay. So I'll just go ahead and write SC okay. Okay. Perfect. So here you can see that I have mentioned all this information. And this is my property keys key value pairs. These are my properties for this particular label okay.
+
+Or I can also go ahead and probably inverse this entire information. But right now we are able to to share or store this particular name and all. So now let's go ahead and execute this. Once I executed this you will be able to see. Now I have this property keys name okay. Name node is nothing but Elon Musk, POB over here you can see node is South Africa and yob is nothing but the node information is 1979.
+
+So this information you are able to see that. Yeah. Now we have also created some kind of property keys. Right. And this is how the query is just there.
+
+See if I really want to understand what is the value for this name. So it is automatically creating this particular query match n where n dot name is not null Return distinct. Return distinct node as entity and dot name as limit 25 Union all match this particular parameters right R dot name is not null return distinct relationship as entity R dot name as name limit 25.
+
+You'll be seeing that this all kind of queries will try to generate it from LangChain. So here the main idea is just to make you understand how quickly you can probably create your nodes, your relationships and property keys right now.
+
+I hope you are able to understand this now again, in order to get all the information out there, I will just go ahead and write match and okay, so let's go ahead and write match end. And here I'm just going to return end. Let me go ahead and write this match end. And here I'm just going to go ahead and return N okay.
+
+So if I go ahead and execute this I will be able to see okay fine. These are all my nodes that you can see over here. If I go ahead and click on Elon Musk now you can see right. So Elon Musk is one of the name over here. Right. And you are able to see all these values. And this node details is nothing but CEO right.
+
+So here you can see POB, name Elon Musk, year of birth. Every information is probably visible over here. Right. And this is amazing because here I made sure that I created my based on the name. You can see the node name is basically assigned. If you are not providing let's say if you have just provided label initially, the label will go away. But if you provided some property key value pairs where you have name information that it has replaced over here, right.
+
+If you see another node two is here, one is over here. This is my SEO details. And the other nodes itself. Right. So blank by blank you will be able to see this. Yes I am able to see this. Circular nodes each and everywhere. Okay. Perfect.
+
+So I hope uh, you are able to understand this entire information. Right. And, uh, you are able to see that how we have easily created this entire nodes. Okay.
+
+Now let's go ahead and try to create relationships. Okay. Now you know that Elon Musk is the CEO of Tesla.
+
+Okay. Now if I really want to create first of all I need to create two entities. Okay. So let's go ahead and create this. So here I will write okay I have already created Elon Musk okay. Now let me just go ahead and write my the Tesla company details.
+
+So here I will write re create. So I will just go ahead and write. Create. So this will be create. Now inside create I will go ahead and write okay. Let's say this is Tesla okay I will provide uh label over here called as company okay.
+
+And with respect to this particular company, let me just go ahead and give some information in the form of key value pairs. So I'll say name. Name is nothing but Tesla. Okay. So here you can see Tesla is the name of the company. And this is the label. So if I go ahead and execute it you'll be able to see I'm able to get the company. So if I go ahead and just click this I'm able to see Tesla. Okay. Perfect.
+
+Now I want to create a relationship between Elon Musk and obviously, uh, if I probably say Elon Musk with Tesla right now here, you will be able to see that if I click on name, right, Elon Musk is there and Tesla is there. Right.
+
+So, uh, how do I probably go ahead and do this? So if I go ahead and click on company. So this is company. This is CEO okay. And CEO these are my three information right. So Elon Musk. So let's let's see how we can probably join this okay. Or how we can go ahead and create this relationship already if you know in the downwards direction.
+
+If I go right here you will be able to see where I have actually used Elon. Right. So here I've created a node called as Elon. Right now what I will write since there is already a node with the name Elon. So if I go ahead and press this, I think uh, it was this one itself. Right. So let's see this.
+
+The node is there. So here what I will say I will create create Ellen okay. And then I will put a relationship. In order to put a relationship I have to use Dash I will use a are parameter. And here I will say CEO. And here I'm just going to give this arrow direction and let me go ahead and write my another node.
+
+Another node will be what my another node will be specifically for this particular company. Right. And the company name that I have actually created, a company node that I've actually created is what Tesla. Right. So here what I'm actually going to write quickly, I will say hey go ahead and create this relationship with Tesla.
+
+Now once I execute this you'll be able to see created two nodes, created one relationship. Now CEO is one of the relationship. Now if I go ahead and click this see the magic okay. So here you can see five is basically getting created. Six is basically created. Now what I have actually done is that I used this particular node Elon with Tesla.
+
+And I don't know why Elon uh, when I see down okay, I had actually created this entire thing. So spelling is wrong or correct. Let's see Elon with CEO right. So here 00000.
+
+So if I go ahead and say Elon with CEO of Tesla it created two nodes. but it is giving me this particular node name, right. The reason is very simple, because this fifth and sixth is actually creating as a new node. Okay. It did not use the older nodes itself. Okay.
+
+So in order to do this let let's take one more very good example. Okay. I will just create it from scratch and then we'll get to know why that node name did not come okay.
+
+Now once I have created my entrepreneur node Krish and my country node India, I can see that Krish lives in India. By double-clicking on the nodes, I can see the relationship “lives in” connecting them. Similarly, clicking on India shows all the properties of that node. This demonstrates how relationships can easily be visualized in Neo4j.
+
+When working with a large database, it’s important to maintain consistent labels. For example, if I want to create a node for a person, I should use the label “Person” consistently across all such nodes. So I created a node labeled Person with the name “Tom Hanks” and birth year 1956.
+
+Next, I created a node for a movie with the label Movie and title “Forrest Gump,” released in 1994. I used placeholders like P for Person and M for Movie so that I can reuse these patterns for multiple records with different properties. This way, only the values like name or title change, keeping the structure consistent.
+
+To create a relationship between Tom Hanks and Forrest Gump, I first used a MATCH query to locate the specific nodes. I matched the Person node with name “Tom Hanks” and the Movie node with title “Forrest Gump.” Then, I created a relationship called acted_in from the Person node to the Movie node. Executing this query successfully created the relationship, showing that Tom Hanks acted in Forrest Gump.
+
+Sometimes, while creating relationships, warnings like “Cartesian product between disconnected patterns” may appear. This happens when nodes are not properly matched or there are multiple nodes without a clear connection. Despite the warning, the relationship can still be successfully created, as demonstrated with Tom Hanks acting in Forrest Gump.
+
+Similarly, I created another Person node, “Crush,” born in 1989, and linked it to the same movie Forrest Gump using the acted_in relationship. Now, both Tom Hanks and Crush are connected to the movie node, showing how multiple relationships can be represented in Neo4j.
+
+To retrieve nodes and relationships, the MATCH keyword is used. For example, MATCH (p:Person {name: "Tom Hanks"}) RETURN p retrieves the Tom Hanks node. Using a relationship pattern, such as MATCH (p)-[:acted_in]->(m) RETURN p, m, allows retrieving both the nodes and the relationships between them. This is useful for exploring the graph and visualizing connections.
+
+Updating node properties is also straightforward. For example, if Tom Hanks’ birth year needs to be corrected from 1956 to 1957, I can use the MATCH query to locate the node and the SET keyword to update the property: MATCH (p:Person {name: "Tom Hanks"}) SET p.yob = 1957 RETURN p. Executing this query updates the property, and the change is visible when inspecting the node.
+
+Throughout this process, writing queries step by step helps in understanding how nodes, relationships, and properties are created, updated, and retrieved in Neo4j. By practicing these queries, users gain familiarity with Cypher and can effectively manage graph data.
+
+In the next session, we will explore more advanced queries, including complex traversals, filtering by properties, and performing multiple operations in a single query. This will further enhance our ability to work with Neo4j and fully leverage the power of graph databases.
+
+This concludes the demonstration of creating nodes, relationships, property keys, and basic Cypher queries. The next video will build upon these concepts for more advanced graph operations.
+
+**G) Intermediate To Advance Cypher Query Language**
+
+We are going to continue our discussion on graph databases and explore some intermediate to advanced examples. In this session, we will see how to upload real datasets into a Neo4j graph database using CSV files. I have created a GitHub link where I have uploaded several CSV files, including movies.csv, posts.csv, ratings.csv, and others. We will use these CSV files to populate our graph database and discuss the queries required to do this.
+
+The use case we will focus on is a social media platform. In this platform, users can create posts, like posts, and have friends. The CSV files contain information about users, their posts, and friendships. For example, user_social.csv contains user_id, name, age, and city. The friendship mapping file contains user_id1, user_id2, and the type of friendship. For instance, 1 to 2 indicates that John and Sarah are friends. Finally, post.csv contains post_id, content, user_id, and timestamp for each post.
+
+To load users from the CSV, we use the built-in LOAD CSV function. We start by writing LOAD CSV WITH HEADERS FROM '<CSV_URL>' AS row to read the file, and then for each row, we create a User node using CREATE (u:User { user_id: toInteger(row.user_id), name: row.name, age: toInteger(row.age), city: row.city }). If we need to delete previous nodes before reloading, we can execute MATCH (n:User) DELETE n. After executing this, all users such as Sarah, John, Mike, David, and Linda will appear as nodes in the database, each with the correct properties.
+
+Next, we load posts and map them to their respective users. We begin with LOAD CSV WITH HEADERS FROM '<POST_CSV_URL>' AS row to load the CSV file. Then we match the user by user_id using MATCH (u:User {user_id: toInteger(row.user_id)}) and create a relationship to a Post node with CREATE (u)-[:POSTED]->(p:Post { post_id: toInteger(row.post_id), content: row.content, timestamp: datetime(row.timestamp) }). Executing this query links each post to the correct user, and we can visualize posts such as “Love New York” or “Beautiful day in Chicago” associated with their authors.
+
+To load friendships, we first read the relationships CSV with LOAD CSV WITH HEADERS FROM '<RELATIONSHIP_CSV_URL>' AS row. Then we match both users using MATCH (u1:User {user_id: toInteger(row.user_id1)}), (u2:User {user_id: toInteger(row.user_id2)}) and create the friendship relationship with CREATE (u1)-[:FRIEND]->(u2). After executing this query, the friend network is established. For example, John is friends with Sarah, Mike, David, and Linda, and Sarah is friends with Mike, creating a complete friend circle.
+
+Once the data is loaded, we can start retrieving information using Cypher queries. To retrieve all users, we execute MATCH (u:User) RETURN u, and to get all posts, we write MATCH (p:Post) RETURN p. If we want to find the friends of a specific user like John, we use MATCH (u:User {name: "John"})-[:FRIEND]->(f:User) RETURN f.name. To retrieve posts made by the friends of John, the query becomes MATCH (u:User {name: "John"})-[:FRIEND]->(f:User)-[:POSTED]->(p:Post) RETURN f.name, p.content. We can also count the number of friends each user has with MATCH (u:User)-[:FRIEND]->(f:User) RETURN u.name, count(f) AS number_of_friends ORDER BY number_of_friends DESC. This will show users like David and Sarah with five friends each, and others with four.
+
+Additionally, we can explore likes on posts. To find users who liked a specific post by John, we match the user and their post with MATCH (u:User {name: "John"})-[:POSTED]->(p:Post)<-[:LIKES]-(l:User) RETURN l.name, p.content. This query traverses the LIKES relationship and shows who liked John’s posts.
+
+Throughout this session, we have seen how to load users, posts, and friendships from CSV files, create nodes and relationships, and retrieve meaningful information using Cypher queries. This demonstrates the power of graph databases for representing complex relationships. The skills learned here are especially useful for advanced applications, such as building generative AI systems with LangChain, where we need to traverse and manipulate graph data efficiently.
+
+# **XXVI) Practical Implementation With Graphdb With Langchain**
+
+**A) Getting Started-Creating Environment**
+
+So we are going to continue our discussion on working with graph databases with LangChain. In this session, we will implement some exciting projects using Neo4j AuraDB along with Python programming, demonstrating how to create generative AI applications. Before we start, it is important to set up the development environment properly and ensure all necessary libraries are installed.
+
+First, we will create a Python environment. Open your command prompt and run "conda create -p ./VENV python==3.12 -y". This will create a new environment named VENV with Python 3.12. Once the environment is created, activate it using "conda activate ./VENV" and clear the terminal to keep things tidy.
+
+Next, we need to prepare a requirements.txt file for our project. Since we are working with Python 3.12 and Neo4j, it is important to use compatible versions of libraries. The requirements.txt should include the following:
+
+"neo4j==5.11.0"
+"langchain-community"
+"python-dotenv"
+"openai"
+
+
+If you plan to use open-source LLM models, you can also include "langchain_grok". To install all the packages in your environment, run "pip install -r requirements.txt".
+
+After installing the libraries, it is crucial to set up a .env file to store sensitive information such as API keys. For example, if you are using the Grok LLM, your .env file should contain: "GROK_API_KEY=your_grok_api_key_here". This allows your Python scripts to securely access the API without hardcoding sensitive information.
+
+Once the environment is set up and the .env file is ready, we can proceed to connect to Neo4j AuraDB. Make sure you have your database credentials saved, as they will be needed to insert data and execute queries. Proper setup ensures that the Python scripts, LangChain, and Neo4j can work together seamlessly for creating generative AI applications.
+
+**B) Inserting Data In Graph DB With Python And Langchain**
+
+So we are going to continue our discussion with respect to building generative AI projects using GraphDB. In this session, we will see how to create a project that leverages LangChain along with a graph database to respond to user queries intelligently. The main plan here is simple: when a user submits a query, it first goes to our LLM (Language Model), which will generate a corresponding Cypher query. For example, if a user asks, "Who acted in Toy Story 2?", the LLM will create a Cypher query to fetch the relevant data from our graph database. Once the graph DB executes the query, the response is returned to the LLM, which formats it into an output response for the user. This block, where we integrate the LLM, Cypher query, and GraphDB, essentially forms our graph agent, which can answer questions intelligently by querying the graph database.
+
+To start, we create a folder for our project and add a Jupyter Notebook file called "experiments.ipynb". First, we set up the kernel, and then we configure environment variables to store essential database credentials such as Neo4j’s URI, username, and password. This can be done using Python with "import os" and then setting variables like "os.environ['NEO4J_URI'] = 'your_uri'", "os.environ['NEO4J_USERNAME'] = 'your_username'", and "os.environ['NEO4J_PASSWORD'] = 'your_password'". These values can also be read from a .env file if preferred. Ensure that "ipykernel" is installed via "pip install ipykernel" to use Jupyter Notebook properly.
+
+Next, we import the Neo4j graph interface from LangChain using "from langchain_community.graphs import Neo4jGraph" and initialize the graph connection with "graph = Neo4jGraph(url=Neo4j_URI, username=Neo4j_username, password=Neo4j_password)". This object allows us to interact with our Neo4j AuraDB instance.
+
+For the dataset, we are using a movies dataset available in CSV format on GitHub. It contains columns like movie ID, release date, title, actors, directors, genres, and IMDb ratings. To load this dataset into the graph, we define a Cypher query inside Python as a multi-line string. The query starts with "LOAD CSV WITH HEADERS FROM 'your_csv_url' AS row" and uses MERGE statements to create nodes for movies, persons (actors and directors), and genres. Individual properties like movie ID, release date, title, and IMDb ratings are set using "M.id = row.movieID", "M.released = date(row.release)", "M.title = row.title", and "M.imdb_rating = toFloat(row.idb_rating)". For actors and directors, a "FOREACH" loop is used: "FOREACH director IN split(row.directors, '|') | MERGE (p:Person {name: trim(director)}) MERGE (p)-[:DIRECTED]->(M)". Similarly, for actors: "FOREACH actor IN split(row.actors, '|') | MERGE (p:Person {name: trim(actor)}) MERGE (p)-[:ACTED_IN]->(M)". Genres are also handled with: "FOREACH genre IN split(row.genres, '|') | MERGE (g:Genre {name: trim(genre)}) MERGE (M)-[:HAS_GENRE]->(g)".
+
+Once the query is fully defined, we execute it using "graph.query(movie_query)". After execution, refreshing the schema with "graph.refresh_schema()" and "print(graph.schema())" will show all nodes and relationships that were created. In Neo4j, this will result in a graph where movies are linked to actors and directors, and movies are also categorized by genres. For example, "Toy Story 2" will have nodes for Tim Allen and Tom Hanks linked with ACTED_IN, and directors like John Lasseter linked with DIRECTED. Genres like Comedy, Fantasy, and Animation will also be connected to the corresponding movie node.
+
+This setup demonstrates the fundamental process of ingesting a CSV dataset into a graph database using LangChain and Cypher queries. In the next step, we will use the LLM to generate queries dynamically and retrieve information interactively from the graph database, allowing us to build a full question-answer system over GraphDB.
+
+This is how we can integrate LangChain, Neo4j, and Python to create a generative AI application capable of querying and reasoning over graph data.
+
+**C) Creating GraphQuery Chain With Langchain**
+
+So we are going to continue our discussion with respect to generative AI with GraphDB and LangChain. In our previous session, we learned how to insert data into Neo4j. Now, we will see how to leverage an LLM model to query the graph database dynamically. First, we need to set up our environment to use the Grok API. This can be done by writing "import os" and "from dotenv import load_dotenv", and then initializing it with "load_dotenv()". Next, we fetch our API key using "grok_api_key = os.getenv('GROK_API_KEY')". To load the LLM model, we import "from langchain_grok import ChatGrok" and create our LM instance with "lm_model = ChatGrok(grok_api_key=grok_api_key, model_name='gamma')"; here, "gamma" refers to the new open-source model.
+
+Once the LM model is initialized, we can set up a chain to handle generating Cypher queries for the graph database. We import the necessary chain using "from langchain.chains import GraphCypherQAChain" and initialize it with "chain = GraphCypherQAChain.from_llm(llm=lm_model, graph=graph, verbose=True)". The "graph" parameter refers to our previously created Neo4jGraph instance, and "verbose=True" ensures we can see the step-by-step processing. This chain internally uses a prompt template where the input variable is question and the schema is passed from the graph database. The task is automatically defined as generating Cypher statements to query the graph while only using the relationships and properties defined in the schema.
+
+Now, we can use this chain to process queries dynamically. For example, if we want to find the director of the movie Casino, we write "response = chain.run('Who was the director of the movie Casino?')" and execute it. The chain generates the corresponding Cypher query, which might look like "MATCH (m:Movie {title: 'Casino'})<-[:DIRECTED]-(p:Person) RETURN p.name", executes it on the graph, and returns the answer "Martin Scorsese". Similarly, if we want the full cast, we can query with "response = chain.run('Who were the actors in the movie Casino?')" and the model returns "Robert De Niro, Joe Pesci, Sharon Stone, James Woods", dynamically generating the Cypher query and executing it.
+
+This approach demonstrates how we can combine an LLM model with a graph database using LangChain’s "GraphCypherQAChain". By simply initializing the LM model and passing it along with the graph to the chain, we can query the database in natural language and get accurate responses. This makes interacting with complex graph datasets very intuitive, as the LLM automatically generates valid Cypher queries based on the schema. The full process involves: importing necessary modules, initializing the Grok API key, creating the LM model, initializing the GraphCypherQAChain with the graph and LLM, and then running queries with "chain.run()" to get results.
+
+This setup highlights the power of combining LangChain, Neo4j, and open-source LLMs, enabling us to ask natural language questions and receive precise answers without manually writing Cypher queries. It’s a simple yet effective way to build an intelligent question-answer system over a graph database.
+
+**D) Prompting Statergies GraphDB With LLM**
+
+So we are going to continue our discussion on graph databases with Liang Chen. In the previous session, we learned how to quickly generate a simple Q&A system where we could chat with the graph database. The basic idea was simple: the LLM was generating Cypher queries based on user input, executing them on the graph database, and returning the results.
+
+However, there are scenarios where the LLM may not perform perfectly, especially with complex queries. To improve the accuracy of graph database query generation, we will now explore prompting strategies that help the LLM understand the database context better. These strategies focus on providing relevant, database-specific information in the prompts.
+
+First, we will create a new notebook called prompt_strategies.ipynb and set up our environment as usual using import os and load_dotenv(). We will also ensure that our graph database is initialized and data is loaded so that queries can be executed successfully.
+
+Next, we include all our LLM models so that we can access them for generating queries. After that, we create the GraphCypherQAChain using the LLM and graph instance. Here, we can also use parameters like exclude_types to ignore certain fields (for example, genre) and verbose=True to track execution steps.
+
+With the chain ready, we can focus on prompting strategies. The idea is to provide few-shot examples that map natural language questions to Cypher queries. For instance:
+
+Question: “How many artists are there?” → Query: MATCH (a:Person)-[:ACTED_IN]->(m:Movie) RETURN count(DISTINCT a)
+
+Question: “Which actors played in the movie Casino?” → Query: MATCH (a:Person)-[:ACTED_IN]->(m:Movie {title:'Casino'}) RETURN a.name
+
+Question: “How many movies has Tom Hanks acted in?” → Query: MATCH (a:Person {name:'Tom Hanks'})-[:ACTED_IN]->(m:Movie) RETURN count(m)
+
+These examples form the basis of our few-shot prompt template. Using LangChain’s FewShotPromptTemplate, we define:
+
+Prefix: Explains to the LLM that it is a Neo4j expert and should generate syntactically accurate Cypher queries.
+
+Suffix: Provides the user’s question and expects the corresponding Cypher query as output.
+
+Examples: Top N examples of natural language questions mapped to Cypher queries.
+
+Input Variables: Includes question (user input) and schema (database schema).
+
+Once the prompt template is created, we integrate it into our GraphCypherQAChain by passing it as cypher_prompt=few_shot_prompt. This helps the LLM understand the pattern of questions and how to generate accurate queries.
+
+Now, we can execute queries such as:
+
+“How many artists are there?” → Returns count of actors.
+
+“Which actors played in the movie Casino?” → Returns actor names.
+
+“How many movies has Tom Hanks acted in?” → Returns the correct count.
+
+Some limitations remain—for example, complex queries like “Actors who acted in multiple movies” may generate invalid Cypher statements. This highlights that while prompting strategies improve LLM performance, the model can still make mistakes, especially with very complex queries.
+
+Overall, by using few-shot prompting strategies, we guide the LLM to generate more accurate Cypher queries and improve the quality of the results from the graph database. This approach gives a clear structure for combining LLMs with Neo4j for natural language Q&A, while also illustrating potential pitfalls to watch out for.
+
+This concludes the discussion on prompting strategies for graph databases. You can now experiment with your own queries and examples to see how well the LLM generates Cypher queries.
 
 
